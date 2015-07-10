@@ -137,7 +137,7 @@ class Process
             $helps = array_merge($helps, $desc);
         }
 
-        return implode('\n', $helps);
+        return implode(PHP_EOL, $helps);
     }
 
     /**

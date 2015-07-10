@@ -32,7 +32,7 @@ class Base
         if (isset($msg['from']['first_name'])) {
             $this->from_name = $msg['from']['first_name'];
             if (isset($msg['from']['last_name'])) {
-                $this->from_name .= '_' . $msg['from']['last_name'];
+                $this->from_name .= ('_' . $msg['from']['last_name']);
             }
         } else {
             $this->from_name = $msg['from']['username'];

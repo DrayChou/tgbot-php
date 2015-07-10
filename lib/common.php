@@ -30,6 +30,25 @@ function echo_log($parm) {
 }
 
 /**
+ * 得到 redis 对象
+ * @return Redis
+ * @throws Exception
+ */
+function get_redis() {
+    global $config;
+    if (empty($config) || empty($config['redis'])) {
+        throw new Exception('error redis config');
+    }
+
+    $redis_config = $config['redis'];
+
+    $redis = new Redis();
+    $redis->connect($redis_config['ip'], $redis_config['port'], $redis_config['timeout']);
+
+    return $redis;
+}
+
+/**
  * 读取 update_id
  * @return int
  * @throws Exception
@@ -40,12 +59,9 @@ function get_update_id() {
         throw new Exception('error bot_name');
     }
 
-    $bot          = $config['bot_name'];
-    $key          = $bot . ':' . 'update_id';
-    $redis_config = $config['redis'];
-
-    $redis = new Redis();
-    $redis->connect($redis_config['ip'], $redis_config['port'], $redis_config['timeout']);
+    $bot   = $config['bot_name'];
+    $key   = $bot . ':' . 'update_id';
+    $redis = get_redis();
 
     $id = (int)$redis->get($key);
 
@@ -66,12 +82,9 @@ function set_update_id($id) {
         throw new Exception('error bot_name');
     }
 
-    $bot          = $config['bot_name'];
-    $key          = $bot . ':' . 'update_id';
-    $redis_config = $config['redis'];
-
-    $redis = new Redis();
-    $redis->connect($redis_config['ip'], $redis_config['port'], $redis_config['timeout']);
+    $bot   = $config['bot_name'];
+    $key   = $bot . ':' . 'update_id';
+    $redis = get_redis();
 
     return (int)$redis->set($key, $id);
 }
