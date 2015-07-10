@@ -9,13 +9,20 @@
  * 打印日志
  * @param $parm
  */
-function vardump($parm) {
+function echo_log($parm) {
     $msg = func_get_args();
     if (1 === count($msg)) {
         // 可変長引数がひとつであったとき
         $last_message = $msg[0];
     } else {
-        $format       = array_shift($msg); // vsprintfのformat(=$format)とargs(=$msg)を分離する
+        $format = array_shift($msg); // vsprintfのformat(=$format)とargs(=$msg)を分離する
+
+        foreach ($msg as $k => $v) {
+            if (!is_string($v)) {
+                $msg[$k] = print_r($v, true);
+            }
+        }
+
         $last_message = vsprintf($format, $msg);
     }
 

@@ -24,7 +24,7 @@ class Help extends Base
      * 当命令满足的时候，执行的基础执行函数
      */
     public function run() {
-        vardump("执行 Help run");
+        echo_log("执行 Help run");
 
         $helps = Process::get_helps();
 
@@ -34,6 +34,6 @@ class Help extends Base
             'reply_to_message_id' => $this->msg_id,
         ));
 
-        vardump("发送信息: msg=%s", $msg);
+        echo_log("发送信息: msg=%s", $msg);
     }
 }

@@ -33,13 +33,13 @@ class Process
      */
     static function run($messages) {
         $router = require(BASE_PATH . 'config' . DIRECTORY_SEPARATOR . 'router.php');
-        vardump('加载路由规则: router=%s', $router);
+        echo_log('加载路由规则: router=%s', $router);
 
         if (is_string($messages)) {
             $messages = json_decode($messages, true);
         }
 
-        vardump('得到的消息列表: $messages=%s', $messages);
+        echo_log('得到的消息列表: $messages=%s', $messages);
         if (empty($messages)) {
             return;
         }
@@ -92,7 +92,7 @@ class Process
                 foreach ($router as $reg => $class) {
                     if (preg_match($reg, $text, $m)) {
 
-                        vardump('正则匹配结果: $messages=%s', $messages);
+                        echo_log('正则匹配结果: $messages=%s', $messages);
 
                         $plugins = self::get_class($m[1]);
                         $plugins->set_msg($msg);
