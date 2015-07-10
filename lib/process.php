@@ -163,7 +163,7 @@ class Process
             $class->set_msg($msg);
 
             foreach ($fun_arr as $fun) {
-                $class::$fun();
+                $class->$fun();
             }
         }
     }
