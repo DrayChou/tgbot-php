@@ -160,9 +160,10 @@ class Process
         $plugins = array_flip($router);
         foreach ($plugins as $class_name => $tmp) {
             $class = self::get_class($class_name);
+            $class->set_msg($msg);
 
             foreach ($fun_arr as $fun) {
-                $class::$fun($msg);
+                $class::$fun();
             }
         }
     }

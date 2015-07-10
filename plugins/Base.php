@@ -8,16 +8,13 @@
  */
 class Base
 {
-    public $parm;
-    public $chat_id;
     public $msg_id;
+    public $chat_id;
 
-    /**
-     *
-     */
-    public function __construct() {
+    public $from_id;
+    public $from_name;
 
-    }
+    public $parm;
 
     /**
      * @param $msg
@@ -28,9 +25,18 @@ class Base
             throw new Exception('error message');
         }
 
-        $this->msg_id = $msg['message_id'];
-
+        $this->msg_id  = $msg['message_id'];
         $this->chat_id = $msg['chat']['id'];
+
+        $this->from_id = $msg['from']['id'];
+        if (isset($msg['from']['first_name'])) {
+            $this->from_name = $msg['from']['first_name'];
+            if (isset($msg['from']['last_name'])) {
+                $this->from_name .= '_' . $msg['from']['last_name'];
+            }
+        } else {
+            $this->from_name = $msg['from']['username'];
+        }
 
         if (isset($msg['text'])) {
             $this->parm = $msg['text'];
@@ -43,7 +49,7 @@ class Base
      */
     static public function desc() {
 
-        return "插件说明，一行，用在 help 中" . PHP_EOL;
+        return "插件说明，一行，用在 help 中";
     }
 
     /**
@@ -51,41 +57,41 @@ class Base
      * @return string
      */
     static public function usage() {
-        return "插件说明，数组，用在功能调用的说明上。" . PHP_EOL;
+        return "插件说明，数组，用在功能调用的说明上。";
     }
 
     /**
      * 当有人进入群的时候
      */
-    static public function msg_enter_chat($msg) {
+    static public function msg_enter_chat() {
         echo_log("有人进入群");
     }
 
     /**
      * 有人离开群的时候
      */
-    static public function msg_left_chat($msg) {
+    static public function msg_left_chat() {
         echo_log("有人离开群");
     }
 
     /**
      * 有人发照片的时候
      */
-    static public function msg_photo($msg) {
+    static public function msg_photo() {
         echo_log("有人发照片");
     }
 
     /**
      * 有人转发消息的时候
      */
-    static public function msg_forward($msg) {
+    static public function msg_forward() {
         echo_log("有人转发消息");
     }
 
     /**
      * 不管什么情况都会执行的函数
      */
-    static public function pre_process($msg) {
+    static public function pre_process() {
         echo_log("每次都执行的脚本");
     }
 
