@@ -44,8 +44,13 @@ function get_update_id() {
     $key = $bot . ':' . 'update_id';
 
     $redis = new Redis();
+    $redis->connect($config['ip'], $config['port'], $config['timeout']);
 
-    return (int)$redis->get($key);
+    $id = (int)$redis->get($key);
+
+    echo_log('update_id:%s', $id);
+
+    return $id;
 }
 
 /**
@@ -64,6 +69,7 @@ function set_update_id($id) {
     $key = $bot . ':' . 'update_id';
 
     $redis = new Redis();
+    $redis->connect($config['ip'], $config['port'], $config['timeout']);
 
     return (int)$redis->set($key, $id);
 }
