@@ -98,7 +98,7 @@ class Process {
 
                         CommonFunction::echo_log('正则匹配结果: $messages=%s', $messages);
 
-                        if ($m[2] == '@') {
+                        if (isset($m[2]) && $m[2] == '@') {
                             if (strtolower($m[3] != strtolower($config['bot_name']))) {
                                 continue;
                             }
@@ -122,7 +122,7 @@ class Process {
         }
 
         //更新 update_ID
-        RedDbet_update_id($last_update_id);
+        Db::set_update_id($last_update_id);
     }
 
     /**
