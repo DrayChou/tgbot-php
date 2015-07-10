@@ -22,7 +22,13 @@ $http->on('request', function ($request, $response) {
         Process::run($message);
     });
 
-    $message = Telegram::singleton()->post('getUpdates', array('offset' => 1, 'limit' => 10));
+    $message = Telegram::singleton()->post('getUpdates', array(
+        'offset' => 1,
+//        'limit'  => 10,
+    ));
+
+    var_dump($message);
+
     $process->write(json_encode($message));
     $pid = $process->start();
 
