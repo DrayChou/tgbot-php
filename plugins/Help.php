@@ -24,6 +24,8 @@ END;
      * 当命令满足的时候，执行的基础执行函数
      */
     public function run() {
+        echo "执行 Help run";
+
         $helps = Process::gethelp();
 
         $msg = Telegram::singleton()->post('sendMessage', array(
