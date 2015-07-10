@@ -40,11 +40,12 @@ function get_update_id() {
         throw new Exception('error bot_name');
     }
 
-    $bot = $config['bot_name'];
-    $key = $bot . ':' . 'update_id';
+    $bot          = $config['bot_name'];
+    $key          = $bot . ':' . 'update_id';
+    $redis_config = $config['redis'];
 
     $redis = new Redis();
-    $redis->connect($config['ip'], $config['port'], $config['timeout']);
+    $redis->connect($redis_config['ip'], $redis_config['port'], $redis_config['timeout']);
 
     $id = (int)$redis->get($key);
 
@@ -65,11 +66,12 @@ function set_update_id($id) {
         throw new Exception('error bot_name');
     }
 
-    $bot = $config['bot_name'];
-    $key = $bot . ':' . 'update_id';
+    $bot          = $config['bot_name'];
+    $key          = $bot . ':' . 'update_id';
+    $redis_config = $config['redis'];
 
     $redis = new Redis();
-    $redis->connect($config['ip'], $config['port'], $config['timeout']);
+    $redis->connect($redis_config['ip'], $redis_config['port'], $redis_config['timeout']);
 
     return (int)$redis->set($key, $id);
 }
