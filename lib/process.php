@@ -47,29 +47,31 @@ class Process
                 self::runWith('msg_photo');
             }
 
-            $plugins = NULL;
-            //抓文字里的关键词，抓到是要请求什么插件
-            $text = $msg['text'];
-            foreach ($router as $reg => $class) {
-                if (preg_match($reg, $text, $m)) {
-                    var_dump($m);
-                    $class_name = ucfirst(strtolower($m[1]));
+            if (isset($msg['text'])) {
+                $plugins = NULL;
+                //抓文字里的关键词，抓到是要请求什么插件
+                $text = $msg['text'];
+                foreach ($router as $reg => $class) {
+                    if (preg_match($reg, $text, $m)) {
+                        var_dump($m);
+                        $class_name = ucfirst(strtolower($m[1]));
 
-                    require_once(BASE_PATH . 'plugins' . DIRECTORY_SEPARATOR . 'Base.php');
-                    require_once(BASE_PATH . 'plugins' . DIRECTORY_SEPARATOR . $class_name . '.php');
+                        require_once(BASE_PATH . 'plugins' . DIRECTORY_SEPARATOR . 'Base.php');
+                        require_once(BASE_PATH . 'plugins' . DIRECTORY_SEPARATOR . $class_name . '.php');
 
-                    $plugins = new $class_name($msg);
-                    break;
+                        $plugins = new $class_name($msg);
+                        break;
+                    }
                 }
-            }
 
-            //如果没有抓到要调用的插件，那么忽略掉
-            if (empty($plugins)) {
-                continue;
-            }
+                //如果没有抓到要调用的插件，那么忽略掉
+                if (empty($plugins)) {
+                    continue;
+                }
 
-            //执行消息的运行命令
-            $plugins->run();
+                //执行消息的运行命令
+                $plugins->run();
+            }
         }
     }
 
