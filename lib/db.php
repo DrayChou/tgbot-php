@@ -10,7 +10,7 @@ class Db {
 
     /**
      * 得到 redis 对象
-     * @return Db
+     * @return Redis
      * @throws Exception
      */
     static function get_redis() {
@@ -21,7 +21,7 @@ class Db {
 
         $redis_config = $config['redis'];
 
-        $redis = new Db();
+        $redis = new Redis();
         $redis->connect($redis_config['ip'], $redis_config['port'], $redis_config['timeout']);
 
         return $redis;
