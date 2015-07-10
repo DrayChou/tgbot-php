@@ -11,18 +11,23 @@ class Process
 
     /**
      * 执行抓取到的命令
-     * @param $message
+     * @param $messages
      */
-    static function run($message) {
+    static function run($messages) {
         $router = require(BASE_PATH . 'config' . DIRECTORY_SEPARATOR . 'router.php');
         var_dump($router);
 
-        $message = json_decode($message, true);
-        if (isset($message['message'])) {
-            $message = array($message);
+        if (is_string($messages)) {
+            $messages = json_decode($messages, true);
         }
 
-        foreach ($message as $msg) {
+        foreach ($messages as $message) {
+            //如果有新人的话
+            if (!isset($message['message'])) {
+                continue;
+            }
+
+            $msg = $message['message'];
 
             //不管什么情况每次都要执行一次的函数
             self::runWith('pre_process');
