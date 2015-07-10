@@ -47,15 +47,18 @@ class Process
         $last_update_id = get_update_id();
 
         foreach ($messages as $message) {
-            //如果有新人的话
+            //如果是无效的消息的话，跳过
             if (!isset($message['message'])) {
                 continue;
             }
 
-            $msg = $message['message'];
-            if ($message['update_id'] > $last_update_id) {
-                $last_update_id = $message['update_id'];
+            //之前已经处理过的信息，跳过
+            if ($message['update_id'] <= $last_update_id) {
+                continue;
             }
+
+            $msg            = $message['message'];
+            $last_update_id = $message['update_id'];
 
             //不管什么情况每次都要执行一次的函数
             $run_fun = array(
