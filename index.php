@@ -7,9 +7,7 @@
  */
 define('BASE_PATH', dirname(__FILE__) . DIRECTORY_SEPARATOR);
 require_once(BASE_PATH . 'lib' . DIRECTORY_SEPARATOR . 'common.php');
-require_once(BASE_PATH . 'lib' . DIRECTORY_SEPARATOR . 'redis.php');
-require_once(BASE_PATH . 'lib' . DIRECTORY_SEPARATOR . 'process.php');
-require_once(BASE_PATH . 'lib' . DIRECTORY_SEPARATOR . 'telegram.php');
+CommonFunction::load_lib();
 
 $config = CommonFunction::get_config();
 CommonFunction::echo_log('配置信息: $messages=%s', $config);

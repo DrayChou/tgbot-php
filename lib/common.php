@@ -35,6 +35,15 @@ class CommonFunction {
     }
 
     /**
+     * 加载类库
+     */
+    static public function load_lib() {
+        require_once(BASE_PATH . 'lib' . DIRECTORY_SEPARATOR . 'redis.php');
+        require_once(BASE_PATH . 'lib' . DIRECTORY_SEPARATOR . 'process.php');
+        require_once(BASE_PATH . 'lib' . DIRECTORY_SEPARATOR . 'telegram.php');
+    }
+
+    /**
      * 得到路由配置表
      * @return type
      */
@@ -55,4 +64,5 @@ class CommonFunction {
         }
         return self::$config;
     }
+
 }
