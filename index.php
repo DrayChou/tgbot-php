@@ -23,7 +23,7 @@ $http->on('request', function ($request, $response) {
     });
 
     $message = Telegram::singleton()->post('getUpdates', array(
-        'offset' => 1,
+        'offset' => 76,
 //        'limit'  => 10,
     ));
 

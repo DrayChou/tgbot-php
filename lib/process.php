@@ -21,6 +21,11 @@ class Process
             $messages = json_decode($messages, true);
         }
 
+        var_dump($messages);
+        if (empty($messages)) {
+            return;
+        }
+
         foreach ($messages as $message) {
             //如果有新人的话
             if (!isset($message['message'])) {
