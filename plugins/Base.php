@@ -47,42 +47,42 @@ class Base
      * 当有人进入群的时候
      */
     public function msg_enter_chat() {
-        echo_log("有人进入群");
+        CommonFunction::echo_log("有人进入群");
     }
 
     /**
      * 有人离开群的时候
      */
     public function msg_left_chat() {
-        echo_log("有人离开群");
+        CommonFunction::echo_log("有人离开群");
     }
 
     /**
      * 有人发照片的时候
      */
     public function msg_photo() {
-        echo_log("有人发照片");
+        CommonFunction::echo_log("有人发照片");
     }
 
     /**
      * 有人转发消息的时候
      */
     public function msg_forward() {
-        echo_log("有人转发消息");
+        CommonFunction::echo_log("有人转发消息");
     }
 
     /**
      * 不管什么情况都会执行的函数
      */
     public function pre_process() {
-        echo_log("每次都执行的脚本");
+        CommonFunction::echo_log("每次都执行的脚本");
     }
 
     /**
      * 当命令满足的时候，执行的基础执行函数
      */
     public function run() {
-        echo_log("做点什么");
+        CommonFunction::echo_log("做点什么");
     }
 
     /**

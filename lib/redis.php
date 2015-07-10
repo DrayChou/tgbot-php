@@ -44,7 +44,7 @@ class Redis {
 
         $id = (int) $redis->get($key);
 
-        echo_log('update_id:%s', $id);
+        CommonFunction::echo_log('update_id:%s', $id);
 
         return $id;
     }

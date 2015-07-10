@@ -34,13 +34,13 @@ class Process {
     static function run($messages) {
         $config = CommonFunction::get_config();
         $router = CommonFunction::get_router();
-        echo_log('加载路由规则: router=%s', $router);
+        CommonFunction::echo_log('加载路由规则: router=%s', $router);
 
         if (is_string($messages)) {
             $messages = json_decode($messages, true);
         }
 
-        echo_log('得到的消息列表: $messages=%s', $messages);
+        CommonFunction::echo_log('得到的消息列表: $messages=%s', $messages);
         if (empty($messages)) {
             return;
         }
@@ -96,7 +96,7 @@ class Process {
                 foreach ($router as $reg => $class) {
                     if (preg_match($reg, $text, $m)) {
 
-                        echo_log('正则匹配结果: $messages=%s', $messages);
+                        CommonFunction::echo_log('正则匹配结果: $messages=%s', $messages);
 
                         if ($m[2] == '@') {
                             if (strtolower($m[3] != strtolower($config['bot_name']))) {
