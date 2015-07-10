@@ -45,7 +45,7 @@ class Process {
             return;
         }
 
-        $last_update_id = Redis::get_update_id();
+        $last_update_id = Db::get_update_id();
 
         foreach ($messages as $message) {
             //如果是无效的消息的话，跳过
@@ -122,7 +122,7 @@ class Process {
         }
 
         //更新 update_ID
-        Redis::set_update_id($last_update_id);
+        RedDbet_update_id($last_update_id);
     }
 
     /**

@@ -38,7 +38,7 @@ class CommonFunction {
      * 加载类库
      */
     static public function load_lib() {
-        require_once(BASE_PATH . 'lib' . DIRECTORY_SEPARATOR . 'redis.php');
+        require_once(BASE_PATH . 'lib' . DIRECTORY_SEPARATOR . 'db.php');
         require_once(BASE_PATH . 'lib' . DIRECTORY_SEPARATOR . 'process.php');
         require_once(BASE_PATH . 'lib' . DIRECTORY_SEPARATOR . 'telegram.php');
     }

@@ -6,11 +6,11 @@
  * and open the template in the editor.
  */
 
-class Redis {
+class Db {
 
     /**
      * 得到 redis 对象
-     * @return Redis
+     * @return Db
      * @throws Exception
      */
     static function get_redis() {
@@ -21,7 +21,7 @@ class Redis {
 
         $redis_config = $config['redis'];
 
-        $redis = new Redis();
+        $redis = new Db();
         $redis->connect($redis_config['ip'], $redis_config['port'], $redis_config['timeout']);
 
         return $redis;
