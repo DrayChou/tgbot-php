@@ -6,16 +6,17 @@
  */
 
 define('BASE_PATH', dirname(__FILE__) . DIRECTORY_SEPARATOR);
+require_once(BASE_PATH . 'lib' . DIRECTORY_SEPARATOR . 'common.php');
 require_once(BASE_PATH . 'lib' . DIRECTORY_SEPARATOR . 'process.php');
 require_once(BASE_PATH . 'lib' . DIRECTORY_SEPARATOR . 'telegram.php');
 
 $config = require(BASE_PATH . 'config' . DIRECTORY_SEPARATOR . 'config.php');
-var_dump($config);
+vardump('配置信息: $messages=%s', $config);
 
 $http = new swoole_http_server("127.0.0.1", 9501);
 $http->on('request', function ($request, $response) {
-    var_dump($request);
-    var_dump($response);
+    vardump('服务器信息: $messages=%s', $request);
+    vardump('收到的请求信息: $messages=%s', $response);
 
     $process = new swoole_process(function ($process) {
         $message = $process->read();
@@ -23,11 +24,9 @@ $http->on('request', function ($request, $response) {
     });
 
     $message = Telegram::singleton()->post('getUpdates', array(
-        'offset' => 631704636,
+        'offset' => get_update_id(),
 //        'limit'  => 10,
     ));
-
-    var_dump($message);
 
     $process->write(json_encode($message));
     $pid = $process->start();

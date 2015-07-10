@@ -8,9 +8,11 @@
 
 return array(
     //机器人的 token
-    'token'  => '113291931:AAFutbvUlJQZqTNpw7XMGVXn04UZYlQvYZQ',
+    'token'    => '113291931:AAFutbvUlJQZqTNpw7XMGVXn04UZYlQvYZQ',
+    //机器人的名称，一般用来作为 redis 的key
+    'bot_name' => 'zt001bot',
     //管理员配置信息
-    'admins' => array(
+    'admins'   => array(
         64163268,
     ),
 );

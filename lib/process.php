@@ -8,6 +8,24 @@
  */
 class Process
 {
+    static private $instance = array();
+
+    /**
+     * @param null $class_name
+     * @return Base
+     */
+    static public function get_class($class_name = NULL) {
+        if (!isset(self::$instance[$class_name])) {
+            $class = ucfirst(strtolower($class_name));
+
+            require_once(BASE_PATH . 'plugins' . DIRECTORY_SEPARATOR . 'Base.php');
+            require_once(BASE_PATH . 'plugins' . DIRECTORY_SEPARATOR . $class . '.php');
+
+            self::$instance[$class_name] = new $class($class_name);
+        }
+
+        return self::$instance[$class_name];
+    }
 
     /**
      * 执行抓取到的命令
@@ -15,16 +33,18 @@ class Process
      */
     static function run($messages) {
         $router = require(BASE_PATH . 'config' . DIRECTORY_SEPARATOR . 'router.php');
-        var_dump($router);
+        vardump('加载路由规则: router=%s', $router);
 
         if (is_string($messages)) {
             $messages = json_decode($messages, true);
         }
 
-        var_dump($messages);
+        vardump('得到的消息列表: $messages=%s', $messages);
         if (empty($messages)) {
             return;
         }
+
+        $last_update_id = get_update_id();
 
         foreach ($messages as $message) {
             //如果有新人的话
@@ -33,29 +53,37 @@ class Process
             }
 
             $msg = $message['message'];
+            if ($message['update_id'] > $last_update_id) {
+                $last_update_id = $message['update_id'];
+            }
 
             //不管什么情况每次都要执行一次的函数
-            self::runWith('pre_process');
+            $run_fun = array(
+                'pre_process',
+            );
 
             //如果有新人的话
             if (isset($msg['new_chat_participant'])) {
-                self::runWith('msg_enter_chat');
+                $run_fun[] = 'msg_enter_chat';
             }
 
             //如果有人离开的话
             if (isset($msg['left_chat_participant'])) {
-                self::runWith('msg_left_chat');
+                $run_fun[] = 'msg_left_chat';
             }
 
             //如果有人转发消息
             if (isset($msg['forward_from'])) {
-                self::runWith('msg_forward');
+                $run_fun[] = 'msg_forward';
             }
 
             //如果有人发图片
             if (isset($msg['new_chat_photo'])) {
-                self::runWith('msg_photo');
+                $run_fun[] = 'msg_photo';
             }
+
+            //执行需要调用的函数
+            self::run_with($run_fun, $msg);
 
             if (isset($msg['text'])) {
                 $plugins = NULL;
@@ -63,13 +91,12 @@ class Process
                 $text = $msg['text'];
                 foreach ($router as $reg => $class) {
                     if (preg_match($reg, $text, $m)) {
-                        var_dump($m);
-                        $class_name = ucfirst(strtolower($m[1]));
 
-                        require_once(BASE_PATH . 'plugins' . DIRECTORY_SEPARATOR . 'Base.php');
-                        require_once(BASE_PATH . 'plugins' . DIRECTORY_SEPARATOR . $class_name . '.php');
+                        vardump('正则匹配结果: $messages=%s', $messages);
 
-                        $plugins = new $class_name($msg);
+                        $plugins = self::get_class($m[1]);
+                        $plugins->set_msg($msg);
+
                         break;
                     }
                 }
@@ -83,24 +110,23 @@ class Process
                 $plugins->run();
             }
         }
+
+        //更新 update_ID
+        set_update_id($last_update_id);
     }
 
     /**
      * 得到说明信息
      * @return string
      */
-    static function gethelp() {
+    static function get_helps() {
         $helps = array();
 
         $router  = require(BASE_PATH . 'config' . DIRECTORY_SEPARATOR . 'router.php');
         $plugins = array_flip($router);
         foreach ($plugins as $class_name => $tmp) {
-            $class = ucfirst(strtolower($class_name));
-
-            require_once(BASE_PATH . 'plugins' . DIRECTORY_SEPARATOR . 'Base.php');
-            require_once(BASE_PATH . 'plugins' . DIRECTORY_SEPARATOR . $class . '.php');
-
-            $desc = $class::desc();
+            $class = self::get_class($class_name);
+            $desc  = $class::desc();
             if (!is_array($desc)) {
                 $desc = array($desc);
             }
@@ -116,11 +142,8 @@ class Process
      * @param $class
      * @return mixed
      */
-    static function getUsage($class) {
-        $class = ucfirst(strtolower($class));
-
-        require_once(BASE_PATH . 'plugins' . DIRECTORY_SEPARATOR . 'Base.php');
-        require_once(BASE_PATH . 'plugins' . DIRECTORY_SEPARATOR . $class . '.php');
+    static function get_usage($class) {
+        $class = self::get_class($class);
 
         return $class::usage();
     }
@@ -129,16 +152,15 @@ class Process
      * 执行对应的命令
      * @param $comm
      */
-    static function runWith($comm) {
+    static function run_with($fun_arr, $msg) {
         $router  = require(BASE_PATH . 'config' . DIRECTORY_SEPARATOR . 'router.php');
         $plugins = array_flip($router);
         foreach ($plugins as $class_name => $tmp) {
-            $class = ucfirst(strtolower($class_name));
+            $class = self::get_class($class_name);
 
-            require_once(BASE_PATH . 'plugins' . DIRECTORY_SEPARATOR . 'Base.php');
-            require_once(BASE_PATH . 'plugins' . DIRECTORY_SEPARATOR . $class . '.php');
-
-            $class::$comm();
+            foreach ($fun_arr as $fun) {
+                $class::$fun($msg);
+            }
         }
     }
 }

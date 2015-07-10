@@ -13,20 +13,20 @@ class Help extends Base
     }
 
     static function usage() {
-        return <<<END
-!help: Show list of plugins.
-!help all: Show all commands for every plugin.
-!help [plugin name]: Commands for that plugin.
-END;
+        return array(
+            "!help: Show list of plugins.",
+            "!help all: Show all commands for every plugin.",
+            "!help [plugin name]: Commands for that plugin."
+        );
     }
 
     /**
      * 当命令满足的时候，执行的基础执行函数
      */
     public function run() {
-        echo "执行 Help run";
+        vardump("执行 Help run");
 
-        $helps = Process::gethelp();
+        $helps = Process::get_helps();
 
         $msg = Telegram::singleton()->post('sendMessage', array(
             'chat_id'             => $this->chat_id,
@@ -34,6 +34,6 @@ END;
             'reply_to_message_id' => $this->msg_id,
         ));
 
-        var_dump($msg);
+        vardump("发送信息: msg=%s", $msg);
     }
 }
