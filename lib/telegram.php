@@ -6,8 +6,8 @@
  * Date: 15/7/10
  * Time: 下午5:22
  */
-class Telegram
-{
+class Telegram {
+
     static private $instance = array();
     private $token;
 
@@ -28,7 +28,7 @@ class Telegram
      */
     static public function singleton($token = NULL) {
         if (NULL === $token) {
-            global $config;
+            $config = CommonFunction::get_config();
             if (empty($config) || empty($config['token'])) {
                 throw new Exception('error token');
             }
@@ -75,4 +75,5 @@ class Telegram
 
         return NULL;
     }
+
 }

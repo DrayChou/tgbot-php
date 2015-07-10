@@ -6,8 +6,8 @@
  * Date: 15/7/10
  * Time: 下午3:22
  */
-class Process
-{
+class Process {
+
     static private $instance = array();
 
     /**
@@ -32,7 +32,8 @@ class Process
      * @param $messages
      */
     static function run($messages) {
-        $router = require(BASE_PATH . 'config' . DIRECTORY_SEPARATOR . 'router.php');
+        $config = CommonFunction::get_config();
+        $router = CommonFunction::get_router();
         echo_log('加载路由规则: router=%s', $router);
 
         if (is_string($messages)) {
@@ -44,7 +45,7 @@ class Process
             return;
         }
 
-        $last_update_id = get_update_id();
+        $last_update_id = Redis::get_update_id();
 
         foreach ($messages as $message) {
             //如果是无效的消息的话，跳过
@@ -91,11 +92,17 @@ class Process
             if (isset($msg['text'])) {
                 $plugins = NULL;
                 //抓文字里的关键词，抓到是要请求什么插件
-                $text = $msg['text'];
+                $text    = $msg['text'];
                 foreach ($router as $reg => $class) {
                     if (preg_match($reg, $text, $m)) {
 
                         echo_log('正则匹配结果: $messages=%s', $messages);
+
+                        if ($m[2] == '@') {
+                            if (strtolower($m[3] != strtolower($config['bot_name']))) {
+                                continue;
+                            }
+                        }
 
                         $plugins = self::get_class($m[1]);
                         $plugins->set_msg($msg);
@@ -115,7 +122,7 @@ class Process
         }
 
         //更新 update_ID
-        set_update_id($last_update_id);
+        Redis::set_update_id($last_update_id);
     }
 
     /**
@@ -123,9 +130,8 @@ class Process
      * @return string
      */
     static function get_helps() {
-        $helps = array();
-
-        $router  = require(BASE_PATH . 'config' . DIRECTORY_SEPARATOR . 'router.php');
+        $helps   = array();
+        $router  = CommonFunction::get_router();
         $plugins = array_flip($router);
         foreach ($plugins as $class_name => $tmp) {
             $class = self::get_class($class_name);
@@ -156,7 +162,7 @@ class Process
      * @param $comm
      */
     static function run_with($fun_arr, $msg) {
-        $router  = require(BASE_PATH . 'config' . DIRECTORY_SEPARATOR . 'router.php');
+        $router  = CommonFunction::get_router();
         $plugins = array_flip($router);
         foreach ($plugins as $class_name => $tmp) {
             $class = self::get_class($class_name);
@@ -167,5 +173,5 @@ class Process
             }
         }
     }
-}
 
+}

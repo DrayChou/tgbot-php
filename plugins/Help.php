@@ -9,14 +9,14 @@ class Help extends Base
 {
     static function desc() {
 
-        return "Help plugin. Get info from other plugins.  ";
+        return "/help - Help plugin. Get info from other plugins.  ";
     }
 
     static function usage() {
         return array(
-            "!help: Show list of plugins.",
-            "!help all: Show all commands for every plugin.",
-            "!help [plugin name]: Commands for that plugin."
+            "/help: Show list of plugins.",
+            "/help all: Show all commands for every plugin.",
+            "/help [plugin name]: Commands for that plugin."
         );
     }
 

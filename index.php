@@ -1,16 +1,16 @@
 <?php
+
 /**
  * User: dray
  * Date: 15/7/10
  * Time: 上午11:53
  */
-
 define('BASE_PATH', dirname(__FILE__) . DIRECTORY_SEPARATOR);
 require_once(BASE_PATH . 'lib' . DIRECTORY_SEPARATOR . 'common.php');
 require_once(BASE_PATH . 'lib' . DIRECTORY_SEPARATOR . 'process.php');
 require_once(BASE_PATH . 'lib' . DIRECTORY_SEPARATOR . 'telegram.php');
 
-$config = require(BASE_PATH . 'config' . DIRECTORY_SEPARATOR . 'config.php');
+$config = CommonFunction::get_config();
 echo_log('配置信息: $messages=%s', $config);
 
 $http = new swoole_http_server("127.0.0.1", 9501);
@@ -24,13 +24,13 @@ $http->on('request', function ($request, $response) {
     });
 
     $message = Telegram::singleton()->post('getUpdates', array(
-        'offset' => get_update_id(),
+        'offset' => Redis::get_update_id(),
 //        'limit'  => 10,
     ));
 
     $process->write(json_encode($message));
     $pid = $process->start();
 
-    $response->end("<h1>Hello Swoole. #" . rand(1000, 9999) . "</h1>");
+    $response->end("<h1>Hello Swoole. #" . $pid . "</h1>");
 });
 $http->start();
