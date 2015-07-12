@@ -38,7 +38,7 @@ class Tuling extends Base {
             return;
         }
 
-        $url  = "http://www.tuling123.com/openapi/api";
+        $url  = "http://www.tuling123.com/openapi/api?";
         $data = array(
             'key'    => $tuling_config['key'],
             'info'   => $this->text,
