@@ -13,9 +13,9 @@ $http = new swoole_http_server("127.0.0.1", 9501);
 $http->set(array('worker_num' => 4, 'daemonize' => true));
 
 // 开启定时器
-$timer_id = $http->tick(1000, function ($id, $params) {
+$timer_id = $http->tick(250, function ($id, $params) {
     CommonFunction::echo_log('开启定时器 id=%s parms=%s', $id, $params);
-    
+
     // 回收运行结束的子进程
     $res = swoole_process::wait(true);
     CommonFunction::echo_log('回收子进程 $res=%s', $res);

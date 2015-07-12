@@ -34,7 +34,6 @@ class Process {
     static function run($messages) {
         $config = CommonFunction::get_config();
         $router = CommonFunction::get_router();
-        CommonFunction::echo_log('加载路由规则: router=%s', $router);
 
         if (is_string($messages)) {
             $messages = json_decode($messages, true);
