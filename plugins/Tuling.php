@@ -31,8 +31,11 @@ class Tuling extends Base {
         CommonFunction::echo_log("执行 Bot run");
 
         $tuling_config = CommonFunction::get_config('tuling');
-        if (!empty($tuling_config['key'])) {
-            throw new Exception('error tuling bot key!');
+        if (!isset($tuling_config['key'])) {
+            $err = "post token url={$url} contents=" . print_r($opts, true);
+            CommonFunction::echo_log($err);
+            report_err($err);
+            return;
         }
 
         $url  = "http://www.tuling123.com/openapi/api";
