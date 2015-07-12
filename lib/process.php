@@ -104,7 +104,7 @@ class Process {
                         $text = NULL;
                         if (isset($m[2])) {
                             if ($m[2] == '@') {
-                                if (strtolower($m[3] != strtolower($config['bot_name']))) {
+                                if (strtolower($m[3]) != strtolower($config['bot_name'])) {
                                     continue;
                                 }
 
