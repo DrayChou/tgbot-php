@@ -99,7 +99,7 @@ class Process {
                 foreach ($router as $reg => $class) {
                     if (preg_match($reg, $text, $m)) {
 
-                        CommonFunction::echo_log('正则匹配结果: $messages=%s', $messages);
+                        CommonFunction::echo_log('正则匹配结果: $m=%s', $m);
 
                         $text = NULL;
                         if (isset($m[2])) {
