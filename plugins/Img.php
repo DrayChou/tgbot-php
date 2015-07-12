@@ -39,7 +39,8 @@ class Img extends Base {
         if (!isset($res['responseStatus']) || $res['responseStatus'] != 200) {
             $res_str = $res['responseDetails'];
         } else {
-            $rand_arr = array_rand($res['responseData']['results']);
+            $rand_key = array_rand($res['responseData']['results']);
+            $rand_arr = $res['responseData']['results'][$rand_key];
             $res_str  = $rand_arr['titleNoFormatting'] . ' - ' . ($rand_arr['unescapedUrl'] ? $rand_arr['unescapedUrl'] : $rand_arr['url']) . PHP_EOL;
         }
 
