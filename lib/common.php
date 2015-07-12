@@ -84,14 +84,18 @@ class CommonFunction {
         }
 
         $postdata = http_build_query($data);
-
-        $opts = array(
+        $opts     = array(
             'http' => array(
-                'method'  => $method,
-                'header'  => 'Content-type: application/x-www-form-urlencoded',
-                'content' => $postdata
+                'method' => $method,
+                'header' => 'Content-type: application/x-www-form-urlencoded',
             )
         );
+
+        if ($method == 'GET') {
+            $url = $url . $postdata;
+        } else {
+            $opts['http']['content'] = $postdata;
+        }
 
         CommonFunction::echo_log('CommonFunction: url=%s data=%s', $url, $opts);
 
