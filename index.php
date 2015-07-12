@@ -13,13 +13,20 @@ $config = CommonFunction::get_config();
 CommonFunction::echo_log('配置信息: $messages=%s', $config);
 
 $http = new swoole_http_server("127.0.0.1", 9501);
-$http->on('request', function ($request, $response) {
-    CommonFunction::echo_log('服务器信息: $messages=%s', $request);
-    CommonFunction::echo_log('收到的请求信息: $messages=%s', $response);
+$http->set(array('worker_num' => 4, 'daemonize' => true));
 
+// 开启定时器
+$timer_id = $http->tick(1000, function ($id, $params) {
+    CommonFunction::echo_log('开启定时器 id=%s parms=%s', $id, $params);
+
+    // 开启处理进程
     $process = new swoole_process(function ($process) {
+        //接收数据
         $message = $process->read();
         Process::run($message);
+
+        //退出进程
+        $process->exit();
     });
 
     $message = Telegram::singleton()->post('getUpdates', array(
@@ -27,9 +34,36 @@ $http->on('request', function ($request, $response) {
 //        'limit'  => 10,
     ));
 
+    // 传入数据
     $process->write(json_encode($message));
     $pid = $process->start();
+    CommonFunction::echo_log('开启子进程 id=%s', $pid);
+    
+}, null);
 
-    $response->end("<h1>Hello Swoole. #" . $pid . "</h1>");
+$http->on('request', function ($request, $response) {
+    CommonFunction::echo_log('服务器信息: $messages=%s', $request);
+    CommonFunction::echo_log('收到的请求信息: $messages=%s', $response);
+//
+//    // 开启处理进程
+//    $process = new swoole_process(function ($process) {
+//        //接收数据
+//        $message = $process->read();
+//        Process::run($message);
+//
+//        //退出进程
+//        $process->exit();
+//    });
+//
+//    $message = Telegram::singleton()->post('getUpdates', array(
+//        'offset' => Db::get_update_id(),
+////        'limit'  => 10,
+//    ));
+//
+//    // 传入数据
+//    $process->write(json_encode($message));
+//    $pid = $process->start();
+
+    $response->end("<h1>Hello Swoole. #" . rand(1000, 9999) . "</h1>");
 });
 $http->start();
