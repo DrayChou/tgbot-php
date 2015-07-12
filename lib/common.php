@@ -85,15 +85,20 @@ class CommonFunction {
 
         $postdata = http_build_query($data);
 
-        $opts    = array(
+        $opts = array(
             'http' => array(
                 'method'  => $method,
                 'header'  => 'Content-type: application/x-www-form-urlencoded',
                 'content' => $postdata
             )
         );
+
+        CommonFunction::echo_log('CommonFunction: url=%s data=%s', $url, $opts);
+
         $context = stream_context_create($opts);
         $res     = file_get_contents($url, false, $context);
+
+        CommonFunction::echo_log('CommonFunction: res=%s', $res);
 
         if (empty($res)) {
             throw new Exception("post token url={$url} contents=" . print_r($opts, true));
