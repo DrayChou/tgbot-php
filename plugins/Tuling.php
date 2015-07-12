@@ -34,7 +34,7 @@ class Tuling extends Base {
         if (!isset($tuling_config['key'])) {
             $err = "post token url={$url} contents=" . print_r($opts, true);
             CommonFunction::echo_log($err);
-            report_err($err);
+            CommonFunction::report_err($err);
             return;
         }
 
