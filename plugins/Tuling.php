@@ -42,7 +42,7 @@ class Tuling extends Base {
             'userid' => $this->from_id,
         );
 
-        $res = CommonFunction::post($url, $data);
+        $res = CommonFunction::post($url, $data, 'json', 'GET');
         CommonFunction::echo_log("发送 bot 查询: res=%s", $res);
 
         $res_str = $res['text'];
