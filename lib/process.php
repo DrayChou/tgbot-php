@@ -117,17 +117,13 @@ class Process {
                         $plugins = self::get_class($class);
                         $plugins->set_msg($msg, $text);
 
+                        CommonFunction::echo_log('正则匹配到的插件: $plugins=%s', $plugins);
+                        //执行消息的运行命令
+                        $plugins->run();
+
                         break;
                     }
                 }
-
-                //如果没有抓到要调用的插件，那么忽略掉
-                if (empty($plugins)) {
-                    continue;
-                }
-
-                //执行消息的运行命令
-                $plugins->run();
             }
 
             //更新 update_ID
