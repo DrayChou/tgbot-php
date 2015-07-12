@@ -111,7 +111,7 @@ class Process {
                             }
                         }
 
-                        $plugins = self::get_class($m[1]);
+                        $plugins = self::get_class($class);
                         $plugins->set_msg($msg, $text);
 
                         break;
