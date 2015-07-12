@@ -80,7 +80,10 @@ class CommonFunction {
      */
     static public function post($url, $data, $res_type = 'json', $method = 'POST') {
         if (empty($url)) {
-            throw new Exception('post error url');
+            $err = 'post error url';
+            CommonFunction::echo_log($err);
+            report_err($err);
+            return;
         }
 
         $postdata = http_build_query($data);
@@ -105,7 +108,10 @@ class CommonFunction {
         CommonFunction::echo_log('CommonFunction: res=%s', $res);
 
         if (empty($res)) {
-            throw new Exception("post token url={$url} contents=" . print_r($opts, true));
+            $err = "post token url={$url} contents=" . print_r($opts, true);
+            CommonFunction::echo_log($err);
+            report_err($err);
+            return;
         }
 
         if ($res_type == 'json') {
@@ -113,6 +119,21 @@ class CommonFunction {
         }
 
         return $res;
+    }
+
+    /**
+     * 报告管理员错误
+     * @param type $text
+     */
+    static function report_err($text) {
+        $admins = CommonFunction::get_config('admins');
+        foreach ($admins as $v) {
+            $msg = Telegram::singleton()->post('sendMessage', array(
+                'chat_id' => $v,
+                'text'    => $text,
+            ));
+            break;
+        }
     }
 
 }
