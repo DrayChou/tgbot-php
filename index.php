@@ -18,6 +18,10 @@ $http->set(array('worker_num' => 4, 'daemonize' => true));
 // 开启定时器
 $timer_id = $http->tick(1000, function ($id, $params) {
     CommonFunction::echo_log('开启定时器 id=%s parms=%s', $id, $params);
+    
+    // 回收运行结束的子进程
+    $res = swoole_process::wait(true);
+    CommonFunction::echo_log('回收子进程 $res=%s', $res);
 
     // 开启处理进程
     $process = new swoole_process(function ($process) {
@@ -38,7 +42,6 @@ $timer_id = $http->tick(1000, function ($id, $params) {
     $process->write(json_encode($message));
     $pid = $process->start();
     CommonFunction::echo_log('开启子进程 id=%s', $pid);
-    
 }, null);
 
 $http->on('request', function ($request, $response) {
