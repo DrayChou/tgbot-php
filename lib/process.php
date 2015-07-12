@@ -40,21 +40,24 @@ class Process {
             $messages = json_decode($messages, true);
         }
 
-        CommonFunction::echo_log('得到的消息列表: $messages=%s', $messages);
         if (empty($messages)) {
+            CommonFunction::echo_log('跳出，没有消息');
             return;
         }
 
         $last_update_id = Db::get_update_id();
-
         foreach ($messages as $message) {
+            CommonFunction::echo_log('最后一次处理的消息ID: $last_update_id=%s', $last_update_id);
+
             //如果是无效的消息的话，跳过
             if (!isset($message['message'])) {
+                CommonFunction::echo_log('跳过，无效的消息');
                 continue;
             }
 
             //之前已经处理过的信息，跳过
             if ($message['update_id'] <= $last_update_id) {
+                CommonFunction::echo_log('跳过，已经处理过的消息');
                 continue;
             }
 
