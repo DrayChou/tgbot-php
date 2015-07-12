@@ -34,13 +34,13 @@ class Google extends Base {
         $res = CommonFunction::post($url, $data, 'json', 'GET');
         CommonFunction::echo_log("发送 Google 查询: res=%s", $res);
 
-        if (!isset($res['responseStatus']) || $res['responseStatus'] != 200) {
-            throw new Exception('google error code:' . $res['responseStatus']);
-        }
-
         $res_str = '';
-        foreach ($res['responseData']['results'] as $v) {
-            $res_str = $res_str . $v['titleNoFormatting'] . ' - ' . ($v['unescapedUrl'] ? $v['unescapedUrl'] : $v['url']) . PHP_EOL;
+        if (!isset($res['responseStatus']) || $res['responseStatus'] != 200) {
+            $res_str = $res['responseDetails'];
+        } else {
+            foreach ($res['responseData']['results'] as $v) {
+                $res_str = $res_str . $v['titleNoFormatting'] . ' - ' . ($v['unescapedUrl'] ? $v['unescapedUrl'] : $v['url']) . PHP_EOL;
+            }
         }
 
         //回复消息

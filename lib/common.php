@@ -132,6 +132,8 @@ class CommonFunction {
                 'chat_id' => $v,
                 'text'    => $text,
             ));
+
+            CommonFunction::echo_log("发送信息: msg=%s", $msg);
             break;
         }
     }

@@ -35,14 +35,12 @@ class Img extends Base {
         $res = CommonFunction::post($url, $data, 'json', 'GET');
         CommonFunction::echo_log("发送 Img 查询: res=%s", $res);
 
+        $res_str = '';
         if (!isset($res['responseStatus']) || $res['responseStatus'] != 200) {
-            throw new Exception('google error code:' . $res['responseStatus']);
-        }
-
-        $res_str  = '';
-        $rand_arr = array_rand($res['responseData']['results']);
-        foreach ($rand_arr as $v) {
-            $res_str = $res_str . $v['titleNoFormatting'] . ' - ' . ($v['unescapedUrl'] ? $v['unescapedUrl'] : $v['url']) . PHP_EOL;
+            $res_str = $res['responseDetails'];
+        } else {
+            $rand_arr = array_rand($res['responseData']['results']);
+            $res_str  = $rand_arr['titleNoFormatting'] . ' - ' . ($rand_arr['unescapedUrl'] ? $rand_arr['unescapedUrl'] : $rand_arr['url']) . PHP_EOL;
         }
 
         //回复消息
