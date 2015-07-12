@@ -6,27 +6,27 @@
  * Date: 15/7/10
  * Time: 下午4:23
  */
-class Base
-{
+class Base {
+
     public $msg_id;
     public $chat_id;
-
     public $from_id;
     public $from_name;
-
+    public $text;
     public $parm;
 
     /**
      * @param $msg
      * @throws Exception
      */
-    public function set_msg($msg) {
+    public function set_msg($msg, $text = NULL) {
         if (empty($msg['message_id'])) {
             throw new Exception('error message');
         }
 
         $this->msg_id  = $msg['message_id'];
         $this->chat_id = $msg['chat']['id'];
+        $this->text    = $text;
 
         $this->from_id = $msg['from']['id'];
         if (isset($msg['from']['first_name'])) {
@@ -101,4 +101,5 @@ class Base
     static public function usage() {
         return "插件说明，数组，用在功能调用的说明上。";
     }
+
 }

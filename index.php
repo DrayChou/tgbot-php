@@ -9,9 +9,6 @@ define('BASE_PATH', dirname(__FILE__) . DIRECTORY_SEPARATOR);
 require_once(BASE_PATH . 'lib' . DIRECTORY_SEPARATOR . 'common.php');
 CommonFunction::load_lib();
 
-$config = CommonFunction::get_config();
-CommonFunction::echo_log('配置信息: $messages=%s', $config);
-
 $http = new swoole_http_server("127.0.0.1", 9501);
 $http->set(array('worker_num' => 4, 'daemonize' => true));
 
@@ -47,25 +44,6 @@ $timer_id = $http->tick(1000, function ($id, $params) {
 $http->on('request', function ($request, $response) {
     CommonFunction::echo_log('服务器信息: $messages=%s', $request);
     CommonFunction::echo_log('收到的请求信息: $messages=%s', $response);
-//
-//    // 开启处理进程
-//    $process = new swoole_process(function ($process) {
-//        //接收数据
-//        $message = $process->read();
-//        Process::run($message);
-//
-//        //退出进程
-//        $process->exit();
-//    });
-//
-//    $message = Telegram::singleton()->post('getUpdates', array(
-//        'offset' => Db::get_update_id(),
-////        'limit'  => 10,
-//    ));
-//
-//    // 传入数据
-//    $process->write(json_encode($message));
-//    $pid = $process->start();
 
     $response->end("<h1>Hello Swoole. #" . rand(1000, 9999) . "</h1>");
 });

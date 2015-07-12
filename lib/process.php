@@ -98,14 +98,21 @@ class Process {
 
                         CommonFunction::echo_log('正则匹配结果: $messages=%s', $messages);
 
-                        if (isset($m[2]) && $m[2] == '@') {
-                            if (strtolower($m[3] != strtolower($config['bot_name']))) {
-                                continue;
+                        $text = NULL;
+                        if (isset($m[2])) {
+                            if ($m[2] == '@') {
+                                if (strtolower($m[3] != strtolower($config['bot_name']))) {
+                                    continue;
+                                }
+
+                                $text = $m[4];
+                            } else {
+                                $text = $m[2];
                             }
                         }
 
                         $plugins = self::get_class($m[1]);
-                        $plugins->set_msg($msg);
+                        $plugins->set_msg($msg, $text);
 
                         break;
                     }

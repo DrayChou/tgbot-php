@@ -51,26 +51,11 @@ class Telegram {
      * @throws Exception
      */
     public function post($comm, $data) {
-        $url      = "https://api.telegram.org/bot{$this->token}/{$comm}";
-        $postdata = http_build_query($data);
+        $url = "https://api.telegram.org/bot{$this->token}/{$comm}";
+        $res = CommonFunction::post($url, $data);
 
-        $opts    = array(
-            'http' => array(
-                'method'  => 'POST',
-                'header'  => 'Content-type: application/x-www-form-urlencoded',
-                'content' => $postdata
-            )
-        );
-        $context = stream_context_create($opts);
-        $res     = file_get_contents($url, false, $context);
-
-        if (empty($res)) {
-            throw new Exception("post token url={$url} contents=" . print_r($opts, true));
-        }
-
-        $res_arr = json_decode($res, true);
-        if ($res_arr['ok'] == true) {
-            return $res_arr['result'];
+        if ($res['ok'] == true) {
+            return $res['result'];
         }
 
         return NULL;

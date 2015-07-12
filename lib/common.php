@@ -58,11 +58,52 @@ class CommonFunction {
      * 得到配置信息
      * @return type
      */
-    static public function get_config() {
+    static public function get_config($key = NULL) {
         if (empty(self::$config)) {
             self::$config = require(BASE_PATH . 'config' . DIRECTORY_SEPARATOR . 'config.php');
         }
+
+        if (isset(self::$config[$key])) {
+            return self::$config[$key];
+        }
+
         return self::$config;
+    }
+
+    /**
+     * post 请求到第三方服务器，获取数据
+     * @param type $url
+     * @param type $data
+     * @param type $res_type
+     * @return type
+     * @throws Exception
+     */
+    static public function post($url, $data, $res_type = 'json', $method = 'POST') {
+        if (empty($url)) {
+            throw new Exception('post error url');
+        }
+
+        $postdata = http_build_query($data);
+
+        $opts    = array(
+            'http' => array(
+                'method'  => $method,
+                'header'  => 'Content-type: application/x-www-form-urlencoded',
+                'content' => $postdata
+            )
+        );
+        $context = stream_context_create($opts);
+        $res     = file_get_contents($url, false, $context);
+
+        if (empty($res)) {
+            throw new Exception("post token url={$url} contents=" . print_r($opts, true));
+        }
+
+        if ($res_type == 'json') {
+            $res = json_decode($res, TRUE);
+        }
+
+        return $res;
     }
 
 }
