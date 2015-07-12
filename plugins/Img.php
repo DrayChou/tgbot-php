@@ -39,8 +39,9 @@ class Img extends Base {
             throw new Exception('google error code:' . $res['responseStatus']);
         }
 
-        $res_str = '';
-        foreach ($res['responseData']['results'] as $v) {
+        $res_str  = '';
+        $rand_arr = array_rand($res['responseData']['results']);
+        foreach ($rand_arr as $v) {
             $res_str = $res_str . $v['titleNoFormatting'] . ' - ' . ($v['unescapedUrl'] ? $v['unescapedUrl'] : $v['url']) . PHP_EOL;
         }
 
