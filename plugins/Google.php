@@ -6,7 +6,7 @@
  * Date: 15/7/10
  * Time: 下午3:43
  */
-class Tuling extends Base {
+class Google extends Base {
 
     static function desc() {
 
