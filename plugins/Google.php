@@ -32,7 +32,7 @@ class Google extends Base {
         );
 
         $res = CommonFunction::post($url, $data, 'json', 'GET');
-        CommonFunction::echo_log("发送 bot 查询: res=%s", $res);
+        CommonFunction::echo_log("发送 Google 查询: res=%s", $res);
 
         if (!isset($res['responseStatus']) || $res['responseStatus'] != 200) {
             throw new Exception('google error code:' . $res['responseStatus']);
