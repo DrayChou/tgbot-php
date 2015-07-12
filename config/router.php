@@ -19,7 +19,7 @@ return array(
      */
     '#^/(bot)$#i'               => 'tuling',
     '#^/(bot) (.*)#i'           => 'tuling',
-    '#^/(bot)(@)(.*)$#i'        => 'tuling', 
+    '#^/(bot)(@)(.*)$#i'        => 'tuling',
     '#^/(bot)(@)(.*) (.*)#i'    => 'tuling',
     /**
      * 谷歌搜索的匹配规则
