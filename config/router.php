@@ -54,4 +54,10 @@ return array(
     '#^/(state)(@)(.*) (.*)$#iu'           => 'stats',
     '#^/(state) @(.*)$#iu'                 => 'stats',
     '#^/(state)(@)(.*) @(.*)$#iu'          => 'stats',
+
+    /**
+     * 机器人的输出什么命令
+     */
+    '#^/(echo) (.*)$#iu'                   => 'echo_',
+    '#^/(echo)(@)(.*) (.*)$#iu'            => 'echo_',
 );
