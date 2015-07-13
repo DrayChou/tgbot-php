@@ -55,6 +55,11 @@ Bot Commands
         /state user_id: Returns this user All days stats.<br/>
       </td>
     </tr>
+    <tr>
+      <td>echo</td>
+      <td>Simplest plugin ever!</td>
+      <td>/echo [whatever]: echoes the msg.</td>
+    </tr>
   </tbody>
 </table>
 

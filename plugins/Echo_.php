@@ -9,12 +9,12 @@
 class Echo_ extends Base
 {
     static function desc() {
-        return "/echo - echo something.  ";
+        return "/echo - echoes the msg.  ";
     }
 
     static function usage() {
         return array(
-            "/echo - echo something. ",
+            "/echo [whatever] - echoes the msg.",
         );
     }
 
