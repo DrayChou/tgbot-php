@@ -331,7 +331,7 @@ class Stats extends Base
 
         } else {
 
-            $day_id = date('Y-m-d');
+            $day_id = date('Ymd');
             $limit  = self::DEFAULT_SHOW_LIMIT;
 
             if (!empty($this->regs[1])) {
