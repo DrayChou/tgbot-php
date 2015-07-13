@@ -140,18 +140,24 @@ class Process
                         $text = NULL;
                         $regs = array($m[1]);
                         if (isset($m[2])) {
+                            $min_i = PHP_INT_MAX;
+
                             if ($m[2] == '@') {
                                 if (strtolower($m[3]) != strtolower($bot_info['username'])) {
                                     continue;
                                 }
 
-                                $text   = trim($m[4]);
-                                $regs[] = trim($m[4]);
-                                $min_i  = 5;
+                                if (isset($m[4])) {
+                                    $text   = trim($m[4]);
+                                    $regs[] = trim($m[4]);
+                                    $min_i  = 5;
+                                }
                             } else {
-                                $text   = trim($m[2]);
-                                $regs[] = trim($m[2]);
-                                $min_i  = 3;
+                                if (isset($m[2])) {
+                                    $text   = trim($m[2]);
+                                    $regs[] = trim($m[2]);
+                                    $min_i  = 3;
+                                }
                             }
 
                             if (count($m) > $min_i) {
