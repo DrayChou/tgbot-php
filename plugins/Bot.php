@@ -34,7 +34,10 @@ class Bot extends Base
         //如果是需要回掉的请求
         if (empty($this->text)) {
 
-            $res_str = '亲，你想说什么呢？' . PHP_EOL;
+            $res_str = '';
+            $res_str .= '你想问什么呢？ E.g.:' . PHP_EOL;
+            $res_str .= '今天星期几？' . PHP_EOL;
+            $res_str .= PHP_EOL;
             $res_str .= "你也可以下面的方式更快的进行提问: " . PHP_EOL;
             $res_str .= self::desc();
 

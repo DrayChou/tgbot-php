@@ -156,7 +156,11 @@ class Base
         CFun::echo_log($class . " 设置回掉信息: chat_id=%s from_id=%s", $this->chat_id, $this->from_id);
 
         if (empty($res_str)) {
-            $res_str = "You can also use this format to get results faster: " . PHP_EOL;
+            $res_str = '';
+            $res_str .= 'What are you looking for? E.g.:' . PHP_EOL;
+            $res_str .= 'happy dog' . PHP_EOL;
+            $res_str .= PHP_EOL;
+            $res_str .= "You can also use this format to get results faster: " . PHP_EOL;
             $res_str .= $class::desc();
         }
 
