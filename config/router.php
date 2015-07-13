@@ -44,14 +44,19 @@ return array(
      */
     '#^/(stats)$#iu'                       => 'stats',
     '#^/(stats)(@)(.*)$#iu'                => 'stats',
+
     '#^/(stats) (.*) ([-|\w]+)$#iu'        => 'stats',
     '#^/(stats)(@)(.*) (.*) ([-|\w]+)$#iu' => 'stats',
+
     '#^/(stats) (.*)$#iu'                  => 'stats',
     '#^/(stats)(@)(.*) (.*)$#iu'           => 'stats',
+
     '#^/(state)$#iu'                       => 'stats',
     '#^/(state)(@)(.*)$#iu'                => 'stats',
+
     '#^/(state) (.*)$#iu'                  => 'stats',
     '#^/(state)(@)(.*) (.*)$#iu'           => 'stats',
+
     '#^/(state) @(.*)$#iu'                 => 'stats',
     '#^/(state)(@)(.*) @(.*)$#iu'          => 'stats',
 
@@ -65,7 +70,9 @@ return array(
      * 查询ID
      */
     '#^/(id)$#iu'                          => 'id',
-    '#^/(id)(@)(.*)$#iu'                   => 'id',
-    '#^/(id) (.*)$#iu'                     => 'id',
+    '#^/(id)(@)(.*) @(.*)$#iu'             => 'id',
     '#^/(id)(@)(.*) (.*)$#iu'              => 'id',
+    '#^/(id)(@)(.*)$#iu'                   => 'id',
+    '#^/(id) @(.*)$#iu'                    => 'id',
+    '#^/(id) (.*)$#iu'                     => 'id',
 );
