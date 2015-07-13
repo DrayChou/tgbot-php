@@ -9,6 +9,8 @@
  */
 class Bot extends Base
 {
+    const LIST_SHOW_MAX = 1;
+
     static function desc() {
         return "/bot - 询问图灵小机器人.  ";
     }
@@ -70,28 +72,28 @@ class Bot extends Base
         //如果是新闻
         if ($res['code'] == 302000) {
             foreach ($res['list'] as $k => $v) {
+                if ($k >= self::LIST_SHOW_MAX) {
+                    break;
+                }
+
                 $res_str = $res_str . "\n 标题:" . $v['article'];
                 $res_str = $res_str . "\n 来源:" . $v['source'];
                 $res_str = $res_str . "\n" . $v['detailurl'];
                 $res_str = $res_str . "\n" . $v['icon'];
-
-                if ($k >= 2) {
-                    break;
-                }
             }
         }
 
         //如果是菜谱
         if ($res['code'] == 308000) {
             foreach ($res['list'] as $k => $v) {
+                if ($k >= self::LIST_SHOW_MAX) {
+                    break;
+                }
+
                 $res_str = $res_str . "\n 名称:" . $v['name'];
                 $res_str = $res_str . "\n 详情:" . $v['info'];
                 $res_str = $res_str . "\n" . $v['detailurl'];
                 $res_str = $res_str . "\n" . $v['icon'];
-
-                if ($k >= 2) {
-                    break;
-                }
             }
         }
 
@@ -99,6 +101,10 @@ class Bot extends Base
         //如果是列车
         if ($res['code'] == 305000) {
             foreach ($res['list'] as $k => $v) {
+                if ($k >= self::LIST_SHOW_MAX) {
+                    break;
+                }
+
                 $res_str = $res_str . "\n 车次:" . $v['trainnum'];
                 $res_str = $res_str . "\n 起始站:" . $v['start'];
                 $res_str = $res_str . "\n 到达站:" . $v['terminal'];
@@ -106,16 +112,16 @@ class Bot extends Base
                 $res_str = $res_str . "\n 到达时间:" . $v['endtime'];
                 $res_str = $res_str . "\n" . $v['detailurl'];
                 $res_str = $res_str . "\n" . $v['icon'];
-
-                if ($k >= 2) {
-                    break;
-                }
             }
         }
 
         //如果是航班
         if ($res['code'] == 306000) {
             foreach ($res['list'] as $k => $v) {
+                if ($k >= self::LIST_SHOW_MAX) {
+                    break;
+                }
+
                 $res_str = $res_str . "\n 航班:" . $v['flight'];
                 $res_str = $res_str . "\n 航班路线:" . $v['route'];
                 $res_str = $res_str . "\n 航班状态:" . $v['state'];
@@ -123,10 +129,6 @@ class Bot extends Base
                 $res_str = $res_str . "\n 到达时间:" . $v['endtime'];
                 $res_str = $res_str . "\n" . $v['detailurl'];
                 $res_str = $res_str . "\n" . $v['icon'];
-
-                if ($k >= 2) {
-                    break;
-                }
             }
         }
 
