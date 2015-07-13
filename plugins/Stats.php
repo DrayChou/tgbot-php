@@ -256,8 +256,6 @@ class Stats extends Base
     public function pre_process() {
         CFun::echo_log("统计数据 开始");
 
-        parent::pre_process();
-
         if (empty($this->parm)) {
             CFun::echo_log("统计数据 内容为空，跳过");
 
@@ -279,6 +277,8 @@ class Stats extends Base
             return;
         }
 
+        CFun::echo_log("统计数据 更新数据");
+
         $bot   = Db::get_bot_name();
         $redis = Db::get_redis();
 
@@ -297,6 +297,8 @@ class Stats extends Base
 
         //刷新每天这个群的最大最小发言数
         $this->build_stats_data($this->chat_id, date('Ymd'));
+
+        CFun::echo_log("统计数据 数据更新完毕");
     }
 
     /**
