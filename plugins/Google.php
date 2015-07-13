@@ -6,10 +6,9 @@
  * Date: 15/7/10
  * Time: 下午3:43
  */
-class Google extends Base {
-
+class Google extends Base
+{
     static function desc() {
-
         return "/google - Searches Google and send results.";
     }
 
@@ -21,9 +20,17 @@ class Google extends Base {
 
     /**
      * 当命令满足的时候，执行的基础执行函数
+     * @throws Exception
      */
     public function run() {
-        CommonFunction::echo_log("执行 Google run");
+        CFun::echo_log("Google run 执行");
+
+        //如果是需要回掉的请求
+        if (empty($this->text)) {
+            $this->set_reply();
+
+            return;
+        }
 
         $url  = "http://ajax.googleapis.com/ajax/services/search/web?";
         $data = array(
@@ -31,8 +38,8 @@ class Google extends Base {
             'q' => $this->text,
         );
 
-        $res = CommonFunction::post($url, $data, 'json', 'GET');
-        CommonFunction::echo_log("发送 Google 查询: res=%s", $res);
+        $res = CFun::post($url, $data, 'json', 'GET');
+        CFun::echo_log("发送 Google 查询: res=%s", $res);
 
         $res_str = '';
         if (!isset($res['responseStatus']) || $res['responseStatus'] != 200) {
@@ -50,7 +57,8 @@ class Google extends Base {
             'reply_to_message_id' => $this->msg_id,
         ));
 
-        CommonFunction::echo_log("发送信息: msg=%s", $msg);
-    }
+        CFun::echo_log("发送信息: msg=%s", $msg);
 
+
+    }
 }

@@ -6,7 +6,8 @@
  * Date: 15/7/10
  * Time: 下午3:22
  */
-class Process {
+class Process
+{
 
     static private $instance = array();
 
@@ -28,35 +29,70 @@ class Process {
     }
 
     /**
+     * 调用执行的函数
+     * 如果有消息传进来，那么就用传进来的，没有就自己去抓
+     * @param $message
+     * @throws Exception
+     */
+    static function run($message = NULL) {
+        // 回收运行结束的子进程
+        $res = swoole_process::wait(true);
+        CFun::echo_log('回收子进程 $res=%s', $res);
+
+        if (empty($message)) {
+            // 抓到更新的信息
+            $message = Telegram::singleton()->post('getUpdates', array(
+                'offset' => Db::get_update_id() + 1,
+            ));
+        }
+
+        // 开启处理进程
+        $process = new swoole_process(function ($process) {
+            //接收数据
+            $message = $process->read();
+            self::handler($message);
+
+            //结束进程
+            $process->exit();
+        });
+
+        // 传入数据
+        $process->write(json_encode($message));
+        $pid = $process->start();
+        CFun::echo_log('开启子进程 id=%s', $pid);
+    }
+
+    /**
      * 执行抓取到的命令
      * @param $messages
      */
-    static function run($messages) {
-        $config = CommonFunction::get_config();
-        $router = CommonFunction::get_router();
+    static function handler($messages) {
+        $bot_info = Telegram::singleton()->get_me();
+        $router   = CFun::get_router();
 
         if (is_string($messages)) {
             $messages = json_decode($messages, true);
         }
 
         if (empty($messages)) {
-            CommonFunction::echo_log('跳出，没有消息');
+            CFun::echo_log('跳出，没有消息');
+
             return;
         }
 
         $last_update_id = Db::get_update_id();
         foreach ($messages as $message) {
-            CommonFunction::echo_log('最后一次处理的消息ID: $last_update_id=%s', $last_update_id);
+            CFun::echo_log('最后一次处理的消息ID: $last_update_id=%s', $last_update_id);
 
             //如果是无效的消息的话，跳过
             if (!isset($message['message'])) {
-                CommonFunction::echo_log('跳过，无效的消息');
+                CFun::echo_log('跳过，无效的消息');
                 continue;
             }
 
             //之前已经处理过的信息，跳过
             if ($message['update_id'] <= $last_update_id) {
-                CommonFunction::echo_log('跳过，已经处理过的消息');
+                CFun::echo_log('跳过，已经处理过的消息');
                 continue;
             }
 
@@ -89,34 +125,47 @@ class Process {
             }
 
             //执行需要调用的函数
-            self::run_with($run_fun, $msg);
+            self::loop_with($run_fun, $msg);
 
+            // 运行匹配到的规则
             if (isset($msg['text'])) {
                 $plugins = NULL;
                 //抓文字里的关键词，抓到是要请求什么插件
-                $text    = $msg['text'];
+                $text = $msg['text'];
                 foreach ($router as $reg => $class) {
                     if (preg_match($reg, $text, $m)) {
 
-                        CommonFunction::echo_log('正则匹配结果: $m=%s', $m);
+                        CFun::echo_log('正则匹配结果: $m=%s', $m);
 
                         $text = NULL;
+                        $regs = array($m[1]);
                         if (isset($m[2])) {
                             if ($m[2] == '@') {
-                                if (strtolower($m[3]) != strtolower($config['bot_name'])) {
+                                if (strtolower($m[3]) != strtolower($bot_info['username'])) {
                                     continue;
                                 }
 
-                                $text = $m[4];
+                                $text   = trim($m[4]);
+                                $regs[] = trim($m[4]);
+                                $min_i  = 5;
                             } else {
-                                $text = $m[2];
+                                $text   = trim($m[2]);
+                                $regs[] = trim($m[2]);
+                                $min_i  = 3;
+                            }
+
+                            if (count($m) > $min_i) {
+                                for ($i = $min_i; $i < count($m); $i++) {
+                                    $text .= (' ' . trim($m[$i]));
+                                    $regs[] = trim($m[4]);
+                                }
                             }
                         }
 
                         $plugins = self::get_class($class);
-                        $plugins->set_msg($msg, $text);
+                        $plugins->set_msg($msg, $text, $regs);
 
-                        CommonFunction::echo_log('正则匹配到的插件: $plugins=%s', $plugins);
+                        CFun::echo_log('正则匹配到的插件: $plugins=%s', $plugins);
                         //执行消息的运行命令
                         $plugins->run();
 
@@ -131,43 +180,11 @@ class Process {
     }
 
     /**
-     * 得到说明信息
-     * @return string
-     */
-    static function get_helps() {
-        $helps   = array();
-        $router  = CommonFunction::get_router();
-        $plugins = array_flip($router);
-        foreach ($plugins as $class_name => $tmp) {
-            $class = self::get_class($class_name);
-            $desc  = $class::desc();
-            if (!is_array($desc)) {
-                $desc = array($desc);
-            }
-
-            $helps = array_merge($helps, $desc);
-        }
-
-        return implode(PHP_EOL, $helps);
-    }
-
-    /**
-     * 得到插件的详细使用说明信息
-     * @param $class
-     * @return mixed
-     */
-    static function get_usage($class) {
-        $class = self::get_class($class);
-
-        return $class::usage();
-    }
-
-    /**
      * 执行对应的命令
      * @param $comm
      */
-    static function run_with($fun_arr, $msg) {
-        $router  = CommonFunction::get_router();
+    static function loop_with($fun_arr, $msg) {
+        $router  = CFun::get_router();
         $plugins = array_flip($router);
         foreach ($plugins as $class_name => $tmp) {
             $class = self::get_class($class_name);

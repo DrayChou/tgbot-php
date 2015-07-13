@@ -1,11 +1,14 @@
 <?php
 
 /**
+ * 通用函数库
+ * Common Function Class
  * User: dray
  * Date: 15/7/10
  * Time: 下午6:43
  */
-class CommonFunction {
+class CFun
+{
 
     static private $router = array();
     static private $config = array();
@@ -51,6 +54,7 @@ class CommonFunction {
         if (empty(self::$router)) {
             self::$router = require(BASE_PATH . 'config' . DIRECTORY_SEPARATOR . 'router.php');
         }
+
         return self::$router;
     }
 
@@ -58,13 +62,17 @@ class CommonFunction {
      * 得到配置信息
      * @return type
      */
-    static public function get_config($key = NULL) {
+    static public function get_config($key = NULL, $default_value = NULL) {
         if (empty(self::$config)) {
             self::$config = require(BASE_PATH . 'config' . DIRECTORY_SEPARATOR . 'config.php');
         }
 
-        if (isset(self::$config[$key])) {
-            return self::$config[$key];
+        if ($key) {
+            if (isset(self::$config[$key])) {
+                return self::$config[$key];
+            } else {
+                return $default_value;
+            }
         }
 
         return self::$config;
@@ -81,18 +89,27 @@ class CommonFunction {
     static public function post($url, $data, $res_type = 'json', $method = 'POST') {
         if (empty($url)) {
             $err = 'post error url';
-            CommonFunction::echo_log($err);
-            CommonFunction::report_err($err);
+            CFun::echo_log($err);
+            CFun::report_err($err);
+
             return;
         }
+
+        $before_time = self::microtime_float();
 
         $postdata = http_build_query($data);
         $opts     = array(
             'http' => array(
                 'method' => $method,
                 'header' => 'Content-type: application/x-www-form-urlencoded',
-            )
+            ),
         );
+
+        //检查是否有设置代理
+        $proxy = CFun::get_config('proxy');
+        if ($proxy) {
+            $opts['http']['proxy'] = $proxy;
+        }
 
         if ($method == 'GET') {
             $url = $url . $postdata;
@@ -100,22 +117,23 @@ class CommonFunction {
             $opts['http']['content'] = $postdata;
         }
 
-        CommonFunction::echo_log('CommonFunction: url=%s data=%s', $url, $opts);
+        CFun::echo_log('CommonFunction: url=%s data=%s', $url, $opts);
 
         $context = stream_context_create($opts);
         $res     = file_get_contents($url, false, $context);
 
-        CommonFunction::echo_log('CommonFunction: res=%s', $res);
+        CFun::echo_log('CommonFunction: time=%s res=%s', (self::microtime_float() - $before_time), $res);
 
         if (empty($res)) {
-            $err = "post token url={$url} contents=" . print_r($opts, true);
-            CommonFunction::echo_log($err);
-            CommonFunction::report_err($err);
+            $err = "post token url={$url} contents=" . print_r($opts, true) . ' res=' . print_r($res, true);
+            CFun::echo_log($err);
+            CFun::report_err($err);
+
             return;
         }
 
         if ($res_type == 'json') {
-            $res = json_decode($res, TRUE);
+            $res = json_decode($res, true);
         }
 
         return $res;
@@ -126,16 +144,26 @@ class CommonFunction {
      * @param type $text
      */
     static function report_err($text) {
-        $admins = CommonFunction::get_config('admins');
+        $admins = CFun::get_config('admins');
         foreach ($admins as $v) {
             $msg = Telegram::singleton()->post('sendMessage', array(
                 'chat_id' => $v,
                 'text'    => $text,
             ));
 
-            CommonFunction::echo_log("发送信息: msg=%s", $msg);
+            CFun::echo_log("发送信息: msg=%s", $msg);
             break;
         }
+    }
+
+    /**
+     * 得到时间的毫秒值
+     * @return float
+     */
+    static function microtime_float() {
+        list($usec, $sec) = explode(" ", microtime());
+
+        return ((float)$usec + (float)$sec);
     }
 
 }

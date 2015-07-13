@@ -6,7 +6,8 @@
  * Date: 15/7/10
  * Time: 下午5:22
  */
-class Telegram {
+class Telegram
+{
 
     static private $instance = array();
     private $token;
@@ -28,12 +29,10 @@ class Telegram {
      */
     static public function singleton($token = NULL) {
         if (NULL === $token) {
-            $config = CommonFunction::get_config();
-            if (empty($config) || empty($config['token'])) {
+            $token = CFun::get_config('token');
+            if (empty($token)) {
                 throw new Exception('error token');
             }
-
-            $token = $config['token'];
         }
 
         if (!isset(self::$instance[$token])) {
@@ -41,6 +40,26 @@ class Telegram {
         }
 
         return self::$instance[$token];
+    }
+
+    /**
+     * 得到机器人的信息
+     * @return array
+     */
+    public function get_me() {
+        $token = CFun::get_config('token');
+
+        $redis    = Db::get_redis();
+        $bot_info = $redis->get($token);
+        if (empty($bot_info)) {
+            $bot_info = $this->post('getMe', array());
+
+            $redis->set($token, json_encode($bot_info));
+        } else {
+            $bot_info = json_decode($bot_info, true);
+        }
+
+        return $bot_info;
     }
 
     /**
@@ -52,7 +71,7 @@ class Telegram {
      */
     public function post($comm, $data) {
         $url = "https://api.telegram.org/bot{$this->token}/{$comm}";
-        $res = CommonFunction::post($url, $data);
+        $res = CFun::post($url, $data);
 
         if ($res['ok'] == true) {
             return $res['result'];
