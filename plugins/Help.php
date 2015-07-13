@@ -16,9 +16,6 @@ class Help extends Base
             "/help - Show list of plugins.",
             "/help all - Show all commands for every plugin.",
             "/help [plugin name] -  Commands for that plugin.",
-            '',
-            'GitHub: https://github.com/DrayChou/tgbot-php',
-            'Author: @drayc',
         );
     }
 
@@ -94,6 +91,12 @@ class Help extends Base
 
             $helps = array_merge($helps, $desc);
         }
+
+        $helps = array_merge($helps, array(
+            '',
+            'GitHub: https://github.com/DrayChou/tgbot-php',
+            'Author: @drayc',
+        ));
 
         return implode(PHP_EOL, $helps);
     }
