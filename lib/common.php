@@ -107,7 +107,7 @@ class CFun
 
         //检查是否有设置代理
         $proxy = CFun::get_config('proxy');
-        if ($proxy) {
+        if ($proxy && strstr($url, 'api.telegram.org')) {
             $opts['http']['proxy'] = $proxy;
         }
 
@@ -144,16 +144,16 @@ class CFun
      * @param type $text
      */
     static function report_err($text) {
-        $admins = CFun::get_config('admins');
-        foreach ($admins as $v) {
-            $msg = Telegram::singleton()->post('sendMessage', array(
-                'chat_id' => $v,
-                'text'    => $text,
-            ));
-
-            CFun::echo_log("发送信息: msg=%s", $msg);
-            break;
-        }
+//        $admins = CFun::get_config('admins');
+//        foreach ($admins as $v) {
+//            $msg = Telegram::singleton()->post('sendMessage', array(
+//                'chat_id' => $v,
+//                'text'    => $text,
+//            ));
+//
+//            CFun::echo_log("发送信息: msg=%s", $msg);
+//            break;
+//        }
     }
 
     /**
