@@ -311,8 +311,8 @@ class Stats extends Base
         $redis = Db::get_redis();
 
         //删除离开的用户的数据
-        $redis->hDel($bot . 'users:ids', $this->level_id);
-        $redis->hDel($bot . 'users:usernames', $this->level_username);
+//        $redis->hDel($bot . 'users:ids', $this->level_id);
+//        $redis->hDel($bot . 'users:usernames', $this->level_username);
         $redis->sRemove($bot . 'chat:' . $this->chat_id . ':users', $this->level_id);
         $redis->del($bot . 'msgs:' . $this->level_id . ':' . $this->chat_id);
         $redis->del($bot . 'day_msgs:' . date('Ymd') . $this->level_id . ':' . $this->chat_id);

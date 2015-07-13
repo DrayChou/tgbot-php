@@ -14,6 +14,7 @@ class Id extends Base
     static function usage() {
         return array(
             "/id - echoes my id.",
+            "/id user - echoes user id.",
         );
     }
 
@@ -23,8 +24,17 @@ class Id extends Base
     public function run() {
         CFun::echo_log("执行 Id run");
 
+        $user_id = $this->from_id;
+        if (!empty($this->text)) {
+            $bot   = Db::get_bot_name();
+            $redis = Db::get_redis();
+
+            $chek_user = $this->text;
+            $user_id   = $redis->hGet($bot . 'users:usernames', $chek_user);
+        }
+
         $res_str = '';
-        $res_str .= 'user_id:' . $this->from_id . PHP_EOL;
+        $res_str .= 'user_id:' . $user_id . PHP_EOL;
         $res_str .= 'chat_id:' . $this->chat_id . PHP_EOL;
 
         $msg = Telegram::singleton()->post('sendMessage', array(
