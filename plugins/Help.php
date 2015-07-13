@@ -15,7 +15,10 @@ class Help extends Base
         return array(
             "/help - Show list of plugins.",
             "/help all - Show all commands for every plugin.",
-            "/help [plugin name] -  Commands for that plugin."
+            "/help [plugin name] -  Commands for that plugin.",
+            '',
+            'GitHub: https://github.com/DrayChou/tgbot-php',
+            'Author: @drayc',
         );
     }
 
