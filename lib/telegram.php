@@ -6,6 +6,9 @@
  * Date: 15/7/10
  * Time: 下午5:22
  */
+
+require_once(LIB_PATH . 'common.php');
+
 class Telegram
 {
 
@@ -47,30 +50,35 @@ class Telegram
      * @return array
      */
     public function get_me() {
-        $token = CFun::get_config('token');
+        $url = "https://api.telegram.org/bot{$this->token}/getMe";
+        $res = CFun::post($url, array());
 
-        $redis    = Db::get_redis();
-        $bot_info = $redis->get($token);
-        if (empty($bot_info)) {
-            $bot_info = $this->post('getMe', array());
-
-            $redis->set($token, json_encode($bot_info));
+        if ($res['ok'] == true) {
+            $bot_info = $res['result'];
         } else {
-            $bot_info = json_decode($bot_info, true);
+            return NULL;
+        }
+
+        if (isset($bot_info['first_name'])) {
+            $bot_info['show_name'] = $bot_info['first_name'];
+            if (isset($bot_info['last_name'])) {
+                $bot_info['show_name'] .= ('_' . $bot_info['last_name']);
+            }
+        } else {
+            $bot_info['show_name'] = $bot_info['username'];
         }
 
         return $bot_info;
     }
 
     /**
-     * 发送请求出去
-     * @param $comm
+     * 请求最新消息
      * @param $data
      * @return mixed
      * @throws Exception
      */
-    public function post($comm, $data) {
-        $url = "https://api.telegram.org/bot{$this->token}/{$comm}";
+    public function get_updates($data) {
+        $url = "https://api.telegram.org/bot{$this->token}/getUpdates";
         $res = CFun::post($url, $data);
 
         if ($res['ok'] == true) {
@@ -80,4 +88,20 @@ class Telegram
         return NULL;
     }
 
+    /**
+     * 发送消息
+     * @param $data
+     * @return mixed
+     * @throws Exception
+     */
+    public function send_message($data) {
+        $url = "https://api.telegram.org/bot{$this->token}/sendMessage";
+        $res = CFun::post($url, $data);
+
+        if ($res['ok'] == true) {
+            return $res['result'];
+        }
+
+        return NULL;
+    }
 }

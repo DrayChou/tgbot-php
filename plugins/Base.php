@@ -30,14 +30,14 @@ class Base
     public $level_username;
 
     public $text;//命令后面的内容
-    public $regs;//正则匹配到的内容
-    public $parm;//发送的文本内容
+    public $parms;//正则匹配到的内容
+    public $parm;//收到的文本内容
 
     /**
      * @param $msg
      * @throws Exception
      */
-    public function set_msg($msg, $text = NULL, $regs = NULL) {
+    public function set_msg($msg, $text = NULL, $parms = NULL) {
         if (empty($msg['message_id'])) {
             throw new Exception('error message');
         }
@@ -45,7 +45,7 @@ class Base
         $this->msg    = $msg;
         $this->msg_id = $msg['message_id'];
         $this->text   = $text;
-        $this->regs   = $regs;
+        $this->parms  = $parms;
 
         $this->from_id       = $msg['from']['id'];
         $this->from_username = $msg['from']['username'];
@@ -86,20 +86,6 @@ class Base
      */
     public function msg_left_chat() {
         CFun::echo_log("有人离开群");
-    }
-
-    /**
-     * 有人发照片的时候
-     */
-    public function msg_photo() {
-        CFun::echo_log("有人发照片");
-    }
-
-    /**
-     * 有人转发消息的时候
-     */
-    public function msg_forward() {
-        CFun::echo_log("有人转发消息");
     }
 
     /**
@@ -165,7 +151,7 @@ class Base
         }
 
         //回复消息
-        $msg = Telegram::singleton()->post('sendMessage', array(
+        $msg = Telegram::singleton()->send_message(array(
             'chat_id'             => $this->chat_id,
             'text'                => $res_str,
             'reply_to_message_id' => $this->msg_id,

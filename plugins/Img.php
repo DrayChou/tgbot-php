@@ -48,11 +48,11 @@ class Img extends Base
         } else {
             $rand_key = array_rand($res['responseData']['results']);
             $rand_arr = $res['responseData']['results'][$rand_key];
-            $res_str  = $rand_arr['titleNoFormatting'] . ' - ' . ($rand_arr['unescapedUrl'] ? $rand_arr['unescapedUrl'] : $rand_arr['url']) . PHP_EOL;
+            $res_str  = ($rand_arr['unescapedUrl'] ? $rand_arr['unescapedUrl'] : $rand_arr['url']) . PHP_EOL;
         }
 
         //回复消息
-        $msg = Telegram::singleton()->post('sendMessage', array(
+        $msg = Telegram::singleton()->send_message(array(
             'chat_id'             => $this->chat_id,
             'text'                => $res_str,
             'reply_to_message_id' => $this->msg_id,

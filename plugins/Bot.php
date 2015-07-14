@@ -136,7 +136,7 @@ class Bot extends Base
         }
 
         //回复消息
-        $msg = Telegram::singleton()->post('sendMessage', array(
+        $msg = Telegram::singleton()->send_message(array(
             'chat_id'             => $this->chat_id,
             'text'                => $res_str,
             'reply_to_message_id' => $this->msg_id,

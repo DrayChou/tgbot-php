@@ -26,9 +26,10 @@ class Help extends Base
      * @return string
      */
     private function get_helps($text = NULL) {
-        $helps   = array();
-        $router  = CFun::get_router();
-        $plugins = array_flip($router);
+        $helps    = array();
+        $router   = Db::get_router();
+        $plugins  = array_flip($router);
+        $bot_info = Telegram::singleton()->get_me();
 
         $one = false;
         foreach ($plugins as $class_name => $tmp) {
@@ -61,11 +62,18 @@ class Help extends Base
         }
 
         if (false == $one) {
-            $helps = array_merge($helps, array(
-                '',
-                'GitHub: https://github.com/DrayChou/tgbot-php',
-                'Author: @drayc',
-            ));
+            $helps = array_merge(
+                array(
+                    'Welcome to use ' . $bot_info['show_name'],
+                    '',
+                ),
+                $helps,
+                array(
+                    '',
+                    'GitHub: https://github.com/DrayChou/tgbot-php',
+                    'Author: @drayc',
+                )
+            );
         }
 
         return implode(PHP_EOL, $helps);
@@ -77,14 +85,25 @@ class Help extends Base
     public function run() {
         CFun::echo_log("执行 Help run");
 
-        $helps = $this->get_helps($this->text);
+        $res_str = $this->get_helps($this->text);
+        if (empty($this->text) || strtolower($this->text) == 'all') {
+            //发送给个人
+            $msg = Telegram::singleton()->send_message(array(
+                'chat_id' => $this->from_id,
+                'text'    => $res_str,
+            ));
+            CFun::echo_log("发送信息: msg=%s", $msg);
 
-        $msg = Telegram::singleton()->post('sendMessage', array(
+            //帮助信息太长的话，就私信给个人
+            $res_str = 'I send you a message about it.';
+        }
+
+        //发送到群组里
+        $msg = Telegram::singleton()->send_message(array(
             'chat_id'             => $this->chat_id,
-            'text'                => $helps,
+            'text'                => $res_str,
             'reply_to_message_id' => $this->msg_id,
         ));
-
         CFun::echo_log("发送信息: msg=%s", $msg);
     }
 }

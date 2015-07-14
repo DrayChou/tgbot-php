@@ -5,9 +5,12 @@
  * Date: 15/7/10
  * Time: 上午11:53
  */
+
+ini_set('memory_limit', '32M');
+
 define('BASE_PATH', dirname(__FILE__) . DIRECTORY_SEPARATOR);
-require_once(BASE_PATH . 'lib' . DIRECTORY_SEPARATOR . 'common.php');
-CFun::load_lib();
+define('LIB_PATH', BASE_PATH . 'lib' . DIRECTORY_SEPARATOR);
+require_once(LIB_PATH . 'process.php');
 
 //设置时区
 date_default_timezone_set(CFun::get_config('timezone', 'Asia/Shanghai'));

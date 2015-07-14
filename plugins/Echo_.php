@@ -28,7 +28,7 @@ class Echo_ extends Base
             return;
         }
 
-        $msg = Telegram::singleton()->post('sendMessage', array(
+        $msg = Telegram::singleton()->send_message(array(
             'chat_id'             => $this->chat_id,
             'text'                => $this->text,
             'reply_to_message_id' => $this->msg_id,

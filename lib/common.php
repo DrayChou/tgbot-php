@@ -38,15 +38,6 @@ class CFun
     }
 
     /**
-     * 加载类库
-     */
-    static public function load_lib() {
-        require_once(BASE_PATH . 'lib' . DIRECTORY_SEPARATOR . 'db.php');
-        require_once(BASE_PATH . 'lib' . DIRECTORY_SEPARATOR . 'process.php');
-        require_once(BASE_PATH . 'lib' . DIRECTORY_SEPARATOR . 'telegram.php');
-    }
-
-    /**
      * 得到路由配置表
      * @return type
      */
@@ -106,8 +97,14 @@ class CFun
         );
 
         //检查是否有设置代理
-        $proxy = CFun::get_config('proxy');
-        if ($proxy && strstr($url, 'api.telegram.org')) {
+        $proxy = self::get_config('proxy');
+        if (
+            $proxy &&
+            (
+                strstr($url, 'api.telegram.org') ||
+                strstr($url, 'google')
+            )
+        ) {
             $opts['http']['proxy'] = $proxy;
         }
 
@@ -129,7 +126,7 @@ class CFun
             CFun::echo_log($err);
             CFun::report_err($err);
 
-            return;
+            return NULL;
         }
 
         if ($res_type == 'json') {
@@ -146,7 +143,7 @@ class CFun
     static function report_err($text) {
 //        $admins = CFun::get_config('admins');
 //        foreach ($admins as $v) {
-//            $msg = Telegram::singleton()->post('sendMessage', array(
+//            $msg = Telegram::singleton()->sendMessage(array(
 //                'chat_id' => $v,
 //                'text'    => $text,
 //            ));

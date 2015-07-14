@@ -4,8 +4,12 @@
  * redis 操作类库
  * Class Db
  */
+
+require_once(LIB_PATH . 'telegram.php');
+
 class Db
 {
+    const MAIN_KEY = 'tgbot-php';
 
     /**
      * 得到 redis 对象
@@ -29,13 +33,43 @@ class Db
     }
 
     /**
+     * 缓存得到机器人自己的信息
+     * @return array|bool|mixed|null|string
+     * @throws Exception
+     */
+    static function get_bot_info() {
+        $token = CFun::get_config('token');
+        if (empty($token)) {
+            $err = 'error token';
+            CFun::echo_log($err);
+            CFun::report_err($err);
+
+            return NULL;
+        }
+
+        $key   = self::MAIN_KEY . ':' . (string)$token;
+        $redis = self::get_redis();
+
+        $bot_info = $redis->get($key);
+        if (empty($bot_info)) {
+            $bot_info = Telegram::singleton()->get_me();
+
+            $redis->set($key, json_encode($bot_info));
+        } else {
+            $bot_info = json_decode($bot_info, true);
+        }
+
+        return $bot_info;
+    }
+
+    /**
      * 得到机器人的名字
      * @return string
      */
     static function get_bot_name() {
-        $bot_info = Telegram::singleton()->get_me();
+        $bot_info = self::get_bot_info();
 
-        return strtolower($bot_info['username']) . ':';
+        return self::MAIN_KEY . ':' . strtolower($bot_info['username']) . ':';
     }
 
     /**
@@ -65,6 +99,38 @@ class Db
         $redis = self::get_redis();
 
         return (int)$redis->set($key, $id);
+    }
+
+    /**
+     * 缓存替换好的路由规则
+     * @return bool|mixed|string
+     * @throws Exception
+     */
+    static function get_router() {
+        $key    = self::get_bot_name() . 'config:router';
+        $redis  = self::get_redis();
+        $router = $redis->get($key);
+        if (empty($router)) {
+            $tmp      = CFun::get_router();
+            $bot_info = Telegram::singleton()->get_me();
+
+            foreach ($tmp as $reg => $class) {
+                //替换规则文件
+                $reg = str_ireplace(array(
+                    '%%bot_name%%',
+                ), array(
+                    $bot_info['username'],
+                ), $reg);
+
+                $router[$reg] = $class;
+            }
+
+            $redis->setex($key, 3600, json_encode($router));
+        } else {
+            $router = json_decode($router, true);
+        }
+
+        return $router;
     }
 
     /**

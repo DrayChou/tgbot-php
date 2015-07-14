@@ -322,11 +322,11 @@ class Stats extends Base
      * 当命令满足的时候，执行的基础执行函数
      */
     public function run() {
-        CFun::echo_log("执行 Stats run text=%s", $this->regs);
+        CFun::echo_log("执行 Stats run text=%s", $this->parms);
 
-        if ($this->regs[0] == 'state') {
+        if ($this->parms[0] == 'state') {
 
-            $user_id = empty($this->regs[1]) ? $this->from_id : $this->regs[1];
+            $user_id = empty($this->parms[1]) ? $this->from_id : $this->parms[1];
             $res_str = $this->get_user_stats($this->chat_id, $user_id);
 
         } else {
@@ -334,12 +334,12 @@ class Stats extends Base
             $day_id = date('Ymd');
             $limit  = self::DEFAULT_SHOW_LIMIT;
 
-            if (!empty($this->regs[1])) {
-                $day_id = $this->regs[1];
+            if (!empty($this->parms[1])) {
+                $day_id = $this->parms[1];
             }
 
-            if (!empty($this->regs[2])) {
-                $limit = $this->regs[2];
+            if (!empty($this->parms[2])) {
+                $limit = $this->parms[2];
             } else {
                 if (in_array($day_id, array('all', '*'))) {
                     $limit = $limit / 2;
@@ -350,7 +350,7 @@ class Stats extends Base
 
         }
 
-        $msg = Telegram::singleton()->post('sendMessage', array(
+        $msg = Telegram::singleton()->send_message(array(
             'chat_id'             => $this->chat_id,
             'text'                => $res_str,
             'reply_to_message_id' => $this->msg_id,
