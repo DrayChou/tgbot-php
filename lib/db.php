@@ -9,8 +9,6 @@ require_once(LIB_PATH . 'telegram.php');
 
 class Db
 {
-    const MAIN_KEY = 'tgbot-php';
-
     /**
      * 得到 redis 对象
      * @return Redis
@@ -47,7 +45,7 @@ class Db
             return NULL;
         }
 
-        $key   = self::MAIN_KEY . ':' . (string)$token;
+        $key   = BOT . ':' . (string)$token;
         $redis = self::get_redis();
 
         $bot_info = $redis->get($key);
@@ -69,7 +67,7 @@ class Db
     static function get_bot_name() {
         $bot_info = self::get_bot_info();
 
-        return self::MAIN_KEY . ':' . strtolower($bot_info['username']) . ':';
+        return BOT . ':' . strtolower($bot_info['username']) . ':';
     }
 
     /**

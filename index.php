@@ -8,6 +8,7 @@
 
 ini_set('memory_limit', '32M');
 
+define('BOT', 'tgbot-php');
 define('BASE_PATH', dirname(__FILE__) . DIRECTORY_SEPARATOR);
 define('LIB_PATH', BASE_PATH . 'lib' . DIRECTORY_SEPARATOR);
 require_once(LIB_PATH . 'process.php');

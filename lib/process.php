@@ -43,9 +43,16 @@ class Process
         CFun::echo_log('回收子进程 $res=%s', $res);
 
         if (empty($messages)) {
+            $limit          = 100;
+            $last_update_id = Db::get_update_id();
+            if ($last_update_id == 0) {
+                $limit = 1;
+            }
+
             // 抓到更新的信息
             $messages = Telegram::singleton()->get_updates(array(
-                'offset' => Db::get_update_id() + 1,
+                'offset' => $last_update_id + 1,
+                'limit'  => $limit,
             ));
         }
 
