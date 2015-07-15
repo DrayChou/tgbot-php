@@ -108,6 +108,9 @@ class Process
         $msg            = $message['message'];
         $last_update_id = $message['update_id'];
 
+        //更新 update_ID
+        Db::set_update_id($last_update_id);
+
         //不管什么情况每次都要执行一次的函数
         $run_fun = array(
             'pre_process',
@@ -153,9 +156,6 @@ class Process
                 }
             }
         }
-
-        //更新 update_ID
-        Db::set_update_id($last_update_id);
     }
 
     /**
