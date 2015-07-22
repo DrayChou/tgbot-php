@@ -55,14 +55,14 @@ class Bot extends Base
             return;
         }
 
-        $url  = "http://www.tuling123.com/openapi/api?";
+
         $data = array(
             'key'    => $tuling_config['key'],
             'userid' => $this->from_id,
             'info'   => $this->text,
         );
-
-        $res = CFun::post($url, $data, 'json', 'GET');
+        $url  = "http://www.tuling123.com/openapi/api?" . http_build_query($data);
+        $res  = CFun::curl($url);
         CFun::echo_log("发送 Bot 查询: res=%s", $res);
 
         $res_str = $res['text'];

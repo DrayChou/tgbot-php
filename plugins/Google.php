@@ -32,13 +32,12 @@ class Google extends Base
             return;
         }
 
-        $url  = "http://ajax.googleapis.com/ajax/services/search/web?";
         $data = array(
             'v' => '1.0',
             'q' => $this->text,
         );
-
-        $res = CFun::post($url, $data, 'json', 'GET');
+        $url  = "http://ajax.googleapis.com/ajax/services/search/web?" . http_build_query($data);
+        $res  = CFun::curl($url);
         CFun::echo_log("发送 Google 查询: res=%s", $res);
 
         $res_str = '';

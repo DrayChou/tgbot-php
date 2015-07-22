@@ -136,6 +136,59 @@ class CFun
         return $res;
     }
 
+    static function curl($url, $post = NULL) {
+        if (empty($url)) {
+            $err = 'post error url';
+            CFun::echo_log($err);
+            CFun::report_err($err);
+
+            return;
+        }
+
+        $before_time = self::microtime_float();
+
+        try {
+
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_URL, $url);
+            curl_setopt($curl, CURLOPT_HEADER, 0);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($curl, CURLOPT_TIMEOUT, 5);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+
+            if (!is_null($post)) {
+                curl_setopt($curl, CURLOPT_POST, 1);
+                curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($post));
+            }
+
+            curl_setopt($curl, CURLOPT_TIMEOUT, 10);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+            $res  = curl_exec($curl);
+            $info = curl_getinfo($curl);
+            curl_close($curl);
+
+            CFun::echo_log('CommonFunction: time=%s res=%s', (self::microtime_float() - $before_time), $res);
+
+            if ($res === false || $info['http_code'] != 200) {
+                $err = "post token url={$url} contents=" . print_r($post, true) . ' res=' . print_r($res, true) . ' info=' . print_r($info, true);
+                CFun::echo_log($err);
+                CFun::report_err($err);
+
+                return NULL;
+            }
+
+        } catch (Exception $exc) {
+            $err = "post token url={$url} contents=" . print_r($post, true) . ' res=' . print_r($res, true);
+            CFun::echo_log($err);
+            CFun::report_err($err);
+        }
+
+        $res = json_decode($res, true);
+
+        return $res;
+    }
+
     /**
      * 报告管理员错误
      * @param type $text

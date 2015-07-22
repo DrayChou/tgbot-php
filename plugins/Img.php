@@ -31,15 +31,14 @@ class Img extends Base
             return;
         }
 
-        $url  = "http://ajax.googleapis.com/ajax/services/search/images?";
         $data = array(
             'v'     => '1.0',
             'rsz'   => 5,
             'imgsz' => 'small|medium|large',
             'q'     => $this->text,
         );
-
-        $res = CFun::post($url, $data, 'json', 'GET');
+        $url  = "http://ajax.googleapis.com/ajax/services/search/images?" . http_build_query($data);
+        $res  = CFun::curl($url);
         CFun::echo_log("发送 Img 查询: res=%s", $res);
 
         $res_str = '';

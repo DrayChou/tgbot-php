@@ -51,7 +51,7 @@ class Telegram
      */
     public function get_me() {
         $url = "https://api.telegram.org/bot{$this->token}/getMe";
-        $res = CFun::post($url, array());
+        $res = CFun::curl($url, array());
 
         if ($res['ok'] == true) {
             $bot_info = $res['result'];
@@ -79,7 +79,7 @@ class Telegram
      */
     public function get_updates($data) {
         $url = "https://api.telegram.org/bot{$this->token}/getUpdates";
-        $res = CFun::post($url, $data);
+        $res = CFun::curl($url, $data);
 
         if ($res['ok'] == true) {
             return $res['result'];
@@ -96,7 +96,7 @@ class Telegram
      */
     public function send_message($data) {
         $url = "https://api.telegram.org/bot{$this->token}/sendMessage";
-        $res = CFun::post($url, $data);
+        $res = CFun::curl($url, $data);
 
         if ($res['ok'] == true) {
             return $res['result'];
