@@ -21,28 +21,28 @@ require_once(LIB_PATH . 'process.php');
 //设置时区
 date_default_timezone_set(CFun::get_config('timezone', 'Asia/Shanghai'));
 
-if (empty($_REQUEST)) {
-    phpinfo();
+if (empty($_POST)) {
+    echo 'test' . PHP_EOL;
 } else {
 
     //发调试信息
     $admins = CFun::get_config('admins');
     Telegram::singleton()->send_message(array(
-        'chat_id' => $admins[0],
-        'text'    => json_encode($_REQUEST),
+        'chat_id' => -25936895,
+        'text'    => json_encode($_POST),
     ));
 
     //死循环查询
-    do {
-        CFun::G('run_start');
+//    do {
+    CFun::G('run_start');
 
-        Process::run();
+    Process::run($_POST['message']);
 
-        CFun::G('run_end');
-        $use_time = CFun::G('run_start', 'run_end');
-        $use_mem  = CFun::G('run_start', 'run_end', 'm');
-        echo '耗时：' . $use_time . ' 耗内存：' . $use_mem . PHP_EOL . ' 当前占内存：' . CFun::convert_memory_size(memory_get_usage()) . PHP_EOL;
+    CFun::G('run_end');
+    $use_time = CFun::G('run_start', 'run_end');
+    $use_mem  = CFun::G('run_start', 'run_end', 'm');
+    echo '耗时：' . $use_time . ' 耗内存：' . $use_mem . PHP_EOL . ' 当前占内存：' . CFun::convert_memory_size(memory_get_usage()) . PHP_EOL;
 
-        usleep(INTERVAL);// 等待
-    } while (true);
+//        usleep(INTERVAL);// 等待
+//    } while (true);
 }
