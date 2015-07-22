@@ -54,9 +54,15 @@ class Process
             ));
         }
 
-        foreach ($messages as $message) {
+        if (empty($messages) || !is_array($messages)) {
+            CFun::echo_log('无效的消息列表: $messages=%s', print_r($messages, true));
+
+            return;
+        }
+
+        foreach ($messages as $msg) {
             // 处理消息
-            self::handler($message);
+            self::handler($msg);
         }
     }
 

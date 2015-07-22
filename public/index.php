@@ -36,7 +36,9 @@ if (empty($_POST)) {
 //    do {
     CFun::G('run_start');
 
-    Process::run($_POST['message']);
+    if (isset($_POST['message'])) {
+        Process::run($_POST['message']);
+    }
 
     CFun::G('run_end');
     $use_time = CFun::G('run_start', 'run_end');
