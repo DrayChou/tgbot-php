@@ -38,9 +38,7 @@ class Process
      * @throws Exception
      */
     static function run($messages = NULL) {
-        // 回收运行结束的子进程
-        $res = swoole_process::wait(true);
-        CFun::echo_log('回收子进程 $res=%s', $res);
+        CFun::echo_log('处理消息列表: $messages=%s', print_r($messages, true));
 
         if (empty($messages)) {
             $limit          = 100;
@@ -57,21 +55,8 @@ class Process
         }
 
         foreach ($messages as $message) {
-
-            // 开启处理进程
-            $process = new swoole_process(function ($process) {
-                //接收数据
-                $message = $process->read();
-                self::handler($message);
-
-                //结束进程
-                $process->exit();
-            });
-
-            // 传入数据
-            $process->write(json_encode($message));
-            $pid = $process->start();
-            CFun::echo_log('开启子进程 id=%s', $pid);
+            // 处理消息
+            self::handler($message);
         }
     }
 
@@ -111,6 +96,11 @@ class Process
         //更新 update_ID
         Db::set_update_id($last_update_id);
 
+        //保存解析到的数据
+        $text    = NULL;
+        $parms   = NULL;
+        $plugins = NULL;
+
         //不管什么情况每次都要执行一次的函数
         $run_fun = array(
             'pre_process',
@@ -126,17 +116,16 @@ class Process
             $run_fun[] = 'msg_left_chat';
         }
 
-        //执行需要调用的函数
-        self::loop_with($run_fun, $msg);
-
-        // 有说话的话
+        // 解析话语，抓到需要调用的机器人
         if (isset($msg['text'])) {
             //抓文字里的关键词，抓到是要请求什么插件
             foreach ($router as $reg => $class) {
                 $is_match = preg_match($reg, $msg['text'], $m);
-                CFun::echo_log('正则匹配结果: $reg=%s $text=%s $m=%s', $reg, $msg['text'], $m);
 
                 if ($is_match) {
+                    CFun::echo_log('正则匹配结果: $reg=%s $text=%s $m=%s', $reg, $msg['text'], $m);
+                    CFun::echo_log('正则匹配到的插件: $class=%s', $class);
+
                     $text  = trim($m[3]);
                     $parms = array($m[1]);
 
@@ -145,16 +134,20 @@ class Process
 
                     $parms = array_merge($parms, $tmp);
 
+                    //加载消息类
                     $plugins = self::get_class($class);
-                    $plugins->set_msg($msg, $text, $parms);
-
-                    CFun::echo_log('正则匹配到的插件: $plugins=%s', $plugins);
-
-                    //执行消息的运行命令
-                    $plugins->run();
                     break;
                 }
             }
+        }
+
+        //执行需要调用的函数
+        self::loop_with($run_fun, $msg, $text, $parms);
+
+        //执行消息的运行命令
+        if (!empty($plugins)) {
+            $plugins->set_msg($msg, $text, $parms);
+            $plugins->run();
         }
     }
 
@@ -162,12 +155,12 @@ class Process
      * 执行对应的命令
      * @param $comm
      */
-    static function loop_with($fun_arr, $msg) {
+    static function loop_with($fun_arr, $msg, $text = NULL, $parms = NULL) {
         $router  = CFun::get_router();
         $plugins = array_flip($router);
         foreach ($plugins as $class_name => $tmp) {
             $class = self::get_class($class_name);
-            $class->set_msg($msg);
+            $class->set_msg($msg, $text, $parms);
 
             foreach ($fun_arr as $fun) {
                 $class->$fun();

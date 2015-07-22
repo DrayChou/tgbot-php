@@ -96,13 +96,14 @@ class Base
 
         $key  = 'need_reply:' . $class . ':' . $this->chat_id . ':' . $this->from_id;
         $text = Db::get($key);
-        if (empty($text)) {
+        if (empty($text) || isset($this->parms[0])) {
             CFun::echo_log($class . " pre_process 没有需要处理的 跳过");
 
             return;
         }
 
-        CFun::echo_log($class . " pre_process 抓到需要处理的回复 text=%s", $this->parm);
+        CFun::echo_log($class . " pre_process 抓到需要处理的回复 parm=%s", $this->parm);
+
         Db::set($key, NULL, -1);
 
         $this->text = $this->parm;
