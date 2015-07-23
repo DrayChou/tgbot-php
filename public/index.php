@@ -43,6 +43,6 @@ if(isset($_GET['token'])){
     $log = '耗时：' . $use_time . ' 耗内存：' . $use_mem . PHP_EOL . ' 当前占内存：' . CFun::convert_memory_size(memory_get_usage()) . PHP_EOL;
 
     CFun::echo_log($log);
-}else(){
+}else{
     echo 'test' . PHP_EOL;
 }
