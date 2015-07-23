@@ -7,7 +7,7 @@
  * Date: 15/7/10
  * Time: 下午3:43
  */
-class Bot extends Base
+class Tuling123 extends Base
 {
     const LIST_SHOW_MAX = 1;
 

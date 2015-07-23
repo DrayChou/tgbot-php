@@ -10,10 +10,6 @@ return array(
     //帮助脚本的匹配规则
     '#^/(help)(@%%bot_name%%| |)(.*)$#iu'      => 'help',
 
-    //图灵机器人的匹配规则
-    '#^/(tuling)(@%%bot_name%%| |)(.*)$#iu'    => 'bot',
-    '#^/(bot)(@%%bot_name%%| |)(.*)$#iu'       => 'bot',
-
     //谷歌搜索的匹配规则
     '#^/(google)(@%%bot_name%%| |)(.*)$#iu'    => 'google',
 
@@ -30,6 +26,12 @@ return array(
     //查询ID
     '#^/(id)(@%%bot_name%%| |)(.*)$#iu'        => 'id',
 
+    //图灵机器人的匹配规则
+    '#^/(tuling123)(@%%bot_name%%| |)(.*)$#iu' => 'tuling123',
+
     //cleverbot 的聊天机器人的匹配规则
-    '#^/(cleverbot)(@%%bot_name%%| |)(.*)$#iu' => 'Cleverbot',
+    '#^/(cleverbot)(@%%bot_name%%| |)(.*)$#iu' => 'cleverbot',
+
+    //机器人
+    '#^/(bot)(@%%bot_name%%| |)(.*)$#iu'       => 'cleverbot',
 );
