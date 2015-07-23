@@ -86,7 +86,7 @@ class CFun
      * @return type
      */
     static public function set_config($key, $value){
-        self::$config[$key] = $$value;
+        self::$config[$key] = $value;
     }
 
     /**
