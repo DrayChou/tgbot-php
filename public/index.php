@@ -23,9 +23,9 @@ if(isset($_GET['token'])){
 
     CFun::G('run_start');
 
-    if (isset($_POST['message'])) {
-        Process::run($_POST['message']);
-    }
+    //接收数据，并处理
+    $input = file_get_contents('php://input');
+    Process::run(array($input));
 
     CFun::G('run_end');
     $use_time = CFun::G('run_start', 'run_end');
@@ -36,12 +36,7 @@ if(isset($_GET['token'])){
     $admins = CFun::get_config('admins');
     Telegram::singleton()->send_message(array(
         'chat_id' => -25936895,
-        'text'    => json_encode(array(
-            '$_GET' => $_GET,
-            '$_POST' => $_POST,
-            'input' => file_get_contents('php://input'),
-            'log' => $log,
-        )),
+        'text'    => $log . json_encode($input),
     ));
 }else{
     echo 'test' . PHP_EOL;
