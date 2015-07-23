@@ -21,8 +21,7 @@ CFun::echo_log($_POST);
 
 //如果有 token 带过来，那么调用对应的机器人
 if(isset($_GET['token'])){
-    $token = $_GET['token'];
-    CFun::set_config('token', $token);
+    CFun::set_config('token', $_GET['token']);
 
     //发调试信息
     $admins = CFun::get_config('admins');

@@ -35,6 +35,9 @@ class CFun
         }
 
         //echo $last_message . PHP_EOL;
+        if(!is_string($last_message)){
+            $last_message = print_r($last_message, true);
+        }
         error_log($last_message, 0);
     }
 
