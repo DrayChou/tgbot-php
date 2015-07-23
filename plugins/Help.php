@@ -72,12 +72,13 @@ class Help extends Base
         }
 
         if (false == $one) {
+            $tmp   = array_keys(array_filter($helps));
             $helps = array_merge(
                 array(
                     'Welcome to use ' . $bot_info['show_name'],
                     '',
                 ),
-                array_flip(array_filter($helps)),
+                $tmp,
                 array(
                     '',
                     'GitHub: https://github.com/DrayChou/tgbot-php',
