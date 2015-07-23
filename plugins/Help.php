@@ -77,7 +77,7 @@ class Help extends Base
                     'Welcome to use ' . $bot_info['show_name'],
                     '',
                 ),
-                array_flip(array_flip($helps)),
+                array_keys(array_flip($helps)),
                 array(
                     '',
                     'GitHub: https://github.com/DrayChou/tgbot-php',
