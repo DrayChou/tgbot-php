@@ -28,23 +28,23 @@ class Help extends Base
     private function get_helps($text = NULL) {
         $helps    = array();
         $router   = Db::get_router();
-        $plugins  = array_flip($router);
         $bot_info = Db::get_bot_info();
 
+        //抓文字里的关键词，抓到是要请求什么插件
         $one = false;
-        foreach ($plugins as $class_name => $tmp) {
-            $class = Process::get_class($class_name);
+        foreach ($router as $reg => $class) {
+            if ($text) {
+                // 如果是单个拿取的话，直接跳出
+                if (strtolower($class) == strtolower($text) || preg_match($reg, $text)) {
+                    $desc = $class::usage();
+                    if (!is_array($desc)) {
+                        $desc = array($desc);
+                    }
 
-            // 如果是单个拿取的话，直接跳出
-            if ($text && strtolower($class_name) == strtolower($text)) {
-                $desc = $class::usage();
-                if (!is_array($desc)) {
-                    $desc = array($desc);
+                    $helps = $desc;
+                    $one   = true;
+                    break;
                 }
-
-                $helps = $desc;
-                $one   = true;
-                break;
             }
 
             //如果是拿取所有的信息的话
