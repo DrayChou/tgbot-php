@@ -113,7 +113,7 @@ class Db
         $router = $redis->get($key);
         if (empty($router)) {
             $tmp      = CFun::get_router();
-            $bot_info = Telegram::singleton()->get_me();
+            $bot_info = Db::get_bot_info();
 
             foreach ($tmp as $reg => $class) {
                 //替换规则文件

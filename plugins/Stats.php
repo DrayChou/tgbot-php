@@ -281,7 +281,7 @@ class Stats extends Base
         }
 
         //如果是本机器人说的话，忽略不计
-        $bot_info = Telegram::singleton()->get_me();
+        $bot_info = Db::get_bot_info();
         if ($this->from_id == $bot_info['id']) {
             CFun::echo_log("统计数据 机器人自己发出的，跳过");
 

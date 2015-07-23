@@ -29,7 +29,7 @@ class Help extends Base
         $helps    = array();
         $router   = Db::get_router();
         $plugins  = array_flip($router);
-        $bot_info = Telegram::singleton()->get_me();
+        $bot_info = Db::get_bot_info();
 
         $one = false;
         foreach ($plugins as $class_name => $tmp) {
