@@ -16,6 +16,14 @@ require_once(LIB_PATH . 'process.php');
 //设置时区
 date_default_timezone_set(CFun::get_config('timezone', 'Asia/Shanghai'));
 
+//设置日志
+ini_set("display_errors", 0);
+if($log_path = CFun::get_config('log_path')){
+    ini_set("error_reporting", E_ALL);
+    ini_set("error_log", $log_path . BOT . '.log');
+    ini_set("log_errors", 1);
+}
+
 //如果有 token 带过来，那么调用对应的机器人
 if(isset($_GET['token'])){
     // 设置 token

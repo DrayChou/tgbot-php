@@ -17,7 +17,7 @@ class CFun
      * 打印日志
      * @param $parm
      */
-    static function echo_log($parm) {
+    static function echo_log($parm, $error_level = 'debug') {
         $msg = func_get_args();
         if (1 === count($msg)) {
             // 可変長引数がひとつであったとき
@@ -39,9 +39,12 @@ class CFun
             $last_message = print_r($last_message, true);
         }
 
+        $last_message = "\n" . date("Y-m-d H:i:s") . "\t" . strtoupper($error_level) . "\t" . $last_message
+
         //检查是不是要写入日志文件
         if($log_path = CFun::get_config('log_path')){
-            file_put_contents($log_path . BOT . '.log', $last_message);
+            //file_put_contents($log_path . BOT . '.log', $last_message, FILE_APPEND);
+            error_log($last_message);
         }
     }
 
