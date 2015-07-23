@@ -12,12 +12,12 @@ class Tuling123 extends Base
     const LIST_SHOW_MAX = 1;
 
     static function desc() {
-        return "/bot - 询问图灵小机器人.  ";
+        return "/tuling123 - 询问图灵小机器人.  ";
     }
 
     static function usage() {
         return array(
-            "/bot info: 请求图灵的机器人接口，并返回回答。",
+            "/tuling123 info: 请求图灵的机器人接口，并返回回答。",
             "Request Turing robot, and return the results. Only support Chinese.",
             "升级链接|Upgrade link:http://www.tuling123.com/openapi/record.do?channel=98150",
             "图灵机器人注册邀请地址，每有一个用户通过此地址注册账号，增加本接口可调用次数 1000次/天。",
