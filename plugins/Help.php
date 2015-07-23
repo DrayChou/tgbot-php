@@ -40,8 +40,8 @@ class Help extends Base
                 if (strtolower($class) == strtolower($text)) {
                     $desc = $class::usage();
                 } elseif (preg_match($reg, $text, $m)) {
-                    CFun::echo_log('正则匹配结果: $reg=%s $text=%s $m=%s', $reg, $text, $m);
-                    CFun::echo_log('正则匹配到的插件: $class=%s', $class);
+                    CFun::echo_log('Help:get_helps 正则匹配结果: $reg=%s $text=%s $m=%s', $reg, $text, $m);
+                    CFun::echo_log('Help:get_helps 正则匹配到的插件: $class=%s', $class);
 
                     $desc = $class::usage();
                 }
@@ -102,7 +102,6 @@ class Help extends Base
                 'chat_id' => $this->from_id,
                 'text'    => $res_str,
             ));
-            CFun::echo_log("发送信息: msg=%s", $msg);
 
             //帮助信息太长的话，就私信给个人
             $res_str = 'I send you a message about it.';
@@ -114,6 +113,5 @@ class Help extends Base
             'text'                => $res_str,
             'reply_to_message_id' => $this->msg_id,
         ));
-        CFun::echo_log("发送信息: msg=%s", $msg);
     }
 }

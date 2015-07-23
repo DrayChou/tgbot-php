@@ -158,8 +158,6 @@ class Base
             'reply_to_message_id' => $this->msg_id,
         ));
 
-        CFun::echo_log("发送信息: msg=%s", $msg);
-
         //记录一个状态，下次检测到这个用户在这个群组里说过话之后就失效掉
         $key = 'need_reply:' . $class . ':' . $this->chat_id . ':' . $this->from_id;
         Db::set($key, 1, $class::WAIT_FOR_QUESTION);

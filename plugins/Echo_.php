@@ -33,7 +33,5 @@ class Echo_ extends Base
             'text'                => $this->text,
             'reply_to_message_id' => $this->msg_id,
         ));
-
-        CFun::echo_log("发送信息: msg=%s", $msg);
     }
 }

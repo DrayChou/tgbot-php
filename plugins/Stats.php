@@ -358,7 +358,6 @@ class Stats extends Base
             }
 
             $res_str = $this->get_chat_stats($this->chat_id, $day_id, $limit);
-
         }
 
         $msg = Telegram::singleton()->send_message(array(
@@ -366,7 +365,5 @@ class Stats extends Base
             'text'                => $res_str,
             'reply_to_message_id' => $this->msg_id,
         ));
-
-        CFun::echo_log("发送信息: msg=%s", $msg);
     }
 }
