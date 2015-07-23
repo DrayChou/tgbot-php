@@ -10,36 +10,41 @@ return array(
     /**
      * 帮助脚本的匹配规则
      */
-    '#^/(help)(@%%bot_name%%| |)(.*)$#iu'   => 'help',
+    '#^/(help)(@%%bot_name%%| |)(.*)$#iu'      => 'help',
 
     /**
      * 图灵机器人的匹配规则
      */
-    '#^/(bot)(@%%bot_name%%| |)(.*)$#iu'    => 'bot',
+    '#^/(bot)(@%%bot_name%%| |)(.*)$#iu'       => 'bot',
 
     /**
      * 谷歌搜索的匹配规则
      */
-    '#^/(google)(@%%bot_name%%| |)(.*)$#iu' => 'google',
+    '#^/(google)(@%%bot_name%%| |)(.*)$#iu'    => 'google',
 
     /**
      * 谷歌图片搜索的匹配规则
      */
-    '#^/(img)(@%%bot_name%%| |)(.*)$#iu'    => 'img',
+    '#^/(img)(@%%bot_name%%| |)(.*)$#iu'       => 'img',
 
     /**
      * 用户在线状态接口的匹配规则
      */
-    '#^/(stats)(@%%bot_name%%| |)(.*)$#iu'  => 'stats',
-    '#^/(state)(@%%bot_name%%| |)(.*)$#iu'  => 'stats',
+    '#^/(stats)(@%%bot_name%%| |)(.*)$#iu'     => 'stats',
+    '#^/(state)(@%%bot_name%%| |)(.*)$#iu'     => 'stats',
 
     /**
      * 机器人的输出什么命令
      */
-    '#^/(echo)(@%%bot_name%%| |)(.*)$#iu'   => 'echo_',
+    '#^/(echo)(@%%bot_name%%| |)(.*)$#iu'      => 'echo_',
 
     /**
      * 查询ID
      */
-    '#^/(id)(@%%bot_name%%| |)(.*)$#iu'     => 'id',
+    '#^/(id)(@%%bot_name%%| |)(.*)$#iu'        => 'id',
+
+    /**
+     * cleverbot 的聊天机器人的匹配规则
+     */
+    '#^/(cleverbot)(@%%bot_name%%| |)(.*)$#iu' => 'Cleverbot',
 );
