@@ -41,7 +41,7 @@ class CFun
 
         //检查是不是要写入日志文件
         if($log_path = CFun::get_config('log_path')){
-            file_put_contents($log_path . DIRECTORY_SEPARATOR . BOT . '.log', $last_message);
+            file_put_contents($log_path . BOT . '.log', $last_message);
         }
     }
 
