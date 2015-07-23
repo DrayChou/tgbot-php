@@ -28,9 +28,7 @@ if(isset($_GET['token'])){
     Process::run(array($input));
 
     CFun::G('run_end');
-    $use_time = CFun::G('run_start', 'run_end');
-    $use_mem  = CFun::G('run_start', 'run_end', 'm');
-    $log = '耗时：' . $use_time . ' 耗内存：' . $use_mem . PHP_EOL . ' 当前占内存：' . CFun::convert_memory_size(memory_get_usage()) . PHP_EOL;
+    $log = '耗时：' . CFun::G('run_start', 'run_end') . ' 当前占内存：' . CFun::convert_memory_size(memory_get_usage()) . PHP_EOL;
 
     //发调试信息
     Telegram::singleton()->send_message(array(
@@ -38,5 +36,5 @@ if(isset($_GET['token'])){
         'text'    => $log . $input,
     ));
 }else{
-    echo 'test' . PHP_EOL;
+    echo 'This is ' . BOT . '!' . PHP_EOL;
 }
