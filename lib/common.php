@@ -34,11 +34,15 @@ class CFun
             $last_message = vsprintf($format, $msg);
         }
 
-        //echo $last_message . PHP_EOL;
+        //检查下是不是字符串
         if(!is_string($last_message)){
             $last_message = print_r($last_message, true);
         }
-        error_log($last_message, 0);
+
+        //检查是不是要写入日志文件
+        if($log_path = CFun::get_config('log_path')){
+            error_log($last_message, 3, $log_path . DIRECTORY_SEPARATOR . BOT . '.log');
+        }
     }
 
     /**
