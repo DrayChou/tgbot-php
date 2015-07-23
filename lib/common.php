@@ -193,6 +193,7 @@ class CFun
 
             CFun::echo_log('CFun: url=%s', $url);
             CFun::echo_log('CFun: data=%s', print_r($post, true));
+            CFun::echo_log('CFun: $info=%s', print_r($info, true));
 
             if ($res === false || $info['http_code'] != 200) {
                 $err = "post token url={$url} contents=" . print_r($post, true) . ' res=' . print_r($res, true) . ' info=' . print_r($info, true);
