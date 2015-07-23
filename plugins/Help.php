@@ -39,7 +39,7 @@ class Help extends Base
                 // 如果是单个拿取的话，直接跳出
                 if (strtolower($class) == strtolower($text)) {
                     $desc = $class::usage();
-                } elseif (preg_match($reg, $text, $m)) {
+                } elseif (preg_match($reg, ('/' . $text), $m)) {
                     CFun::echo_log('Help:get_helps 正则匹配结果: $reg=%s $text=%s $m=%s', $reg, $text, $m);
                     CFun::echo_log('Help:get_helps 正则匹配到的插件: $class=%s', $class);
 
