@@ -50,8 +50,6 @@ class Db
 
         $bot_info = $redis->get($key);
 
-        CFun::echo_log('Db: get_bot_info key=%s bot_info=%s', $key, print_r($bot_info, true));
-
         if (empty($bot_info)) {
             $bot_info = Telegram::singleton()->get_me();
 

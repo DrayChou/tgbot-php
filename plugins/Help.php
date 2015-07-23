@@ -34,9 +34,19 @@ class Help extends Base
         $one = false;
         foreach ($router as $reg => $class) {
             if ($text) {
+                $desc = NULL;
+
                 // 如果是单个拿取的话，直接跳出
-                if (strtolower($class) == strtolower($text) || preg_match($reg, $text)) {
+                if (strtolower($class) == strtolower($text)) {
                     $desc = $class::usage();
+                } elseif (preg_match($reg, $text, $m)) {
+                    CFun::echo_log('正则匹配结果: $reg=%s $text=%s $m=%s', $reg, $text, $m);
+                    CFun::echo_log('正则匹配到的插件: $class=%s', $class);
+
+                    $desc = $class::usage();
+                }
+
+                if (!empty($desc)) {
                     if (!is_array($desc)) {
                         $desc = array($desc);
                     }
