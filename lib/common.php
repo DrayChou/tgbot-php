@@ -17,7 +17,7 @@ class CFun
      * 打印日志
      * @param $parm
      */
-    static function echo_log($parm, $error_level = 'debug') {
+    static function echo_log($parm) {
         $msg = func_get_args();
         if (1 === count($msg)) {
             // 可変長引数がひとつであったとき
@@ -39,7 +39,7 @@ class CFun
             $last_message = print_r($last_message, true);
         }
 
-        $last_message = "\n" . date("Y-m-d H:i:s") . "\t" . strtoupper($error_level) . "\t" . $last_message;
+        $last_message = "\n" . date("Y-m-d H:i:s") . "\t" . CFun::microtime_float() . "\t" . $last_message;
         error_log($last_message);
     }
 
