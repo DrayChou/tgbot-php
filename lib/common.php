@@ -132,12 +132,12 @@ class CFun
             $opts['http']['content'] = $postdata;
         }
 
-        CFun::echo_log('CommonFunction: url=%s data=%s', $url, $opts);
+        CFun::echo_log('CFun: url=%s data=%s', $url, $opts);
 
         $context = stream_context_create($opts);
         $res     = file_get_contents($url, false, $context);
 
-        CFun::echo_log('CommonFunction: time=%s res=%s', (self::microtime_float() - $before_time), $res);
+        CFun::echo_log('CFun: time=%s res=%s', (self::microtime_float() - $before_time), $res);
 
         if (empty($res)) {
             $err = "post token url={$url} contents=" . print_r($opts, true) . ' res=' . print_r($res, true);
@@ -191,7 +191,7 @@ class CFun
             $info = curl_getinfo($curl);
             curl_close($curl);
 
-            CFun::echo_log('CommonFunction: time=%s res=%s', (self::microtime_float() - $before_time), $res);
+            CFun::echo_log('CFun: url=%s time=%s res=%s', $url, (self::microtime_float() - $before_time), $res);
 
             if ($res === false || $info['http_code'] != 200) {
                 $err = "post token url={$url} contents=" . print_r($post, true) . ' res=' . print_r($res, true) . ' info=' . print_r($info, true);
