@@ -16,9 +16,6 @@ require_once(LIB_PATH . 'process.php');
 //设置时区
 date_default_timezone_set(CFun::get_config('timezone', 'Asia/Shanghai'));
 
-CFun::echo_log($_GET);
-CFun::echo_log($_POST);
-
 //如果有 token 带过来，那么调用对应的机器人
 if(isset($_GET['token'])){
     CFun::set_config('token', $_GET['token']);
@@ -27,7 +24,11 @@ if(isset($_GET['token'])){
     $admins = CFun::get_config('admins');
     Telegram::singleton()->send_message(array(
         'chat_id' => -25936895,
-        'text'    => json_encode($_POST),
+        'text'    => json_encode(array(
+            '$_GET' => $_GET,
+            '$_POST' => $_POST,
+            'input' => file_get_contents('php://input'),
+        )),
     ));
 
     CFun::G('run_start');
