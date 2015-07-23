@@ -2,3 +2,6 @@ config.php
 
 nbproject/
 .idea/
+*.log
+*.json
+*.conf
