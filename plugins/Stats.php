@@ -134,10 +134,21 @@ class Stats extends Base
         $bot   = Db::get_bot_name();
         $redis = Db::get_redis();
 
+        //预处理
+        if(empty($day_id)){
+            $day_id = date('Ymd');
+        }elseif(!is_numeric($day_id)){
+            if(in_array(strtolower($day_id),array('a', 'all', '*'))){
+                $day_id = '*';
+            }elseif (in_array(strtolower($day_id),array('t', 'tdy', 'today'))) {
+                $day_id = date('Ymd');
+            }
+        }
+
         $users_info = array();
         $users      = $redis->sMembers($bot . 'chat:' . $chat_id . ':users');
         foreach ($users as $k => $v) {
-            if (is_null($day_id) || $day_id == '*') {
+            if ($day_id == '*') {
                 $msgs = (int)$redis->get($bot . 'msgs:' . $v . ':' . $chat_id);
             } else {
                 $msgs = (int)$redis->get($bot . 'day_msgs:' . $day_id . ':' . $v . ':' . $chat_id);
@@ -193,7 +204,7 @@ class Stats extends Base
 
         $text .= (PHP_EOL . ' top sum:' . $top_sum);
         $text .= (PHP_EOL . ' all sum:' . $all_sum);
-        $text .= (PHP_EOL . ' top/all:' . intval($top_sum * 100 / $all_sum) . '%');
+        $text .= (PHP_EOL . ' top/all:' . intval($top_sum * 100 / ($all_sum == 0 ? 1 : 0)) . '%');
         $text .= (PHP_EOL . ' max day:' . ($chat_max['mxd'] . ' => ' . $chat_max['mxm']));
         $text .= (PHP_EOL . ' min day:' . ($chat_max['mid'] . ' => ' . $chat_max['mim']));
 
@@ -242,10 +253,10 @@ class Stats extends Base
         $text .= ($show_name . ' stats:' . PHP_EOL);
         $text .= ('stats count:' . $user_sum . PHP_EOL);
         $text .= ('all user sum:' . $all_sum . PHP_EOL);
-        $text .= ('user/all:' . intval($user_sum * 100 / $all_sum) . '%' . PHP_EOL);
+        $text .= ('user/all:' . intval($user_sum * 100 / ($all_sum == 0 ? 1 : 0)) . '%' . PHP_EOL);
         $text .= ('user today count:' . $day_user_sum . PHP_EOL);
         $text .= ('all user today sum:' . $day_all_sum . PHP_EOL);
-        $text .= ('user/all:' . intval($day_user_sum * 100 / $day_all_sum) . '%' . PHP_EOL);
+        $text .= ('user/all:' . intval($day_user_sum * 100 / ($day_all_sum == 0 ? 1 : 0)) . '%' . PHP_EOL);
 
         return $text;
     }
