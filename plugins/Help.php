@@ -72,7 +72,7 @@ class Help extends Base
         }
 
         if (false == $one) {
-            $tmp   = array_keys(array_filter($helps));
+            $tmp   = array_flip(array_flip($helps));
             $helps = array_merge(
                 array(
                     'Welcome to use ' . $bot_info['show_name'],
