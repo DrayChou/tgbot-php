@@ -7,9 +7,6 @@
  * Time: 下午3:16
  */
 return array(
-    //机器人的 token
-    'token'  => '',
-
     //图灵机器人的配置信息
     'tuling' => array(
         'key' => '4d546ffb4cd27187ef2a20d3af54c5b6',

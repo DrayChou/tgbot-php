@@ -34,7 +34,8 @@ class CFun
             $last_message = vsprintf($format, $msg);
         }
 
-        echo $last_message . PHP_EOL;
+        //echo $last_message . PHP_EOL;
+        error_log($last_message, 0);
     }
 
     /**
@@ -51,6 +52,8 @@ class CFun
 
     /**
      * 得到配置信息
+     * @param type $key
+     * @param type $default_value
      * @return type
      */
     static public function get_config($key = NULL, $default_value = NULL) {
@@ -67,6 +70,16 @@ class CFun
         }
 
         return self::$config;
+    }
+
+    /**
+     * 设置配置信息
+     * @param type $key
+     * @param type $value
+     * @return type
+     */
+    static public function set_config($key, $value){
+        self::$config[$key] = $$value;
     }
 
     /**
@@ -136,6 +149,11 @@ class CFun
         return $res;
     }
 
+    /**
+     * 请求到第三方服务器，获取数据 如果 Post 有数据，那就是 post 请求
+     * @param string $url
+     * @param array $post
+     */
     static function curl($url, $post = NULL) {
         if (empty($url)) {
             $err = 'post error url';

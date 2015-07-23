@@ -147,6 +147,14 @@ class Process
             }
         }
 
+        $bot_open_plugins = CFun::get_config('plugins');
+        $bot_info = Db::get_bot_info();
+        if(isset($bot_info['username']) && isset($bot_open_plugins[strtolower($bot_info['username'])])){
+            if(!in_array(strtolower(get_class($plugins)), $bot_open_plugins[strtolower($bot_info['username'])])){
+                continue;
+            }
+        }
+
         //执行需要调用的函数
         self::loop_with($run_fun, $msg, $text, $parms);
 

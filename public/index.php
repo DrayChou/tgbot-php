@@ -9,11 +9,6 @@
 define('BOT', 'tgbot-php');
 define('BASE_PATH', dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR);
 define('LIB_PATH', BASE_PATH . 'lib' . DIRECTORY_SEPARATOR);
-define('INTERVAL', 1);// 每隔 xx 毫秒运行
-
-ini_set('memory_limit', '32M');
-ignore_user_abort();//关掉浏览器，PHP脚本也可以继续执行.
-set_time_limit(0);// 通过set_time_limit(0)可以让程序无限制的执行下去
 
 //加载包文件
 require_once(LIB_PATH . 'process.php');
@@ -21,9 +16,13 @@ require_once(LIB_PATH . 'process.php');
 //设置时区
 date_default_timezone_set(CFun::get_config('timezone', 'Asia/Shanghai'));
 
-if (empty($_POST)) {
-    echo 'test' . PHP_EOL;
-} else {
+CFun::echo_log($_GET);
+CFun::echo_log($_POST);
+
+//如果有 token 带过来，那么调用对应的机器人
+if(isset($_GET['token'])){
+    $token = $_GET['token'];
+    CFun::set_config('token', $token);
 
     //发调试信息
     $admins = CFun::get_config('admins');
@@ -32,8 +31,6 @@ if (empty($_POST)) {
         'text'    => json_encode($_POST),
     ));
 
-    //死循环查询
-//    do {
     CFun::G('run_start');
 
     if (isset($_POST['message'])) {
@@ -43,8 +40,9 @@ if (empty($_POST)) {
     CFun::G('run_end');
     $use_time = CFun::G('run_start', 'run_end');
     $use_mem  = CFun::G('run_start', 'run_end', 'm');
-    echo '耗时：' . $use_time . ' 耗内存：' . $use_mem . PHP_EOL . ' 当前占内存：' . CFun::convert_memory_size(memory_get_usage()) . PHP_EOL;
+    $log = '耗时：' . $use_time . ' 耗内存：' . $use_mem . PHP_EOL . ' 当前占内存：' . CFun::convert_memory_size(memory_get_usage()) . PHP_EOL;
 
-//        usleep(INTERVAL);// 等待
-//    } while (true);
+    CFun::echo_log($log);
+}else(){
+    echo 'test' . PHP_EOL;
 }
