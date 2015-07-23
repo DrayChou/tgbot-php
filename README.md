@@ -65,10 +65,10 @@ Bot Commands
 
 Installation
 ------------
-1. 安装 [swoole](https://github.com/swoole/swoole-src)
-2. 安装 [phpredis](https://github.com/phpredis/phpredis)
-3. clone 项目到本地
-4. php index.php
+1. clone 项目到本地
+2. 配置 redis
+3. 设置 Telegram 回掉地址，地址为 项目地址 + ?token={telegram_bot.token}
+4. 开始玩
 
 Contact me
 ------------
