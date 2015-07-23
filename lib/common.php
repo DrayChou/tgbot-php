@@ -35,7 +35,7 @@ class CFun
         }
 
         //检查下是不是字符串
-        if(!is_string($last_message)){
+        if (!is_string($last_message)) {
             $last_message = print_r($last_message, true);
         }
 
@@ -83,7 +83,7 @@ class CFun
      * @param type $value
      * @return type
      */
-    static public function set_config($key, $value){
+    static public function set_config($key, $value) {
         self::$config[$key] = $value;
     }
 

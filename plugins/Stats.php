@@ -135,12 +135,12 @@ class Stats extends Base
         $redis = Db::get_redis();
 
         //预处理
-        if(empty($day_id)){
+        if (empty($day_id)) {
             $day_id = date('Ymd');
-        }elseif(!is_numeric($day_id)){
-            if(in_array(strtolower($day_id),array('a', 'all', '*'))){
+        } elseif (!is_numeric($day_id)) {
+            if (in_array(strtolower($day_id), array('a', 'all', '*'))) {
                 $day_id = '*';
-            }elseif (in_array(strtolower($day_id),array('t', 'tdy', 'today'))) {
+            } elseif (in_array(strtolower($day_id), array('t', 'tdy', 'today'))) {
                 $day_id = date('Ymd');
             }
         }
