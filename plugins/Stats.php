@@ -204,7 +204,7 @@ class Stats extends Base
 
         $text .= (PHP_EOL . ' top sum:' . $top_sum);
         $text .= (PHP_EOL . ' all sum:' . $all_sum);
-        $text .= (PHP_EOL . ' top/all:' . intval($top_sum / ($all_sum == 0 ? 1 : 0) * 100) . '%');
+        $text .= (PHP_EOL . ' top/all:' . intval($top_sum / ($all_sum == 0 ? 1 : $all_sum) * 100) . '%');
         $text .= (PHP_EOL . ' max day:' . ($chat_max['mxd'] . ' => ' . $chat_max['mxm']));
         $text .= (PHP_EOL . ' min day:' . ($chat_max['mid'] . ' => ' . $chat_max['mim']));
 
@@ -253,10 +253,10 @@ class Stats extends Base
         $text .= ($show_name . ' stats:' . PHP_EOL);
         $text .= ('stats count:' . $user_sum . PHP_EOL);
         $text .= ('all user sum:' . $all_sum . PHP_EOL);
-        $text .= ('user/all:' . intval($user_sum / ($all_sum == 0 ? 1 : 0) * 100) . '%' . PHP_EOL);
+        $text .= ('user/all:' . intval($user_sum / ($all_sum == 0 ? 1 : $all_sum) * 100) . '%' . PHP_EOL);
         $text .= ('user today count:' . $day_user_sum . PHP_EOL);
         $text .= ('all user today sum:' . $day_all_sum . PHP_EOL);
-        $text .= ('user/all:' . intval($day_user_sum / ($day_all_sum == 0 ? 1 : 0) * 100) . '%' . PHP_EOL);
+        $text .= ('user/all:' . intval($day_user_sum / ($day_all_sum == 0 ? 1 : $day_all_sum) * 100) . '%' . PHP_EOL);
 
         return $text;
     }

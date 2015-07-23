@@ -191,7 +191,7 @@ class CFun
             $info = curl_getinfo($curl);
             curl_close($curl);
 
-            CFun::echo_log('CFun: url=%s time=%s res=%s', $url, (self::microtime_float() - $before_time), $res);
+            CFun::echo_log('CFun: url=%s data=%s time=%s res=%s', $url, print_r($post), (self::microtime_float() - $before_time), $res);
 
             if ($res === false || $info['http_code'] != 200) {
                 $err = "post token url={$url} contents=" . print_r($post, true) . ' res=' . print_r($res, true) . ' info=' . print_r($info, true);

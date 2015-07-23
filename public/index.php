@@ -37,12 +37,7 @@ if(isset($_GET['token'])){
 
     CFun::G('run_end');
     $log = '耗时：' . CFun::G('run_start', 'run_end') . ' 当前占内存：' . CFun::convert_memory_size(memory_get_usage()) . PHP_EOL;
-
-    //发调试信息
-    Telegram::singleton()->send_message(array(
-        'chat_id' => -25936895,//私有调试群ID
-        'text'    => $log . $input,
-    ));
+    CFun::echo_log($log);
 }else{
     echo 'This is ' . BOT . '!' . PHP_EOL;
 }
