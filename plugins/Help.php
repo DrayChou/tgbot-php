@@ -68,7 +68,7 @@ class Help extends Base
                 $desc = array($desc);
             }
 
-            $helps[$class] = $desc;
+            $helps[$class] = array_merge($helps, $desc);
         }
 
         if (false == $one) {
@@ -77,7 +77,7 @@ class Help extends Base
                     'Welcome to use ' . $bot_info['show_name'],
                     '',
                 ),
-                $helps,
+                array_flip(array_flip($helps)),
                 array(
                     '',
                     'GitHub: https://github.com/DrayChou/tgbot-php',
