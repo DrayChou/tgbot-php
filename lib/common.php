@@ -39,13 +39,8 @@ class CFun
             $last_message = print_r($last_message, true);
         }
 
-        $last_message = "\n" . date("Y-m-d H:i:s") . "\t" . strtoupper($error_level) . "\t" . $last_message
-
-        //检查是不是要写入日志文件
-        if($log_path = CFun::get_config('log_path')){
-            //file_put_contents($log_path . BOT . '.log', $last_message, FILE_APPEND);
-            error_log($last_message);
-        }
+        $last_message = "\n" . date("Y-m-d H:i:s") . "\t" . strtoupper($error_level) . "\t" . $last_message;
+        error_log($last_message);
     }
 
     /**
