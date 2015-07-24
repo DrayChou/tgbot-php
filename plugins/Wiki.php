@@ -73,7 +73,7 @@ class Wiki extends Base
                 }
             } else {
                 foreach ($res['query']['pages'] as $v) {
-                    $res_str .= $v['extract'] . PHP_EOL;
+                    $res_str .= (isset($v['extract']) ? $v['extract'] : $v['title']) . PHP_EOL;
                 }
             }
         }
