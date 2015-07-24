@@ -24,6 +24,25 @@ class Cleverbot extends Base
     }
 
     /**
+     * 不管什么情况都会执行的函数
+     */
+    public function pre_process() {
+        //如果是私聊，那么机器人接管
+        if ($this->chat_id > 0) {
+            $this->text = $this->parm;
+            $this->run();
+        }
+    }
+
+    /**
+     * 有人回复我
+     */
+    public function msg_reply_me() {
+        $this->text = $this->parm;
+        $this->run();
+    }
+
+    /**
      * 当命令满足的时候，执行的基础执行函数
      */
     public function run() {

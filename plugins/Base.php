@@ -89,6 +89,13 @@ class Base
     }
 
     /**
+     * 有人回复我
+     */
+    public function msg_reply_me() {
+        CFun::echo_log("有人回复我");
+    }
+
+    /**
      * 不管什么情况都会执行的函数
      */
     public function pre_process() {

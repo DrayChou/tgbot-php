@@ -72,7 +72,8 @@ class Process
      */
     static function handler($message) {
         //拿取路由规则
-        $router = Db::get_router();
+        $router   = Db::get_router();
+        $bot_info = Db::get_bot_info();
 
         if (is_string($message)) {
             $message = json_decode($message, true);
@@ -122,6 +123,13 @@ class Process
             $run_fun[] = 'msg_left_chat';
         }
 
+        //如果有人回复机器人的话
+        if (isset($msg['reply_to_message'])) {
+            if ($msg['reply_to_message']['from']['id'] == $bot_info['id']) {
+                $run_fun[] = 'msg_reply_me';
+            }
+        }
+
         // 解析话语，抓到需要调用的机器人
         if (isset($msg['text'])) {
             //抓文字里的关键词，抓到是要请求什么插件
@@ -148,7 +156,6 @@ class Process
         }
 
         $bot_open_plugins = CFun::get_config('plugins');
-        $bot_info         = Db::get_bot_info();
         if (isset($bot_info['username']) && isset($bot_open_plugins[strtolower($bot_info['username'])])) {
             if (!in_array(strtolower(get_class($plugins)), $bot_open_plugins[strtolower($bot_info['username'])])) {
                 return;
