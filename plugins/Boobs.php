@@ -24,13 +24,6 @@ class Boobs extends Base
     public function run() {
         CFun::echo_log("执行 Boobs run");
 
-        //如果是需要回掉的请求
-        if (empty($this->text)) {
-            $this->set_reply();
-
-            return;
-        }
-
         $url = "http://api.oboobs.ru/noise/1";
         $res = CFun::curl($url);
 

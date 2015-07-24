@@ -27,6 +27,8 @@ class Cleverbot extends Base
      * 不管什么情况都会执行的函数
      */
     public function pre_process() {
+        CFun::echo_log('Cleverbot: $this=%s', print_r($this, true));
+
         //如果是私聊，那么机器人接管
         if ($this->chat_id > 0) {
             $this->text = $this->parm;

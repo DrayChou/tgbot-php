@@ -34,7 +34,7 @@ class Wiki extends Base
 
             return;
         }
-        
+
         $is_search = false;
 
         if ($is_search) {

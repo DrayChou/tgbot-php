@@ -24,13 +24,6 @@ class Butts extends Base
     public function run() {
         CFun::echo_log("执行 Butts run");
 
-        //如果是需要回掉的请求
-        if (empty($this->text)) {
-            $this->set_reply();
-
-            return;
-        }
-
         $url = "http://api.obutts.ru/noise/1";
         $res = CFun::curl($url);
 

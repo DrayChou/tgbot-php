@@ -25,13 +25,6 @@ class Zhihu extends Base
     public function run() {
         CFun::echo_log("Zhihu run 执行");
 
-        //如果是需要回掉的请求
-        if (empty($this->text)) {
-            $this->set_reply();
-
-            return;
-        }
-
         $url = "http://news-at.zhihu.com/api/4/news/latest";
         $res = CFun::curl($url);
 
