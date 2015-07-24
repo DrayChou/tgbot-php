@@ -38,6 +38,7 @@ class Wiki extends Base
         $is_search = false;
 
         if ($is_search) {
+            //https://en.wikipedia.org/w/api.php?&format=json&action=query&list=search&srlimit=20&srsearch=beijing&continue=
             $data = array(
                 'format'   => 'json',
                 'action'   => 'query',
@@ -47,11 +48,11 @@ class Wiki extends Base
                 'srsearch' => $this->text,
             );
         } else {
+            //https://en.wikipedia.org/w/api.php?&format=json&action=query&prop=extracts&exchars=300&redirects=1&exsectionformat=plain&explaintext=&titles=beijing
             $data = array(
                 'format'          => 'json',
                 'action'          => 'query',
-                'prop'            => 'search',
-                'srlimit'         => 'extracts',
+                'prop'            => 'extracts',
                 'exchars'         => '300',
                 'redirects'       => 1,
                 'exsectionformat' => 'plain',
