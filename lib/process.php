@@ -140,7 +140,7 @@ class Process
                     CFun::echo_log('正则匹配结果: $reg=%s $text=%s $m=%s', $reg, $msg['text'], $m);
                     CFun::echo_log('正则匹配到的插件: $class=%s', $class);
 
-                    $text  = trim($m[3]);
+                    $text  = trim(implode(' ', array_slice($m, 3)));
                     $parms = array($m[1]);
 
                     $tmp = explode(' ', $text);

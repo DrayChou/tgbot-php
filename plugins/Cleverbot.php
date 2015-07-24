@@ -29,6 +29,10 @@ class Cleverbot extends Base
     public function pre_process() {
         CFun::echo_log('Cleverbot: $this=%s', print_r($this, true));
 
+        if (isset($this->parms[0])) {
+            return;
+        }
+
         //如果是私聊，那么机器人接管
         if ($this->chat_id > 0) {
             $this->text = $this->parm;
