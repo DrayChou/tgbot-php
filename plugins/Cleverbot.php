@@ -58,11 +58,15 @@ class Cleverbot extends Base
             return;
         }
 
+        $before_time = CFun::microtime_float();
+
         //调用接口发送问题
         $factory     = new ChatterBotFactory();
         $bot1        = $factory->create(ChatterBotType::CLEVERBOT);
         $bot1session = $bot1->createSession();
         $res_str     = $bot1session->think($this->text);
+
+        CFun::echo_log('Cleverbot think: time=%s', (self::microtime_float() - $before_time));
 
         //回复消息
         $msg = Telegram::singleton()->send_message(array(
