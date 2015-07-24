@@ -148,7 +148,7 @@ class Process
 
                     $parms = array_merge($parms, $tmp);
 
-                    CFun::echo_log('分解出来的参数数组: $parms=%s', print_r($parms，true));
+                    CFun::echo_log('分解出来的参数数组: $parms=%s', print_r($parms, true));
 
                     //加载消息类
                     $plugins = self::get_class($class);

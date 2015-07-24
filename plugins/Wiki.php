@@ -54,21 +54,17 @@ class Wiki extends Base
         $parms = array();
         foreach ($this->parms as $k => $v) {
             if (in_array($v, array('wiki'))) {
-                $is_search = true;
-
                 continue;
             }
 
             if (in_array($v, $search_arr)) {
                 $is_search = true;
-
                 continue;
             }
 
             $v = strtolower($v);
             if (in_array($v, $lang_arr)) {
                 $lang = $v;
-
                 continue;
             }
 
