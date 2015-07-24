@@ -56,8 +56,14 @@ class Base
         }
 
         // 群组ID
-        $this->chat_id   = $msg['chat']['id'];
-        $this->chat_name = $msg['chat']['title'];
+        $this->chat_id = $msg['chat']['id'];
+        if ($this->chat_id < 0) {
+            //群组聊天
+            $this->chat_name = $msg['chat']['title'];
+        } else {
+            //个人聊天
+            $this->chat_name = $msg['chat']['username'];
+        }
 
         // 有人进来了
         if (isset($msg['new_chat_participant'])) {
