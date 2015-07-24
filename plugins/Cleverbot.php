@@ -27,8 +27,7 @@ class Cleverbot extends Base
      * 不管什么情况都会执行的函数
      */
     public function pre_process() {
-        CFun::echo_log('Cleverbot: $this=%s', print_r($this, true));
-
+        //如果有调用参数，那么跳过
         if (isset($this->parms[0])) {
             return;
         }
