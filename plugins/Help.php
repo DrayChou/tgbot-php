@@ -109,7 +109,7 @@ class Help extends Base
         }
 
         //发送到群组里
-        $msg = Telegram::singleton()->send_message(array(
+        Telegram::singleton()->send_message(array(
             'chat_id'             => $this->chat_id,
             'text'                => $res_str,
             'reply_to_message_id' => $this->msg_id,

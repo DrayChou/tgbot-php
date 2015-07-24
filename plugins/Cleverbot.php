@@ -69,7 +69,7 @@ class Cleverbot extends Base
         CFun::echo_log('Cleverbot think: time=%s', (CFun::microtime_float() - $before_time));
 
         //回复消息
-        $msg = Telegram::singleton()->send_message(array(
+        Telegram::singleton()->send_message(array(
             'chat_id'             => $this->chat_id,
             'text'                => $res_str,
             'reply_to_message_id' => $this->msg_id,

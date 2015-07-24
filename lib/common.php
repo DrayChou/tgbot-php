@@ -159,7 +159,7 @@ class CFun
      * @param string $url
      * @param array $post
      */
-    static function curl($url, $post = NULL) {
+    static function curl($url, $post = NULL, $type = 'json') {
         if (empty($url)) {
             $err = 'post error url';
             CFun::echo_log($err);
@@ -200,10 +200,12 @@ class CFun
                 CFun::echo_log($err);
                 CFun::report_err($err);
 
-                return NULL;
+                return $res;
             }
 
-            $res = json_decode($res, true);
+            if ($type == 'json') {
+                $res = json_decode($res, true);
+            }
 
             CFun::echo_log('CFun: res=%s', print_r($res, true));
             CFun::echo_log('CFun: time=%s', (self::microtime_float() - $before_time));

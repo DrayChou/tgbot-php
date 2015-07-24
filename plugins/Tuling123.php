@@ -29,7 +29,7 @@ class Tuling123 extends Base
      * 当命令满足的时候，执行的基础执行函数
      */
     public function run() {
-        CFun::echo_log("Bot run 执行");
+        CFun::echo_log("Tuling123 run 执行");
 
         //如果是需要回掉的请求
         if (empty($this->text)) {
@@ -55,7 +55,6 @@ class Tuling123 extends Base
             return;
         }
 
-
         $data = array(
             'key'    => $tuling_config['key'],
             'userid' => $this->from_id,
@@ -63,7 +62,6 @@ class Tuling123 extends Base
         );
         $url  = "http://www.tuling123.com/openapi/api?" . http_build_query($data);
         $res  = CFun::curl($url);
-        CFun::echo_log("发送 Bot 查询: res=%s", $res);
 
         $res_str = $res['text'];
 
@@ -136,7 +134,7 @@ class Tuling123 extends Base
         }
 
         //回复消息
-        $msg = Telegram::singleton()->send_message(array(
+        Telegram::singleton()->send_message(array(
             'chat_id'             => $this->chat_id,
             'text'                => $res_str,
             'reply_to_message_id' => $this->msg_id,

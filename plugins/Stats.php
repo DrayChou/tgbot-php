@@ -360,7 +360,7 @@ class Stats extends Base
             $res_str = $this->get_chat_stats($this->chat_id, $day_id, $limit);
         }
 
-        $msg = Telegram::singleton()->send_message(array(
+        Telegram::singleton()->send_message(array(
             'chat_id'             => $this->chat_id,
             'text'                => $res_str,
             'reply_to_message_id' => $this->msg_id,

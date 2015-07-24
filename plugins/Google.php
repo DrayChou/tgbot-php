@@ -38,7 +38,6 @@ class Google extends Base
         );
         $url  = "http://ajax.googleapis.com/ajax/services/search/web?" . http_build_query($data);
         $res  = CFun::curl($url);
-        CFun::echo_log("发送 Google 查询: res=%s", $res);
 
         $res_str = '';
         if (!isset($res['responseStatus']) || $res['responseStatus'] != 200) {
@@ -50,7 +49,7 @@ class Google extends Base
         }
 
         //回复消息
-        $msg = Telegram::singleton()->send_message(array(
+        Telegram::singleton()->send_message(array(
             'chat_id'             => $this->chat_id,
             'text'                => $res_str,
             'reply_to_message_id' => $this->msg_id,
