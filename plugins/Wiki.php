@@ -103,12 +103,20 @@ class Wiki extends Base
             $res_str = '好像出问题了，稍后再试下吧！';
         } else {
             if ($is_search) {
-                foreach ($res['query']['search'] as $v) {
-                    $res_str .= $v['title'] . PHP_EOL;
+                if (empty($res['query']['search'])) {
+                    $res_str = 'No results found';
+                } else {
+                    foreach ($res['query']['search'] as $v) {
+                        $res_str .= $v['title'] . PHP_EOL;
+                    }
                 }
             } else {
-                foreach ($res['query']['pages'] as $v) {
-                    $res_str .= (isset($v['extract']) ? $v['extract'] : $v['title']) . PHP_EOL;
+                if (empty($res['query']['pages'])) {
+                    $res_str = 'No results found';
+                } else {
+                    foreach ($res['query']['pages'] as $v) {
+                        $res_str .= (isset($v['extract']) ? $v['extract'] : $v['title']) . PHP_EOL;
+                    }
                 }
             }
         }
