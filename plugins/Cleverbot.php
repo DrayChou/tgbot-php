@@ -38,8 +38,11 @@ class Cleverbot extends Base
      * 有人回复我
      */
     public function msg_reply_me() {
-        $this->text = $this->parm;
-        $this->run();
+        //群组聊天的时候，开启这个模式，方式跟私聊的冲突
+        if ($this->chat_id < 0) {
+            $this->text = $this->parm;
+            $this->run();
+        }
     }
 
     /**
