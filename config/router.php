@@ -48,4 +48,5 @@ return array(
     '#^/(weather)(@%%bot_name%%| |)(.*)$#iu'   => 'weather',
 
     '#^/(wiki)(@%%bot_name%%| |)(.*)$#iu'      => 'wiki',
+    '#^/(github)(@%%bot_name%%| |)(.*)$#iu'    => 'github',
 );
