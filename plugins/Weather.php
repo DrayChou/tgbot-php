@@ -42,7 +42,7 @@ class Weather extends Base
         if (!isset($res['name'])) {
             $res_str = 'Can\'t get weather from that city.';
         } else {
-            $res_str = "The temperature in {$res['name']} ({$res['sys']['country']}) is {$res['main']['temp']} °C";
+            $res_str = "The temperature in {$res['name']} ({$res['sys']['country']}) is {$res['main']['temp']} °C" . PHP_EOL;
             $res_str .= "Current conditions are: {$res['weather'][0]['description']} {$res['weather'][0]['main']}";
         }
 
