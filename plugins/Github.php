@@ -32,7 +32,7 @@ class Github extends Base
             return;
         }
 
-        $url = "api.github.com/users/" . $this->text;
+        $url = "https://api.github.com/users/" . $this->text;
         $res = CFun::curl($url);
 
         if (!isset($res['id'])) {
