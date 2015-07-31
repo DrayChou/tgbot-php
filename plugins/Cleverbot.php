@@ -10,8 +10,6 @@
  */
 class Cleverbot extends Base
 {
-    const LIST_SHOW_MAX = 1;
-
     static function desc() {
         return "/cleverbot - say to cleverbot...";
     }
@@ -21,33 +19,6 @@ class Cleverbot extends Base
             "/cleverbot info: say to cleverbot...",
             "http://www.cleverbot.com/",
         );
-    }
-
-    /**
-     * 不管什么情况都会执行的函数
-     */
-    public function pre_process() {
-        //如果有调用参数，那么跳过
-        if (isset($this->parms[0])) {
-            return;
-        }
-
-        //如果是私聊，那么机器人接管
-        if ($this->chat_id > 0) {
-            $this->text = $this->parm;
-            $this->run();
-        }
-    }
-
-    /**
-     * 有人回复我
-     */
-    public function msg_reply_me() {
-        //群组聊天的时候，开启这个模式，方式跟私聊的冲突
-        if ($this->chat_id < 0) {
-            $this->text = $this->parm;
-            $this->run();
-        }
     }
 
     /**
