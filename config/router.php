@@ -39,7 +39,7 @@ return array(
     '#^/(cleverbot)(@%%bot_name%%| |)(.*)$#iu' => 'cleverbot',
 
     //机器人
-    '#^/(bot)(@%%bot_name%%| |)(.*)$#iu'       => 'cleverbot',
+    '#^/(bot)(@%%bot_name%%| |)(.*)$#iu'       => 'bot',
 
     '#^/(boobs)(@%%bot_name%%| |)(.*)$#iu'     => 'boobs',
     '#^/(butts)(@%%bot_name%%| |)(.*)$#iu'     => 'butts',
