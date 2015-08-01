@@ -133,14 +133,14 @@ class Bot extends Base {
                     'chat_id'             => $this->chat_id,
                     'text'                => '请选择你要使用的机器人！' . PHP_EOL . '目前支持：' . PHP_EOL . implode(PHP_EOL, self::$BOT_MAP) . PHP_EOL,
                     'reply_to_message_id' => $this->msg_id,
-                    'reply_markup'        => array(
+                    'reply_markup'        => json_encode(array(
                         'keyboard'          => array(
                             self::$BOT_MAP,
                         ),
                         'resize_keyboard'   => true,
                         'one_time_keyboard' => true,
                         'selective'         => true,
-                    ),
+                    )),
                 ));
             } else {
                 //发送
