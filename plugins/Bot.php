@@ -125,26 +125,13 @@ class Bot extends Base {
             $parms[] = $v;
         }
 
-        if ($is_set && $bot_id) {
-            self::set_my_bot($this->from_id, $bot_id);
-
-            //发送
-            Telegram::singleton()->send_message(array(
-                'chat_id'             => $this->chat_id,
-                'text'                => '机器人已经设置好了，亲！',
-                'reply_to_message_id' => $this->msg_id,
-            ));
-        } else {
-            $bot = self::get_my_bot($this->from_id);
-            if ($bot) {
-                //调用机器人
-                $bot->text = $this->parm;
-                $bot->run();
-            } else {
+        $bot = self::get_my_bot($this->from_id);
+        if (empty($bot) || $is_set) {
+            if (empty($bot_id)) {
                 //发送
                 Telegram::singleton()->send_message(array(
                     'chat_id'             => $this->chat_id,
-                    'text'                => '请选择你要使用的机器人！',
+                    'text'                => '请选择你要使用的机器人！' . PHP_EOL . '目前支持：' . PHP_EOL . implode(PHP_EOL, self::$BOT_MAP) . PHP_EOL,
                     'reply_to_message_id' => $this->msg_id,
                     'reply_markup'        => array(
                         'keyboard'          => array(
@@ -155,8 +142,27 @@ class Bot extends Base {
                         'selective'         => true,
                     ),
                 ));
+            } else {
+                if (self::set_my_bot($this->from_id, $bot_id)) {
+                    $message = '机器人已经设置好了，亲！';
+                } else {
+                    $message = '设置失败，请联系管理员，亲！';
+                }
+
+                //发送
+                Telegram::singleton()->send_message(array(
+                    'chat_id'             => $this->chat_id,
+                    'text'                => $message,
+                    'reply_to_message_id' => $this->msg_id,
+                ));
             }
+
+            return;
         }
+
+        //调用机器人
+        $bot->text = $this->parm;
+        $bot->run();
     }
 
 }
