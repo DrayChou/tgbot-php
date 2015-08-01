@@ -61,4 +61,7 @@ return array(
     
     //github 资料查询
     '#^/(github)(@%%bot_name%%| |)(.*)$#iu'    => 'github',
+    
+    //开始使用
+    '#^/(start)(@%%bot_name%%| |)(.*)$#iu'   => 'start',
 );

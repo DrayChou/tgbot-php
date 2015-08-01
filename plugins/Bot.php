@@ -67,10 +67,9 @@ class Bot extends Base {
 
         //如果是私聊，那么机器人接管
         if ($this->chat_id > 0) {
-            $this->text = $this->parm;
-
             $bot = self::get_my_bot($this->from_id);
             if ($bot) {
+                $bot->text = $this->parm;
                 $bot->run();
             }
         }
@@ -82,10 +81,9 @@ class Bot extends Base {
     public function msg_reply_me() {
         //群组聊天的时候，开启这个模式，方式跟私聊的冲突
         if ($this->chat_id < 0) {
-            $this->text = $this->parm;
-
             $bot = self::get_my_bot($this->from_id);
             if ($bot) {
+                $bot->text = $this->parm;
                 $bot->run();
             }
         }
@@ -138,20 +136,27 @@ class Bot extends Base {
                 'reply_to_message_id' => $this->msg_id,
             ));
         } else {
-            //发送
-            Telegram::singleton()->send_message(array(
-                'chat_id'             => $this->chat_id,
-                'text'                => '请选择你要使用的机器人！',
-                'reply_to_message_id' => $this->msg_id,
-                'reply_markup'        => array(
-                    'keyboard'          => array(
-                        self::$BOT_MAP,
+            $bot = self::get_my_bot($this->from_id);
+            if ($bot) {
+                //调用机器人
+                $bot->text = $this->parm;
+                $bot->run();
+            } else {
+                //发送
+                Telegram::singleton()->send_message(array(
+                    'chat_id'             => $this->chat_id,
+                    'text'                => '请选择你要使用的机器人！',
+                    'reply_to_message_id' => $this->msg_id,
+                    'reply_markup'        => array(
+                        'keyboard'          => array(
+                            self::$BOT_MAP,
+                        ),
+                        'resize_keyboard'   => true,
+                        'one_time_keyboard' => true,
+                        'selective'         => true,
                     ),
-                    'resize_keyboard'   => true,
-                    'one_time_keyboard' => 'true',
-                    'selective'         => 'true',
-                ),
-            ));
+                ));
+            }
         }
     }
 
