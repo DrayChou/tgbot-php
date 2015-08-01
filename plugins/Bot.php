@@ -5,11 +5,12 @@
  * Date: 15/7/30
  * Time: 下午3:43
  */
-class Bot extends Base
-{
+class Bot extends Base {
+
     //目前备选的机器人
     const BOT_TULING123 = 1;
-    const BOT_CLEVER = 2;
+    const BOT_CLEVER    = 2;
+
     static $BOT_MAP = array(
         self::BOT_TULING123 => 'Tuling123',
         self::BOT_CLEVER    => 'CleverBot',
@@ -32,7 +33,7 @@ class Bot extends Base
      * @return Base|null
      */
     static function get_my_bot($user_id) {
-        $bot_id = (int)Db::get_redis()->hGet('bot_index', $user_id);
+        $bot_id = (int) Db::get_redis()->hGet('bot_index', $user_id);
 
         if (!isset(self::$BOT_MAP[$bot_id])) {
             return NULL;
@@ -69,7 +70,9 @@ class Bot extends Base
             $this->text = $this->parm;
 
             $bot = self::get_my_bot($this->from_id);
-            $bot->run();
+            if ($bot) {
+                $bot->run();
+            }
         }
     }
 
@@ -82,7 +85,9 @@ class Bot extends Base
             $this->text = $this->parm;
 
             $bot = self::get_my_bot($this->from_id);
-            $bot->run();
+            if ($bot) {
+                $bot->run();
+            }
         }
     }
 
@@ -149,4 +154,5 @@ class Bot extends Base
             ));
         }
     }
+
 }
