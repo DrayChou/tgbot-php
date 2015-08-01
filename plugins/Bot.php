@@ -143,16 +143,11 @@ class Bot extends Base {
                     ),
                 ));
             } else {
-                if (self::set_my_bot($this->from_id, $bot_id)) {
-                    $message = '机器人已经设置好了，亲！';
-                } else {
-                    $message = '设置失败，请联系管理员，亲！';
-                }
-
                 //发送
+                self::set_my_bot($this->from_id, $bot_id);
                 Telegram::singleton()->send_message(array(
                     'chat_id'             => $this->chat_id,
-                    'text'                => $message,
+                    'text'                => '机器人已经设置好了，亲！',
                     'reply_to_message_id' => $this->msg_id,
                 ));
             }

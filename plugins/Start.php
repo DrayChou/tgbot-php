@@ -24,7 +24,13 @@ class Start extends Base {
     public function run() {
         CFun::echo_log("执行 Start run");
 
-        Process::get_class('Help')->run();
+        $help = Process::get_class('Help');
+
+        $help->text    = $this->text;
+        $help->chat_id = $this->chat_id;
+        $help->from_id = $this->from_id;
+        $help->msg_id  = $this->msg_id;
+        $help->run();
     }
 
 }
