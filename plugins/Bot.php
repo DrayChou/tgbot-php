@@ -12,8 +12,8 @@ class Bot extends Base {
     const BOT_CLEVER    = 2;
 
     static $BOT_MAP = array(
-        self::BOT_TULING123 => 'Tuling123',
-        self::BOT_CLEVER    => 'CleverBot',
+        self::BOT_TULING123 => 'tuling123',
+        self::BOT_CLEVER    => 'cleverbot',
     );
 
     static function desc() {
@@ -110,8 +110,7 @@ class Bot extends Base {
 
         $parms = array();
         foreach ($this->parms as $k => $v) {
-            if (in_array($v, self::$BOT_MAP)) {
-                $bot_id = array_search($v, self::$BOT_MAP);
+            if ($bot_id = array_search(strtolower($v), self::$BOT_MAP)) {
                 continue;
             }
 
