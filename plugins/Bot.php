@@ -128,22 +128,26 @@ class Bot extends Base {
         $bot = self::get_my_bot($this->from_id);
         if (empty($bot) || $is_set) {
             if (empty($bot_id)) {
+
+                $key_board = NULL;
+                foreach (self::$BOT_MAP as $v) {
+                    $key_board[] = array(
+                        '/bot set ' . $v,
+                    );
+                }
+
                 //发送
                 Telegram::singleton()->send_message(array(
                     'chat_id'             => $this->chat_id,
                     'text'                => '请选择你要使用的机器人！' . PHP_EOL . '目前支持：' . PHP_EOL . implode(PHP_EOL, self::$BOT_MAP) . PHP_EOL,
                     'reply_to_message_id' => $this->msg_id,
-                    'reply_markup'        => json_encode(  array(
-                        'keyboard'          => array(
-                            array_values(self::$BOT_MAP),
-                        ),
+                    'reply_markup'        => json_encode(array(
+                        'keyboard'          => $key_board,
                         'resize_keyboard'   => true,
                         'one_time_keyboard' => true,
                         'selective'         => true,
                     )),
                 ));
-                
-                $this->set_reply();
             } else {
                 //发送
                 self::set_my_bot($this->from_id, $bot_id);
