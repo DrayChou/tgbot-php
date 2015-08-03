@@ -9,7 +9,7 @@
 class Admin extends Base
 {
     static $ADMIN_MAP = array(
-        'ResetRouting'
+        'resetrouting'
     );
 
     static function desc() {
@@ -63,7 +63,7 @@ class Admin extends Base
         }
 
         switch ($do_) {
-            case self::$ADMIN_MAP[0]: {
+            case 0: {
                 Db::get_router(true);
                 break;
             }
