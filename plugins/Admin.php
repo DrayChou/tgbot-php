@@ -8,6 +8,9 @@
  */
 class Admin extends Base
 {
+    static $ADMIN_MAP = array(
+        'Reset Routing'
+    );
 
     static function desc() {
         return "/admin - admin";
@@ -17,24 +20,6 @@ class Admin extends Base
         return array(
             "/admin - admin",
         );
-    }
-
-    /**
-     * 不管什么情况都会执行的函数
-     */
-    public function pre_process() {
-        //如果有调用参数，那么跳过
-        if (isset($this->parms[0])) {
-            return;
-        }
-
-        //如果是私聊，那么机器人接管
-        if ($this->chat_id < 0) {
-            return;
-        }
-
-        $this->text = $this->parm;
-        $this->run();
     }
 
     /**
@@ -50,54 +35,53 @@ class Admin extends Base
             return;
         }
 
-        $is_set  = false;
-        $set_arr = array('s', 'set');
-        $set_flg = false;
-
-        $bot_id = false;
+        $do_ = false;
 
         $parms = array();
         foreach ($this->parms as $k => $v) {
-            if (in_array($v, self::$BOT_MAP)) {
-                $bot_id = array_search($v, self::$BOT_MAP);
+            if ($do_ = array_search(strtolower($v), self::$ADMIN_MAP)) {
                 continue;
-            }
-
-            if (false == $set_flg) {
-                if (in_array($v, $set_arr)) {
-                    $is_set  = true;
-                    $set_flg = true;
-                    continue;
-                }
             }
 
             $parms[] = $v;
         }
 
-        if ($is_set && $bot_id) {
-            self::set_my_bot($this->from_id, $bot_id);
+        if (empty($do_)) {
+            $key_board = NULL;
+            foreach (self::$ADMIN_MAP as $v) {
+                $key_board[] = array(
+                    $v,
+                );
+            }
 
             //发送
             Telegram::singleton()->send_message(array(
                 'chat_id'             => $this->chat_id,
-                'text'                => '机器人已经设置好了，亲！',
+                'text'                => '请选择你要使用的功能！' . PHP_EOL . '目前支持：' . PHP_EOL . implode(PHP_EOL, self::$ADMIN_MAP) . PHP_EOL,
                 'reply_to_message_id' => $this->msg_id,
-            ));
-        } else {
-            //发送
-            Telegram::singleton()->send_message(array(
-                'chat_id'             => $this->chat_id,
-                'text'                => '请选择你要使用的机器人！',
-                'reply_to_message_id' => $this->msg_id,
-                'reply_markup'        => array(
-                    'keyboard'          => array(
-                        self::$BOT_MAP,
-                    ),
+                'reply_markup'        => json_encode(array(
+                    'keyboard'          => $key_board,
                     'resize_keyboard'   => true,
-                    'one_time_keyboard' => 'true',
-                    'selective'         => 'true',
-                ),
+                    'one_time_keyboard' => true,
+                    'selective'         => true,
+                )),
             ));
+
+            return;
         }
+
+        switch ($do_) {
+            case self::$ADMIN_MAP[0]: {
+                Db::get_router(true);
+                break;
+            }
+        }
+
+        //发送
+        Telegram::singleton()->send_message(array(
+            'chat_id'             => $this->chat_id,
+            'text'                => '操作完成，亲！',
+            'reply_to_message_id' => $this->msg_id,
+        ));
     }
 }

@@ -105,11 +105,11 @@ class Db
      * @return bool|mixed|string
      * @throws Exception
      */
-    static function get_router() {
+    static function get_router($use_cache = true) {
         $key    = self::get_bot_name() . 'config:router';
         $redis  = self::get_redis();
         $router = $redis->get($key);
-        if (empty($router)) {
+        if ($use_cache == false || empty($router)) {
             $tmp      = CFun::get_router();
             $bot_info = Db::get_bot_info();
 
