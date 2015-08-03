@@ -38,9 +38,9 @@ class Admin extends Base
         $parms = array();
         foreach ($this->parms as $k => $v) {
             $is_flg = false;
-            foreach (self::$ADMIN_MAP as $n) {
+            foreach (self::$ADMIN_MAP as $m => $n) {
                 if (0 == strcasecmp($v, $n)) {
-                    $do_    = $n;
+                    $do_    = $m;
                     $is_flg = true;
                     break;
                 }
