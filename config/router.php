@@ -67,4 +67,7 @@ return array(
 
     //管理后台
     '#^/(admin)(@%%bot_name%%| |)(.*)$#iu'     => 'admin',
+
+    //测试
+    '#^/(test)(@%%bot_name%%| |)(.*)$#iu'      => 'test',
 );
