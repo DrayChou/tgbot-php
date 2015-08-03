@@ -9,7 +9,7 @@
 class Admin extends Base
 {
     static $ADMIN_MAP = array(
-        'Reset Routing'
+        'ResetRouting'
     );
 
     static function desc() {
