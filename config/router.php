@@ -43,25 +43,28 @@ return array(
 
     //大胸
     '#^/(boobs)(@%%bot_name%%| |)(.*)$#iu'     => 'boobs',
-    
+
     //美腿
     '#^/(butts)(@%%bot_name%%| |)(.*)$#iu'     => 'butts',
-    
+
     //狗图
     '#^/(dogify)(@%%bot_name%%| |)(.*)$#iu'    => 'dogify',
-    
+
     //知乎
     '#^/(zhihu)(@%%bot_name%%| |)(.*)$#iu'     => 'zhihu',
-    
+
     //天气预报
     '#^/(weather)(@%%bot_name%%| |)(.*)$#iu'   => 'weather',
 
     //wiki知识查询
     '#^/(wiki)(@%%bot_name%%| |)(.*)$#iu'      => 'wiki',
-    
+
     //github 资料查询
     '#^/(github)(@%%bot_name%%| |)(.*)$#iu'    => 'github',
-    
+
     //开始使用
-    '#^/(start)(@%%bot_name%%| |)(.*)$#iu'   => 'start',
+    '#^/(start)(@%%bot_name%%| |)(.*)$#iu'     => 'start',
+
+    //管理后台
+    '#^/(admin)(@%%bot_name%%| |)(.*)$#iu'     => 'admin',
 );
