@@ -121,6 +121,9 @@ class Admin extends Base
                 $res_str = '';
                 $res_str .= $exec . PHP_EOL;
                 $res_str .= print_r($output, true) . PHP_EOL;
+
+                $res_str .= exec('whoami') . PHP_EOL;
+
                 break;
             }
         }
