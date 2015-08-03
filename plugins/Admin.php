@@ -114,8 +114,9 @@ class Admin extends Base
                 break;
             }
             case 3: {
-                $dir = dirname(dirname(__FILE__));
-                exec("cd {$dir} && /usr/lib/git-core/git pull && cd -", $output);
+                $dir  = dirname(dirname(__FILE__));
+                $exec = "cd {$dir} && /usr/lib/git-core/git pull && cd -";
+                exec($exec, $output);
                 $res_str = print_r($output, true);
                 break;
             }
