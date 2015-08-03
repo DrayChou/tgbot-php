@@ -11,6 +11,7 @@ class Admin extends Base
     static $ADMIN_MAP = array(
         1 => 'reset_routing',
         2 => 'sys_info',
+        3 => 'git_pull',
     );
 
     static function desc() {
@@ -110,6 +111,12 @@ class Admin extends Base
                 $res_str .= 'swap.percent: ' . $sys_info['swapPercent'] . PHP_EOL;
                 $res_str .= 'loadavg: ' . $sys_info['loadAvg'] . PHP_EOL;
 
+                break;
+            }
+            case 3: {
+                $dir = dirname(dirname(__FILE__));
+                exec("cd {$dir} && /usr/lib/git-core/git pull && cd -", $output);
+                $res_str = print_r($output, true);
                 break;
             }
         }
