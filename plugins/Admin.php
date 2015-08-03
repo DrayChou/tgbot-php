@@ -114,15 +114,15 @@ class Admin extends Base
                 break;
             }
             case 3: {
-                $dir  = dirname(dirname(__FILE__));
-                $exec = "cd {$dir} && /usr/lib/git-core/git pull && cd -";
-                exec($exec, $output);
+                $dir    = dirname(dirname(__FILE__));
+                $exec   = "cd {$dir} && /usr/lib/git-core/git pull && cd -";
+                $output = shell_exec($exec);
 
                 $res_str = '';
                 $res_str .= $exec . PHP_EOL;
                 $res_str .= print_r($output, true) . PHP_EOL;
 
-                $res_str .= exec('whoami') . PHP_EOL;
+                $res_str .= shell_exec('whoami') . PHP_EOL;
 
                 break;
             }
