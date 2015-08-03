@@ -91,24 +91,24 @@ class Admin extends Base
                     break;
                 }
 
-                $res_str .= 'cpu,num' . $sys_info['cpu']['num'] . PHP_EOL;
-                $res_str .= 'cpu,model' . $sys_info['cpu']['model'] . PHP_EOL;
-                $res_str .= 'uptime' . $sys_info['uptime'] . PHP_EOL;
-                $res_str .= 'mem.total' . $sys_info['memTotal'] . PHP_EOL;
-                $res_str .= 'mem.free' . $sys_info['memFree'] . PHP_EOL;
-                $res_str .= 'mem.buffers' . $sys_info['memBuffers'] . PHP_EOL;
-                $res_str .= 'mem.cached' . $sys_info['memCached'] . PHP_EOL;
-                $res_str .= 'mem.used' . $sys_info['memUsed'] . PHP_EOL;
-                $res_str .= 'mem.percent' . $sys_info['memPercent'] . PHP_EOL;
-                $res_str .= 'mem.real.used' . $sys_info['memRealUsed'] . PHP_EOL;
-                $res_str .= 'mem.real.free' . $sys_info['memRealFree'] . PHP_EOL;
-                $res_str .= 'mem.real.percent' . $sys_info['memRealPercent'] . PHP_EOL;
-                $res_str .= 'mem.cached.percent' . $sys_info['memCachedPercent'] . PHP_EOL;
-                $res_str .= 'swap.total' . $sys_info['swapTotal'] . PHP_EOL;
-                $res_str .= 'swap.free' . $sys_info['swapFree'] . PHP_EOL;
-                $res_str .= 'swap.used' . $sys_info['swapUsed'] . PHP_EOL;
-                $res_str .= 'swap.percent' . $sys_info['swapPercent'] . PHP_EOL;
-                $res_str .= 'loadavg' . $sys_info['loadAvg'] . PHP_EOL;
+                $res_str .= 'cpu,num: ' . $sys_info['cpu']['num'] . PHP_EOL;
+                $res_str .= 'cpu,model: ' . $sys_info['cpu']['model'] . PHP_EOL;
+                $res_str .= 'uptime: ' . $sys_info['uptime'] . PHP_EOL;
+                $res_str .= 'mem.total: ' . $sys_info['memTotal'] . PHP_EOL;
+                $res_str .= 'mem.free: ' . $sys_info['memFree'] . PHP_EOL;
+                $res_str .= 'mem.buffers: ' . $sys_info['memBuffers'] . PHP_EOL;
+                $res_str .= 'mem.cached: ' . $sys_info['memCached'] . PHP_EOL;
+                $res_str .= 'mem.used: ' . $sys_info['memUsed'] . PHP_EOL;
+                $res_str .= 'mem.percent: ' . $sys_info['memPercent'] . PHP_EOL;
+                $res_str .= 'mem.real.used: ' . $sys_info['memRealUsed'] . PHP_EOL;
+                $res_str .= 'mem.real.free: ' . $sys_info['memRealFree'] . PHP_EOL;
+                $res_str .= 'mem.real.percent: ' . $sys_info['memRealPercent'] . PHP_EOL;
+                $res_str .= 'mem.cached.percent: ' . $sys_info['memCachedPercent'] . PHP_EOL;
+                $res_str .= 'swap.total: ' . $sys_info['swapTotal'] . PHP_EOL;
+                $res_str .= 'swap.free: ' . $sys_info['swapFree'] . PHP_EOL;
+                $res_str .= 'swap.used: ' . $sys_info['swapUsed'] . PHP_EOL;
+                $res_str .= 'swap.percent: ' . $sys_info['swapPercent'] . PHP_EOL;
+                $res_str .= 'loadavg: ' . $sys_info['loadAvg'] . PHP_EOL;
 
                 break;
             }
