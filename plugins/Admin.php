@@ -42,7 +42,7 @@ class Admin extends Base
             $key_board = NULL;
             foreach (self::$ADMIN_MAP as $v) {
                 $key_board[] = array(
-                    $v,
+                    '/admin ' . $v,
                 );
             }
 
