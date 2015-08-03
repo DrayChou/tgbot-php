@@ -117,7 +117,10 @@ class Admin extends Base
                 $dir  = dirname(dirname(__FILE__));
                 $exec = "cd {$dir} && /usr/lib/git-core/git pull && cd -";
                 exec($exec, $output);
-                $res_str = print_r($output, true);
+
+                $res_str = '';
+                $res_str .= $exec . PHP_EOL;
+                $res_str .= print_r($output, true) . PHP_EOL;
                 break;
             }
         }
