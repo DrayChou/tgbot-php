@@ -28,15 +28,7 @@ class Admin extends Base
     public function run() {
         CFun::echo_log("Admin run 执行");
 
-        //如果是需要回掉的请求
-        if (empty($this->text)) {
-            $this->set_reply();
-
-            return;
-        }
-
-        $do_ = false;
-
+        $do_   = false;
         $parms = array();
         foreach ($this->parms as $k => $v) {
             if ($do_ = array_search(strtolower($v), self::$ADMIN_MAP)) {
