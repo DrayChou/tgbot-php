@@ -9,7 +9,7 @@
 class Admin extends Base
 {
     static $ADMIN_MAP = array(
-        1 => 'resetrouting'
+        1 => 'reset_routing',
     );
 
     static function desc() {
@@ -31,7 +31,16 @@ class Admin extends Base
         $do_   = false;
         $parms = array();
         foreach ($this->parms as $k => $v) {
-            if ($do_ = array_search(strtolower($v), self::$ADMIN_MAP)) {
+            $is_flg = false;
+            foreach (self::$ADMIN_MAP as $n) {
+                if (0 == strcasecmp($v, $n)) {
+                    $do_    = $n;
+                    $is_flg = true;
+                    break;
+                }
+            }
+
+            if ($is_flg) {
                 continue;
             }
 
