@@ -106,10 +106,7 @@ class Base
      */
     public function pre_process() {
         $class = get_called_class();
-
-        $key  = 'need_reply:' . $class . ':' . $this->chat_id . ':' . $this->from_id;
-        $text = Db::get($key);
-        if (empty($text) || isset($this->parms[0])) {
+        if (false == $this->is_has_reply()) {
             CFun::echo_log($class . " pre_process 没有需要处理的 跳过");
 
             return;
@@ -117,6 +114,7 @@ class Base
 
         CFun::echo_log($class . " pre_process 抓到需要处理的回复 parm=%s", $this->parm);
 
+        $key = 'need_reply:' . $class . ':' . $this->chat_id . ':' . $this->from_id;
         Db::set($key, NULL, -1);
 
         $this->text = $this->parm;
@@ -174,6 +172,17 @@ class Base
         //记录一个状态，下次检测到这个用户在这个群组里说过话之后就失效掉
         $key = 'need_reply:' . $class . ':' . $this->chat_id . ':' . $this->from_id;
         Db::set($key, 1, $class::WAIT_FOR_QUESTION);
+    }
+
+    /**
+     * 检查是否有需要回掉的消息
+     * @return bool
+     */
+    protected function is_has_reply() {
+        $class = get_called_class();
+        $key   = 'need_reply:' . $class . ':' . $this->chat_id . ':' . $this->from_id;
+
+        return (bool)Db::get($key);
     }
 
     /**
