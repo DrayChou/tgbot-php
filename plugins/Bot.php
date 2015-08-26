@@ -36,8 +36,10 @@ class Bot extends Base
     static function get_my_bot($user_id) {
         $bot_id = (int)Db::get_redis()->hGet('bot_index', $user_id);
 
+        //如果没有设置过机器人，那么使用默认机器人
         if (!isset(self::$BOT_MAP[$bot_id])) {
-            return NULL;
+            $bot_id = 1;
+//            return NULL;
         }
 
         return Process::get_class(self::$BOT_MAP[$bot_id]);
