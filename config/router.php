@@ -14,7 +14,7 @@ return array(
     '#^/(google)(@%%bot_name%%| |)(.*)$#iu'    => 'google',
 
     //谷歌图片搜索的匹配规则
-    '#^/(img)(@%%bot_name%%| |)(.*)$#iu'       => 'googleimg',
+    '#^/(img)(@%%bot_name%%| |)(.*)$#iu'       => 'baiduimg',
 
     //用户在线状态接口的匹配规则
     '#^/(stats)(@%%bot_name%%| |)(.*)$#iu'     => 'stats',
