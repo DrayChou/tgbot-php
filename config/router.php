@@ -8,29 +8,32 @@
  */
 return array(
     //帮助脚本的匹配规则
-    '#^/(help)(@%%bot_name%%| |)(.*)$#iu'      => 'help',
+    '#^/(help)(@%%bot_name%%| |)(.*)$#iu' => 'help',
 
     //谷歌搜索的匹配规则
-    '#^/(google)(@%%bot_name%%| |)(.*)$#iu'    => 'google',
+    '#^/(google)(@%%bot_name%%| |)(.*)$#iu' => 'google',
 
-    //谷歌图片搜索的匹配规则
-    '#^/(img)(@%%bot_name%%| |)(.*)$#iu'       => 'baiduimg',
+    //图片搜索的匹配规则
+    '#^/(img)(@%%bot_name%%| |)(.*)$#iu' => 'pixabay',
+
+    //GIF 搜索的匹配规则
+    '#^/(gif)(@%%bot_name%%| |)(.*)$#iu' => 'giphy',
 
     //用户在线状态接口的匹配规则
-    '#^/(stats)(@%%bot_name%%| |)(.*)$#iu'     => 'stats',
-    '#^/(state)(@%%bot_name%%| |)(.*)$#iu'     => 'stats',
+    '#^/(stats)(@%%bot_name%%| |)(.*)$#iu' => 'stats',
+    '#^/(state)(@%%bot_name%%| |)(.*)$#iu' => 'stats',
 
     //机器人的输出什么命令
-    '#^/(echo)(@%%bot_name%%| |)(.*)$#iu'      => 'echo_',
+    '#^/(echo)(@%%bot_name%%| |)(.*)$#iu' => 'echo_',
 
     //查询ID
-    '#^/(id)(@%%bot_name%%| |)(.*)$#iu'        => 'id',
+    '#^/(id)(@%%bot_name%%| |)(.*)$#iu' => 'id',
 
     //计算数学
-    '#^/(calc)(@%%bot_name%%| |)(.*)$#iu'      => 'calculate',
+    '#^/(calc)(@%%bot_name%%| |)(.*)$#iu' => 'calculate',
 
     //搜索百度盘
-    '#^/(bp)(@%%bot_name%%| |)(.*)$#iu'        => 'googlebaidupan',
+    '#^/(bp)(@%%bot_name%%| |)(.*)$#iu' => 'googlebaidupan',
 
     //图灵机器人的匹配规则
     '#^/(tuling123)(@%%bot_name%%| |)(.*)$#iu' => 'tuling123',
@@ -39,32 +42,32 @@ return array(
     '#^/(cleverbot)(@%%bot_name%%| |)(.*)$#iu' => 'cleverbot',
 
     //机器人
-    '#^/(bot)(@%%bot_name%%| |)(.*)$#iu'       => 'bot',
+    '#^/(bot)(@%%bot_name%%| |)(.*)$#iu' => 'bot',
 
     //大胸
-    '#^/(boobs)(@%%bot_name%%| |)(.*)$#iu'     => 'boobs',
+    '#^/(boobs)(@%%bot_name%%| |)(.*)$#iu' => 'boobs',
 
     //美腿
-    '#^/(butts)(@%%bot_name%%| |)(.*)$#iu'     => 'butts',
+    '#^/(butts)(@%%bot_name%%| |)(.*)$#iu' => 'butts',
 
     //狗图
-    '#^/(dogify)(@%%bot_name%%| |)(.*)$#iu'    => 'dogify',
+    '#^/(dogify)(@%%bot_name%%| |)(.*)$#iu' => 'dogify',
 
     //知乎
-    '#^/(zhihu)(@%%bot_name%%| |)(.*)$#iu'     => 'zhihu',
+    '#^/(zhihu)(@%%bot_name%%| |)(.*)$#iu' => 'zhihu',
 
     //天气预报
-    '#^/(weather)(@%%bot_name%%| |)(.*)$#iu'   => 'weather',
+    '#^/(weather)(@%%bot_name%%| |)(.*)$#iu' => 'weather',
 
     //wiki知识查询
-    '#^/(wiki)(@%%bot_name%%| |)(.*)$#iu'      => 'wiki',
+    '#^/(wiki)(@%%bot_name%%| |)(.*)$#iu' => 'wiki',
 
     //github 资料查询
-    '#^/(github)(@%%bot_name%%| |)(.*)$#iu'    => 'github',
+    '#^/(github)(@%%bot_name%%| |)(.*)$#iu' => 'github',
 
     //开始使用
-    '#^/(start)(@%%bot_name%%| |)(.*)$#iu'     => 'start',
+    '#^/(start)(@%%bot_name%%| |)(.*)$#iu' => 'start',
 
     //管理后台
-    '#^/(admin)(@%%bot_name%%| |)(.*)$#iu'     => 'admin',
+    '#^/(admin)(@%%bot_name%%| |)(.*)$#iu' => 'admin',
 );
