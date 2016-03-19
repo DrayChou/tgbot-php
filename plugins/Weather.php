@@ -9,7 +9,7 @@
 class Weather extends Base
 {
     static function desc() {
-        return "/weather in that city";
+        return "/weather - weather in that city";
     }
 
     static function usage() {

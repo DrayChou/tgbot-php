@@ -10,7 +10,7 @@
 class Calculate extends Base
 {
     static function desc() {
-        return "/calc [expression]: Calculate math expressions with mathjs API.";
+        return "/calc - Calculate math expressions with mathjs API.";
     }
 
     static function usage() {

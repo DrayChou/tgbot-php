@@ -18,13 +18,13 @@ class Bot extends Base
     );
 
     static function desc() {
-        return "/Bot - say to bot...";
+        return "/bot - say to bot...";
     }
 
     static function usage() {
         return array(
-            "/Bot set: set default bot.",
-            "/Bot - say to bot...",
+            "/bot set: set default bot.",
+            "/bot - say to bot...",
         );
     }
 

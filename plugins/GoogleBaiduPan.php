@@ -9,7 +9,7 @@
 class Googlebaidupan extends Base
 {
     static function desc() {
-        return "/bp [info]: Searches in pan.baidu.com by Google and send results";
+        return "/bp - Searches in pan.baidu.com by Google and send results";
     }
 
     static function usage() {
