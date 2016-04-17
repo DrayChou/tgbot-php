@@ -140,10 +140,10 @@ class Admin extends Base
                     $res_str .= print_r($output, true) . PHP_EOL;
 
                     $bot   = Db::get_bot_name();
-                    $exec = "redis-cli hlen \"{$bot}:users:ids\"";
+                    $exec = "redis-cli hlen \"{$bot}users:ids\"";
                     $output = shell_exec($exec);
 
-                    $res_str = '';
+                    // $res_str = '';
                     $res_str .= $exec . PHP_EOL;
                     $res_str .= print_r($output, true) . PHP_EOL;
                     break;
