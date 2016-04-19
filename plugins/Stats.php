@@ -318,6 +318,9 @@ class Stats extends Base
     public function msg_enter_chat() {
         Common::echo_log("有人进入群");
         
+        $bot   = Db::get_bot_name();
+        $redis = Db::get_redis();
+        
         //记录进入群的时间
         $redis->hSet($bot . 'chat:' . $this->chat_id . ':enter_chat_times', $this->new_id, date("Y-m-d H:i:s"));
     }
@@ -328,11 +331,11 @@ class Stats extends Base
     public function msg_left_chat() {
         Common::echo_log("有人离开群");
         
-        //记录离开群的时间
-        $redis->hSet($bot . 'chat:' . $this->chat_id . ':left_chat_times', $this->new_id, date("Y-m-d H:i:s"));
-
         $bot   = Db::get_bot_name();
         $redis = Db::get_redis();
+        
+        //记录离开群的时间
+        $redis->hSet($bot . 'chat:' . $this->chat_id . ':left_chat_times', $this->new_id, date("Y-m-d H:i:s"));
 
         //删除离开的用户的数据
         $redis->sRemove($bot . 'chat:' . $this->chat_id . ':users', $this->level_id);
