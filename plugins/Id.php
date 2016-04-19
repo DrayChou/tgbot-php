@@ -22,7 +22,7 @@ class Id extends Base
      * 当命令满足的时候，执行的基础执行函数
      */
     public function run() {
-        CFun::echo_log("执行 Id run");
+        Common::echo_log("执行 Id run");
 
         $user_id = $this->from_id;
         if (!empty($this->text)) {

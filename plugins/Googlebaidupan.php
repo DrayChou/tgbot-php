@@ -23,7 +23,7 @@ class Googlebaidupan extends Base
      * @throws Exception
      */
     public function run() {
-        CFun::echo_log("GoogleBaiduPan run 执行");
+        Common::echo_log("GoogleBaiduPan run 执行");
 
         //如果是需要回掉的请求
         if (empty($this->text)) {
@@ -37,7 +37,7 @@ class Googlebaidupan extends Base
             'q' => $this->text . ' site:pan.baidu.com',
         );
         $url  = "http://ajax.googleapis.com/ajax/services/search/web?" . http_build_query($data);
-        $res  = CFun::curl($url);
+        $res  = Common::curl($url);
 
         $res_str = '';
         if (!isset($res['responseStatus']) || $res['responseStatus'] != 200) {

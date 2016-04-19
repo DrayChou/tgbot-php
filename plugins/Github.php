@@ -23,7 +23,7 @@ class Github extends Base
      * @throws Exception
      */
     public function run() {
-        CFun::echo_log("Github run 执行");
+        Common::echo_log("Github run 执行");
 
         //如果是需要回掉的请求
         if (empty($this->text)) {
@@ -33,7 +33,7 @@ class Github extends Base
         }
 
         $url = "https://api.github.com/users/" . $this->text;
-        $res = CFun::curl($url);
+        $res = Common::curl($url);
 
         if (!isset($res['id'])) {
             $res_str = 'Can\'t get user info from Github.';

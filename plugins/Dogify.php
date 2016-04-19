@@ -22,7 +22,7 @@ class Dogify extends Base
      * 当命令满足的时候，执行的基础执行函数
      */
     public function run() {
-        CFun::echo_log("执行 Butts run");
+        Common::echo_log("执行 Butts run");
 
         //如果是需要回掉的请求
         if (empty($this->text)) {

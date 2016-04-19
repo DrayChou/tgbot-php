@@ -15,11 +15,11 @@ class Db
      * @throws Exception
      */
     static function get_redis() {
-        $redis_config = CFun::get_config('redis');
+        $redis_config = Common::get_config('redis');
         if (empty($redis_config)) {
             $err = 'error redis config';
-            CFun::echo_log($err);
-            CFun::report_err($err);
+            Common::echo_log($err);
+            Common::report_err($err);
 
             return NULL;
         }
@@ -36,11 +36,11 @@ class Db
      * @throws Exception
      */
     static function get_bot_info() {
-        $token = CFun::get_config('token');
+        $token = Common::get_config('token');
         if (empty($token)) {
             $err = 'error token';
-            CFun::echo_log($err);
-            CFun::report_err($err);
+            Common::echo_log($err);
+            Common::report_err($err);
 
             return NULL;
         }
@@ -82,7 +82,7 @@ class Db
 
         $id = (int)$redis->get($key);
 
-        CFun::echo_log('update_id:%s', $id);
+        Common::echo_log('update_id:%s', $id);
 
         return $id;
     }
@@ -110,7 +110,7 @@ class Db
         $redis  = self::get_redis();
         $router = $redis->get($key);
         if ($use_cache == false || empty($router)) {
-            $tmp      = CFun::get_router();
+            $tmp      = Common::get_router();
             $bot_info = Db::get_bot_info();
 
             foreach ($tmp as $reg => $class) {

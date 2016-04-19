@@ -26,7 +26,7 @@ class Giphy extends Base
      */
     public function run()
     {
-        CFun::echo_log('执行 Giphy run');
+        Common::echo_log('执行 Giphy run');
 
         //如果是需要回掉的请求
         if (empty($this->text)) {
@@ -44,7 +44,7 @@ class Giphy extends Base
             'q' => $this->text,
         );
         $url = 'http://api.giphy.com/v1/gifs/search?' . http_build_query($data);
-        $res = CFun::curl($url);
+        $res = Common::curl($url);
 
         if (!isset($res['data'])) {
             $res_str = 'api error!';

@@ -29,7 +29,7 @@ class Tuling123 extends Base
      * 当命令满足的时候，执行的基础执行函数
      */
     public function run() {
-        CFun::echo_log("Tuling123 run 执行");
+        Common::echo_log("Tuling123 run 执行");
 
         //如果是需要回掉的请求
         if (empty($this->text)) {
@@ -46,11 +46,11 @@ class Tuling123 extends Base
             return;
         }
 
-        $tuling_config = CFun::get_config('tuling');
+        $tuling_config = Common::get_config('tuling');
         if (!isset($tuling_config['key'])) {
             $err = "tuling key error";
-            CFun::echo_log($err);
-            CFun::report_err($err);
+            Common::echo_log($err);
+            Common::report_err($err);
 
             return;
         }
@@ -61,7 +61,7 @@ class Tuling123 extends Base
             'info'   => $this->text,
         );
         $url  = "http://www.tuling123.com/openapi/api?" . http_build_query($data);
-        $res  = CFun::curl($url);
+        $res  = Common::curl($url);
 
         $res_str = $res['text'];
 

@@ -27,7 +27,7 @@ class Pixabay extends Base
      */
     public function run()
     {
-        CFun::echo_log('执行 Pixabay run');
+        Common::echo_log('执行 Pixabay run');
 
         //如果是需要回掉的请求
         if (empty($this->text)) {
@@ -49,7 +49,7 @@ class Pixabay extends Base
             'q' => $this->text,
         );
         $url = 'https://pixabay.com/api/?' . http_build_query($data);
-        $res = CFun::curl($url);
+        $res = Common::curl($url);
 
         if (!isset($res['hits'])) {
             $res_str = 'api error!';

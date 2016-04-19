@@ -265,17 +265,17 @@ class Stats extends Base
      * 不管什么情况都会执行的函数
      */
     public function pre_process() {
-        CFun::echo_log("统计数据 开始");
+        Common::echo_log("统计数据 开始");
 
         if (empty($this->parm)) {
-            CFun::echo_log("统计数据 内容为空，跳过");
+            Common::echo_log("统计数据 内容为空，跳过");
 
             return;
         }
 
         //如果不是群组聊天的话，跳过
         if ($this->chat_id >= 0) {
-            CFun::echo_log("统计数据 不是群组聊天，跳过");
+            Common::echo_log("统计数据 不是群组聊天，跳过");
 
             return;
         }
@@ -283,12 +283,12 @@ class Stats extends Base
         //如果是本机器人说的话，忽略不计
         $bot_info = Db::get_bot_info();
         if ($this->from_id == $bot_info['id']) {
-            CFun::echo_log("统计数据 机器人自己发出的，跳过");
+            Common::echo_log("统计数据 机器人自己发出的，跳过");
 
             return;
         }
 
-        CFun::echo_log("统计数据 更新数据");
+        Common::echo_log("统计数据 更新数据");
 
         $bot   = Db::get_bot_name();
         $redis = Db::get_redis();
@@ -309,21 +309,32 @@ class Stats extends Base
         //刷新每天这个群的最大最小发言数
         $this->build_stats_data($this->chat_id, date('Ymd'));
 
-        CFun::echo_log("统计数据 数据更新完毕");
+        Common::echo_log("统计数据 数据更新完毕");
+    }
+    
+    /**
+     * 当有人进入群的时候
+     */
+    public function msg_enter_chat() {
+        Common::echo_log("有人进入群");
+        
+        //记录进入群的时间
+        $redis->hSet($bot . 'chat:' . $this->chat_id . ':enter_chat_times', $this->new_id, date("Y-m-d H:i:s"));
     }
 
     /**
      * 有人离开群的时候
      */
     public function msg_left_chat() {
-        CFun::echo_log("有人离开群");
+        Common::echo_log("有人离开群");
+        
+        //记录离开群的时间
+        $redis->hSet($bot . 'chat:' . $this->chat_id . ':left_chat_times', $this->new_id, date("Y-m-d H:i:s"));
 
         $bot   = Db::get_bot_name();
         $redis = Db::get_redis();
 
         //删除离开的用户的数据
-//        $redis->hDel($bot . 'users:ids', $this->level_id);
-//        $redis->hDel($bot . 'users:usernames', $this->level_username);
         $redis->sRemove($bot . 'chat:' . $this->chat_id . ':users', $this->level_id);
         $redis->del($bot . 'msgs:' . $this->level_id . ':' . $this->chat_id);
         $redis->del($bot . 'day_msgs:' . date('Ymd') . $this->level_id . ':' . $this->chat_id);
@@ -333,7 +344,7 @@ class Stats extends Base
      * 当命令满足的时候，执行的基础执行函数
      */
     public function run() {
-        CFun::echo_log("执行 Stats run text=%s", $this->parms);
+        Common::echo_log("执行 Stats run text=%s", $this->parms);
 
         if ($this->parms[0] == 'state') {
 

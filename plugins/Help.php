@@ -40,8 +40,8 @@ class Help extends Base
                 if (strtolower($class) == strtolower($text)) {
                     $desc = $class::usage();
                 } elseif (preg_match($reg, ('/' . $text), $m)) {
-                    CFun::echo_log('Help:get_helps 正则匹配结果: $reg=%s $text=%s $m=%s', $reg, $text, $m);
-                    CFun::echo_log('Help:get_helps 正则匹配到的插件: $class=%s', $class);
+                    Common::echo_log('Help:get_helps 正则匹配结果: $reg=%s $text=%s $m=%s', $reg, $text, $m);
+                    Common::echo_log('Help:get_helps 正则匹配到的插件: $class=%s', $class);
 
                     $desc = $class::usage();
                 }
@@ -94,7 +94,7 @@ class Help extends Base
      * 当命令满足的时候，执行的基础执行函数
      */
     public function run() {
-        CFun::echo_log("执行 Help run");
+        Common::echo_log("执行 Help run");
 
         $res_str = $this->get_helps($this->text);
         if (empty($this->text) || strtolower($this->text) == 'all') {

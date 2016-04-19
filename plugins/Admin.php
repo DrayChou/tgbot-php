@@ -32,9 +32,9 @@ class Admin extends Base
      */
     public function run()
     {
-        CFun::echo_log("Admin run 执行");
+        Common::echo_log("Admin run 执行");
 
-        $admins = CFun::get_config('admins');
+        $admins = Common::get_config('admins');
         if (!in_array($this->from_id, $admins)) {
             return;
         }

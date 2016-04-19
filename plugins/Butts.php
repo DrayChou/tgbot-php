@@ -22,10 +22,10 @@ class Butts extends Base
      * 当命令满足的时候，执行的基础执行函数
      */
     public function run() {
-        CFun::echo_log("执行 Butts run");
+        Common::echo_log("执行 Butts run");
 
         $url = "http://api.obutts.ru/noise/1";
-        $res = CFun::curl($url);
+        $res = Common::curl($url);
 
         if (!isset($res) || !isset($res[0]['preview'])) {
             $res_str = 'Cannot get that butts, trying another one...';

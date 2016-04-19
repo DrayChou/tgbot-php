@@ -84,21 +84,21 @@ class Base
      * 当有人进入群的时候
      */
     public function msg_enter_chat() {
-        CFun::echo_log("有人进入群");
+        Common::echo_log("有人进入群");
     }
 
     /**
      * 有人离开群的时候
      */
     public function msg_left_chat() {
-        CFun::echo_log("有人离开群");
+        Common::echo_log("有人离开群");
     }
 
     /**
      * 有人回复我
      */
     public function msg_reply_me() {
-        CFun::echo_log("有人回复我");
+        Common::echo_log("有人回复我");
     }
 
     /**
@@ -107,12 +107,12 @@ class Base
     public function pre_process() {
         $class = get_called_class();
         if (false == $this->is_has_reply()) {
-            CFun::echo_log($class . " pre_process 没有需要处理的 跳过");
+            Common::echo_log($class . " pre_process 没有需要处理的 跳过");
 
             return;
         }
 
-        CFun::echo_log($class . " pre_process 抓到需要处理的回复 parm=%s", $this->parm);
+        Common::echo_log($class . " pre_process 抓到需要处理的回复 parm=%s", $this->parm);
 
         $key = 'need_reply:' . $class . ':' . $this->chat_id . ':' . $this->from_id;
         Db::set($key, NULL, -1);
@@ -125,7 +125,7 @@ class Base
      * 当命令满足的时候，执行的基础执行函数
      */
     public function run() {
-        CFun::echo_log("做点什么");
+        Common::echo_log("做点什么");
     }
 
     /**
@@ -151,7 +151,7 @@ class Base
      */
     protected function set_reply($res_str = NULL) {
         $class = get_called_class();
-        CFun::echo_log($class . " 设置回掉信息: chat_id=%s from_id=%s", $this->chat_id, $this->from_id);
+        Common::echo_log($class . " 设置回掉信息: chat_id=%s from_id=%s", $this->chat_id, $this->from_id);
 
         if (empty($res_str)) {
             $res_str = '';

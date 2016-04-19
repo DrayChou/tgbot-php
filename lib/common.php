@@ -7,7 +7,7 @@
  * Date: 15/7/10
  * Time: 下午6:43
  */
-class CFun
+class Common
 {
 
     static private $router = array();
@@ -39,7 +39,7 @@ class CFun
             $last_message = print_r($last_message, true);
         }
 
-        $last_message = "\n" . date("Y-m-d H:i:s") . "\t" . CFun::microtime_float() . "\t" . $last_message;
+        $last_message = "\n" . date("Y-m-d H:i:s") . "\t" . Common::microtime_float() . "\t" . $last_message;
         error_log($last_message);
     }
 
@@ -98,8 +98,8 @@ class CFun
     static public function post($url, $data, $res_type = 'json', $method = 'POST') {
         if (empty($url)) {
             $err = 'post error url';
-            CFun::echo_log($err);
-            CFun::report_err($err);
+            Common::echo_log($err);
+            Common::report_err($err);
 
             return;
         }
@@ -132,17 +132,17 @@ class CFun
             $opts['http']['content'] = $postdata;
         }
 
-        CFun::echo_log('CFun: url=%s data=%s', $url, $opts);
+        Common::echo_log('Common: url=%s data=%s', $url, $opts);
 
         $context = stream_context_create($opts);
         $res     = file_get_contents($url, false, $context);
 
-        CFun::echo_log('CFun: time=%s res=%s', (self::microtime_float() - $before_time), $res);
+        Common::echo_log('Common: time=%s res=%s', (self::microtime_float() - $before_time), $res);
 
         if (empty($res)) {
             $err = "post token url={$url} contents=" . print_r($opts, true) . ' res=' . print_r($res, true);
-            CFun::echo_log($err);
-            CFun::report_err($err);
+            Common::echo_log($err);
+            Common::report_err($err);
 
             return NULL;
         }
@@ -162,8 +162,8 @@ class CFun
     static function curl($url, $post = NULL, $type = 'json') {
         if (empty($url)) {
             $err = 'post error url';
-            CFun::echo_log($err);
-            CFun::report_err($err);
+            Common::echo_log($err);
+            Common::report_err($err);
 
             return;
         }
@@ -191,14 +191,14 @@ class CFun
             $info = curl_getinfo($curl);
             curl_close($curl);
 
-            CFun::echo_log('CFun: url=%s', $url);
-            CFun::echo_log('CFun: data=%s', print_r($post, true));
-            CFun::echo_log('CFun: $info=%s', print_r($info, true));
+            Common::echo_log('Common: url=%s', $url);
+            Common::echo_log('Common: data=%s', print_r($post, true));
+            Common::echo_log('Common: $info=%s', print_r($info, true));
 
             if ($res === false || $info['http_code'] != 200) {
                 $err = "post token url={$url} contents=" . print_r($post, true) . ' res=' . print_r($res, true) . ' info=' . print_r($info, true);
-                CFun::echo_log($err);
-                CFun::report_err($err);
+                Common::echo_log($err);
+                Common::report_err($err);
 
                 return $res;
             }
@@ -207,13 +207,13 @@ class CFun
                 $res = json_decode($res, true);
             }
 
-            CFun::echo_log('CFun: res=%s', print_r($res, true));
-            CFun::echo_log('CFun: time=%s', (self::microtime_float() - $before_time));
+            Common::echo_log('Common: res=%s', print_r($res, true));
+            Common::echo_log('Common: time=%s', (self::microtime_float() - $before_time));
 
         } catch (Exception $exc) {
             $err = "post token url={$url} contents=" . print_r($post, true) . ' res=' . print_r($res, true);
-            CFun::echo_log($err);
-            CFun::report_err($err);
+            Common::echo_log($err);
+            Common::report_err($err);
         }
 
         return $res;
@@ -224,14 +224,14 @@ class CFun
      * @param type $text
      */
     static function report_err($text) {
-//        $admins = CFun::get_config('admins');
+//        $admins = Common::get_config('admins');
 //        foreach ($admins as $v) {
 //            $msg = Telegram::singleton()->sendMessage(array(
 //                'chat_id' => $v,
 //                'text'    => $text,
 //            ));
 //
-//            CFun::echo_log("发送信息: msg=%s", $msg);
+//            Common::echo_log("发送信息: msg=%s", $msg);
 //            break;
 //        }
     }

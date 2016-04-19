@@ -23,10 +23,10 @@ class Zhihu extends Base
      * @throws Exception
      */
     public function run() {
-        CFun::echo_log("Zhihu run 执行");
+        Common::echo_log("Zhihu run 执行");
 
         $url = "http://news-at.zhihu.com/api/4/news/latest";
-        $res = CFun::curl($url);
+        $res = Common::curl($url);
 
         if (!isset($res['stories'])) {
             $res_str = '好像出问题了，稍后再试下吧！';

@@ -23,7 +23,7 @@ class Calculate extends Base
      * 当命令满足的时候，执行的基础执行函数
      */
     public function run() {
-        CFun::echo_log("执行 Calculate run");
+        Common::echo_log("执行 Calculate run");
 
         //如果是需要回掉的请求
         if (empty($this->text)) {
@@ -36,7 +36,7 @@ class Calculate extends Base
             'expr' => $this->text,
         );
         $url  = "http://api.mathjs.org/v1/?" . http_build_query($data);
-        $res  = CFun::curl($url);
+        $res  = Common::curl($url);
 
         //回复消息
         Telegram::singleton()->send_message(array(

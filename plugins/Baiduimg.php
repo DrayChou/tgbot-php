@@ -25,7 +25,7 @@ class Baiduimg extends Base
      */
     public function run()
     {
-        CFun::echo_log('执行 BaiduImg run');
+        Common::echo_log('执行 BaiduImg run');
 
         //如果是需要回掉的请求
         if (empty($this->text)) {
@@ -45,7 +45,7 @@ class Baiduimg extends Base
             'word' => $this->text,
         );
         $url = 'image.baidu.com/search/acjson?'.http_build_query($data);
-        $res = CFun::curl($url);
+        $res = Common::curl($url);
 
         if (!isset($res['data'])) {
             $res_str = 'api error!';

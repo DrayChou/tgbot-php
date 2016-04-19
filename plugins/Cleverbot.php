@@ -25,7 +25,7 @@ class Cleverbot extends Base
      * 当命令满足的时候，执行的基础执行函数
      */
     public function run() {
-        CFun::echo_log("Cleverbot run 执行");
+        Common::echo_log("Cleverbot run 执行");
 
         //如果是需要回掉的请求
         if (empty($this->text)) {
@@ -34,7 +34,7 @@ class Cleverbot extends Base
             return;
         }
 
-        $before_time = CFun::microtime_float();
+        $before_time = Common::microtime_float();
 
         //调用接口发送问题
         $factory     = new ChatterBotFactory();
@@ -42,7 +42,7 @@ class Cleverbot extends Base
         $bot1session = $bot1->createSession();
         $res_str     = $bot1session->think($this->text);
 
-        CFun::echo_log('Cleverbot think: time=%s', (CFun::microtime_float() - $before_time));
+        Common::echo_log('Cleverbot think: time=%s', (Common::microtime_float() - $before_time));
 
         //回复消息
         Telegram::singleton()->send_message(array(

@@ -23,7 +23,7 @@ class Weather extends Base
      * @throws Exception
      */
     public function run() {
-        CFun::echo_log("Weather run 执行");
+        Common::echo_log("Weather run 执行");
 
         //如果是需要回掉的请求
         if (empty($this->text)) {
@@ -37,7 +37,7 @@ class Weather extends Base
             'q'     => $this->text,
         );
         $url  = "http://api.openweathermap.org/data/2.5/weather?" . http_build_query($data);
-        $res  = CFun::curl($url);
+        $res  = Common::curl($url);
 
         if (!isset($res['name'])) {
             $res_str = 'Can\'t get weather from that city.';

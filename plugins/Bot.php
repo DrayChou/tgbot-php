@@ -101,7 +101,7 @@ class Bot extends Base
      * 当命令满足的时候，执行的基础执行函数
      */
     public function run() {
-        CFun::echo_log("Bot run 执行");
+        Common::echo_log("Bot run 执行");
 
         //如果是需要回掉的请求
         if (empty($this->text)) {

@@ -22,7 +22,7 @@ class Googleimg extends Base
      * 当命令满足的时候，执行的基础执行函数
      */
     public function run() {
-        CFun::echo_log("执行 GoogleImg run");
+        Common::echo_log("执行 GoogleImg run");
 
         //如果是需要回掉的请求
         if (empty($this->text)) {
@@ -38,7 +38,7 @@ class Googleimg extends Base
             'q'     => $this->text,
         );
         $url  = "http://ajax.googleapis.com/ajax/services/search/images?" . http_build_query($data);
-        $res  = CFun::curl($url);
+        $res  = Common::curl($url);
 
         if (!isset($res['responseStatus']) || $res['responseStatus'] != 200) {
             $res_str = $res['responseDetails'];

@@ -26,7 +26,7 @@ class Wiki extends Base
      * @throws Exception
      */
     public function run() {
-        CFun::echo_log("执行 Wiki run ");
+        Common::echo_log("执行 Wiki run ");
 
         //如果是需要回掉的请求
         if (empty($this->text)) {
@@ -109,7 +109,7 @@ class Wiki extends Base
         }
 
         $url = "https://{$lang}.wikipedia.org/w/api.php?" . http_build_query($data);
-        $res = CFun::curl($url);
+        $res = Common::curl($url);
 
         $res_str = '';
         if (!isset($res['query'])) {
