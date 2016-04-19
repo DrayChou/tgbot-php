@@ -38,7 +38,7 @@ class Process
      * @throws Exception
      */
     static function run($messages = NULL) {
-        CFun::echo_log('处理消息列表: $messages=%s', print_r($messages, true));
+        Common::echo_log('处理消息列表: $messages=%s', print_r($messages, true));
 
         if (empty($messages)) {
             $limit          = 100;
@@ -55,7 +55,7 @@ class Process
         }
 
         if (empty($messages) || !is_array($messages)) {
-            CFun::echo_log('无效的消息列表: $messages=%s', print_r($messages, true));
+            Common::echo_log('无效的消息列表: $messages=%s', print_r($messages, true));
 
             return;
         }
@@ -81,18 +81,18 @@ class Process
 
         //如果是无效的消息的话，跳过
         if (empty($message) || empty($message['message'])) {
-            CFun::echo_log('跳出，没有消息');
+            Common::echo_log('跳出，没有消息');
 
             return;
         }
 
         $last_update_id = Db::get_update_id();
 
-        CFun::echo_log('最后一次处理的消息ID: $last_update_id=%s', $last_update_id);
+        Common::echo_log('最后一次处理的消息ID: $last_update_id=%s', $last_update_id);
 
         //之前已经处理过的信息，跳过
         if ($message['update_id'] <= $last_update_id) {
-            CFun::echo_log('跳过，已经处理过的消息');
+            Common::echo_log('跳过，已经处理过的消息');
 
             return;
         }
@@ -137,8 +137,8 @@ class Process
                 $is_match = preg_match($reg, $msg['text'], $m);
 
                 if ($is_match) {
-                    CFun::echo_log('正则匹配结果: $reg=%s $text=%s $m=%s', $reg, $msg['text'], $m);
-                    CFun::echo_log('正则匹配到的插件: $class=%s', $class);
+                    Common::echo_log('正则匹配结果: $reg=%s $text=%s $m=%s', $reg, $msg['text'], $m);
+                    Common::echo_log('正则匹配到的插件: $class=%s', $class);
 
                     $text  = trim(implode(' ', array_slice($m, 3)));
                     $parms = array($m[1]);
@@ -148,7 +148,7 @@ class Process
 
                     $parms = array_merge($parms, $tmp);
 
-                    CFun::echo_log('分解出来的参数数组: $parms=%s', print_r($parms, true));
+                    Common::echo_log('分解出来的参数数组: $parms=%s', print_r($parms, true));
 
                     //加载消息类
                     $plugins = self::get_class($class);
@@ -157,7 +157,7 @@ class Process
             }
         }
 
-        $bot_open_plugins = CFun::get_config('plugins');
+        $bot_open_plugins = Common::get_config('plugins');
         if (isset($bot_info['username']) && isset($bot_open_plugins[strtolower($bot_info['username'])])) {
             if (!in_array(strtolower(get_class($plugins)), $bot_open_plugins[strtolower($bot_info['username'])])) {
                 return;
@@ -179,7 +179,7 @@ class Process
      * @param $comm
      */
     static function loop_with($fun_arr, $msg, $text = NULL, $parms = NULL) {
-        $router  = CFun::get_router();
+        $router  = Common::get_router();
         $plugins = array_flip($router);
         foreach ($plugins as $class_name => $tmp) {
             $class = self::get_class($class_name);
