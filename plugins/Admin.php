@@ -85,7 +85,7 @@ class Admin extends Base
         $res_str = '操作完成，亲！';
         switch ($do_) {
             case 1:{
-                    Db::get_router(true);
+                    Db::get_router(false);
                     break;
                 }
             case 2:{

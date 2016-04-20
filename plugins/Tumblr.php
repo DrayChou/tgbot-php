@@ -5,7 +5,7 @@
  * @Author: dray
  * @Date:   2016-04-20 20:06:13
  * @Last Modified by:   dray
- * @Last Modified time: 2016-04-20 20:58:30
+ * @Last Modified time: 2016-04-20 21:28:12
  */
 
 class Tumblr extends Base
@@ -59,7 +59,7 @@ class Tumblr extends Base
 
         // 生成 Blog 地址
         if (empty($this->text)) {
-            $blog_url = sRandMember($blog_arr_key);
+            $blog_url = $redis->sRandMember($blog_arr_key);
         } else {
             $tmp = parse_url($this->text, PHP_URL_HOST);
             if (empty($tmp)) {
