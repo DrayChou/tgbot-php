@@ -84,6 +84,10 @@ class Common
      * @return type
      */
     static public function set_config($key, $value) {
+        if (empty(self::$config)) {
+            self::$config = require(BASE_PATH . 'config' . DIRECTORY_SEPARATOR . 'config.php');
+        }
+
         self::$config[$key] = $value;
     }
 
