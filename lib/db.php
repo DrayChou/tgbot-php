@@ -102,7 +102,7 @@ class Db
         $key = self::get_bot_name() . 'update_id';
         $redis = self::get_redis();
 
-        return (int) $redis->set($key, $id);
+        return (int) $redis->set($key, $id, 3600);
     }
 
     /**
