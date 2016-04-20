@@ -37,7 +37,7 @@ class Butts extends Base
         Telegram::singleton()->send_message(array(
             'chat_id'             => $this->from_id,
             'text'                => $res_str,
-            'reply_to_message_id' => $this->msg_id,
+            // 'reply_to_message_id' => $this->msg_id,
         ));
     }
 }
