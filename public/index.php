@@ -19,6 +19,17 @@ date_default_timezone_set(Common::get_config('timezone', 'Asia/Shanghai'));
 //如果有 token 带过来，那么调用对应的机器人
 if (isset($_GET['token'])) {
 
+    // 设置 token
+    Common::set_config('token', $_GET['token']);
+
+    //设置日志
+    ini_set("display_errors", 0);
+    if ($log_path = Common::get_config('log_path')) {
+        ini_set("error_reporting", E_ALL);
+        ini_set("error_log", $log_path . Db::get_bot_name('-') . '.log');
+        ini_set("log_errors", 1);
+    }
+
     //如果需要设置回调
     if (isset($_GET['setWebhook'])) {
         $res = Common::post(
@@ -34,17 +45,6 @@ if (isset($_GET['token'])) {
         }
 
         exit();
-    }
-
-    // 设置 token
-    Common::set_config('token', $_GET['token']);
-
-    //设置日志
-    ini_set("display_errors", 0);
-    if ($log_path = Common::get_config('log_path')) {
-        ini_set("error_reporting", E_ALL);
-        ini_set("error_log", $log_path . Db::get_bot_name('-') . '.log');
-        ini_set("log_errors", 1);
     }
 
     Common::G('run_start');
