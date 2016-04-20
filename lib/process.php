@@ -7,23 +7,24 @@
  * Time: 下午3:22
  */
 
-require_once(LIB_PATH . 'db.php');
+require_once LIB_PATH . 'db.php';
 
 class Process
 {
 
-    static private $instance = array();
+    private static $instance = array();
 
     /**
      * @param null $class_name
      * @return Base
      */
-    static public function get_class($class_name = NULL) {
+    public static function get_class($class_name = null)
+    {
         if (!isset(self::$instance[$class_name])) {
             $class = ucfirst(strtolower($class_name));
 
-            require_once(BASE_PATH . 'plugins' . DIRECTORY_SEPARATOR . 'Base.php');
-            require_once(BASE_PATH . 'plugins' . DIRECTORY_SEPARATOR . $class . '.php');
+            require_once BASE_PATH . 'plugins' . DIRECTORY_SEPARATOR . 'Base.php';
+            require_once BASE_PATH . 'plugins' . DIRECTORY_SEPARATOR . $class . '.php';
 
             self::$instance[$class_name] = new $class($class_name);
         }
@@ -37,11 +38,12 @@ class Process
      * @param $message
      * @throws Exception
      */
-    static function run($messages = NULL) {
+    public static function run($messages = null)
+    {
         Common::echo_log('处理消息列表: $messages=%s', print_r($messages, true));
 
         if (empty($messages)) {
-            $limit          = 100;
+            $limit = 100;
             $last_update_id = Db::get_update_id();
             if ($last_update_id == 0) {
                 $limit = 1;
@@ -50,7 +52,7 @@ class Process
             // 抓到更新的信息
             $messages = Telegram::singleton()->get_updates(array(
                 'offset' => $last_update_id + 1,
-                'limit'  => $limit,
+                'limit' => $limit,
             ));
         }
 
@@ -70,9 +72,10 @@ class Process
      * 执行抓取到的命令
      * @param $messages
      */
-    static function handler($message) {
+    public static function handler($message)
+    {
         //拿取路由规则
-        $router   = Db::get_router();
+        $router = Db::get_router();
         $bot_info = Db::get_bot_info();
 
         if (is_string($message)) {
@@ -97,16 +100,16 @@ class Process
             return;
         }
 
-        $msg            = $message['message'];
+        $msg = $message['message'];
         $last_update_id = $message['update_id'];
 
         //更新 update_ID
         Db::set_update_id($last_update_id);
 
         //保存解析到的数据
-        $text    = NULL;
-        $parms   = NULL;
-        $plugins = NULL;
+        $text = null;
+        $parms = null;
+        $plugins = null;
 
         //不管什么情况每次都要执行一次的函数
         $run_fun = array(
@@ -140,7 +143,7 @@ class Process
                     Common::echo_log('正则匹配结果: $reg=%s $text=%s $m=%s', $reg, $msg['text'], $m);
                     Common::echo_log('正则匹配到的插件: $class=%s', $class);
 
-                    $text  = trim(implode(' ', array_slice($m, 3)));
+                    $text = trim(implode(' ', array_slice($m, 3)));
                     $parms = array($m[1]);
 
                     $tmp = explode(' ', $text);
@@ -178,8 +181,9 @@ class Process
      * 执行对应的命令
      * @param $comm
      */
-    static function loop_with($fun_arr, $msg, $text = NULL, $parms = NULL) {
-        $router  = Common::get_router();
+    public static function loop_with($fun_arr, $msg, $text = null, $parms = null)
+    {
+        $router = Common::get_router();
         $plugins = array_flip($router);
         foreach ($plugins as $class_name => $tmp) {
             $class = self::get_class($class_name);

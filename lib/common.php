@@ -10,14 +10,15 @@
 class Common
 {
 
-    static private $router = array();
-    static private $config = array();
+    private static $router = array();
+    private static $config = array();
 
     /**
      * 打印日志
      * @param $parm
      */
-    static function echo_log($parm) {
+    public static function echo_log($parm)
+    {
         $msg = func_get_args();
         if (1 === count($msg)) {
             // 可変長引数がひとつであったとき
@@ -47,9 +48,10 @@ class Common
      * 得到路由配置表
      * @return type
      */
-    static public function get_router() {
+    public static function get_router()
+    {
         if (empty(self::$router)) {
-            self::$router = require(BASE_PATH . 'config' . DIRECTORY_SEPARATOR . 'router.php');
+            self::$router = require BASE_PATH . 'config' . DIRECTORY_SEPARATOR . 'router.php';
         }
 
         return self::$router;
@@ -61,9 +63,10 @@ class Common
      * @param type $default_value
      * @return type
      */
-    static public function get_config($key = NULL, $default_value = NULL) {
+    public static function get_config($key = null, $default_value = null)
+    {
         if (empty(self::$config)) {
-            self::$config = require(BASE_PATH . 'config' . DIRECTORY_SEPARATOR . 'config.php');
+            self::$config = require BASE_PATH . 'config' . DIRECTORY_SEPARATOR . 'config.php';
         }
 
         if ($key) {
@@ -83,9 +86,10 @@ class Common
      * @param type $value
      * @return type
      */
-    static public function set_config($key, $value) {
+    public static function set_config($key, $value)
+    {
         if (empty(self::$config)) {
-            self::$config = require(BASE_PATH . 'config' . DIRECTORY_SEPARATOR . 'config.php');
+            self::$config = require BASE_PATH . 'config' . DIRECTORY_SEPARATOR . 'config.php';
         }
 
         self::$config[$key] = $value;
@@ -99,7 +103,8 @@ class Common
      * @return type
      * @throws Exception
      */
-    static public function post($url, $data, $res_type = 'json', $method = 'POST') {
+    public static function post($url, $data, $res_type = 'json', $method = 'POST')
+    {
         if (empty($url)) {
             $err = 'post error url';
             Common::echo_log($err);
@@ -111,7 +116,7 @@ class Common
         $before_time = self::microtime_float();
 
         $postdata = http_build_query($data);
-        $opts     = array(
+        $opts = array(
             'http' => array(
                 'method' => $method,
                 'header' => 'Content-type: application/x-www-form-urlencoded',
@@ -139,7 +144,7 @@ class Common
         Common::echo_log('Common: url=%s data=%s', $url, $opts);
 
         $context = stream_context_create($opts);
-        $res     = file_get_contents($url, false, $context);
+        $res = file_get_contents($url, false, $context);
 
         Common::echo_log('Common: time=%s res=%s', (self::microtime_float() - $before_time), $res);
 
@@ -148,7 +153,7 @@ class Common
             Common::echo_log($err);
             Common::report_err($err);
 
-            return NULL;
+            return null;
         }
 
         if ($res_type == 'json') {
@@ -163,7 +168,8 @@ class Common
      * @param string $url
      * @param array $post
      */
-    static function curl($url, $post = NULL, $type = 'json') {
+    public static function curl($url, $post = null, $type = 'json')
+    {
         if (empty($url)) {
             $err = 'post error url';
             Common::echo_log($err);
@@ -191,7 +197,7 @@ class Common
 
             curl_setopt($curl, CURLOPT_TIMEOUT, 10);
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-            $res  = curl_exec($curl);
+            $res = curl_exec($curl);
             $info = curl_getinfo($curl);
             curl_close($curl);
 
@@ -227,27 +233,29 @@ class Common
      * 报告管理员错误
      * @param type $text
      */
-    static function report_err($text) {
+    public static function report_err($text)
+    {
 //        $admins = Common::get_config('admins');
-//        foreach ($admins as $v) {
-//            $msg = Telegram::singleton()->sendMessage(array(
-//                'chat_id' => $v,
-//                'text'    => $text,
-//            ));
-//
-//            Common::echo_log("发送信息: msg=%s", $msg);
-//            break;
-//        }
+        //        foreach ($admins as $v) {
+        //            $msg = Telegram::singleton()->sendMessage(array(
+        //                'chat_id' => $v,
+        //                'text'    => $text,
+        //            ));
+        //
+        //            Common::echo_log("发送信息: msg=%s", $msg);
+        //            break;
+        //        }
     }
 
     /**
      * 得到时间的毫秒值
      * @return float
      */
-    static function microtime_float() {
+    public static function microtime_float()
+    {
         list($usec, $sec) = explode(" ", microtime());
 
-        return ((float)$usec + (float)$sec);
+        return ((float) $usec + (float) $sec);
     }
 
     /**
@@ -266,13 +274,16 @@ class Common
      * @param integer|string $dec 小数位或者m
      * @return mixed
      */
-    static function G($start, $end = '', $dec = 4) {
+    public static function G($start, $end = '', $dec = 4)
+    {
         static $_info = array();
         static $_mem = array();
 
-        if (is_float($end)) { // 记录时间
+        if (is_float($end)) {
+            // 记录时间
             $_info[$start] = $end;
-        } elseif (!empty($end)) { // 统计时间和内存使用
+        } elseif (!empty($end)) {
+            // 统计时间和内存使用
             if (!isset($_info[$end])) {
                 $_info[$end] = self::microtime_float();
             }
@@ -286,9 +297,10 @@ class Common
             } else {
                 return number_format(($_info[$end] - $_info[$start]), $dec);
             }
-        } else { // 记录时间和内存使用
+        } else {
+            // 记录时间和内存使用
             $_info[$start] = self::microtime_float();
-            $_mem[$start]  = memory_get_usage();
+            $_mem[$start] = memory_get_usage();
         }
     }
 
@@ -297,9 +309,10 @@ class Common
      * @param $size
      * @return string
      */
-    static function convert_memory_size($size) {
+    public static function convert_memory_size($size)
+    {
         $unit = array('b', 'kb', 'mb', 'gb', 'tb', 'pb');
 
-        return @round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . ' ' . $unit[(int)$i];
+        return @round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . ' ' . $unit[(int) $i];
     }
 }

@@ -5,7 +5,7 @@
  * Class Db
  */
 
-require_once(LIB_PATH . 'telegram.php');
+require_once LIB_PATH . 'telegram.php';
 
 class Db
 {
@@ -14,14 +14,15 @@ class Db
      * @return Redis
      * @throws Exception
      */
-    static function get_redis() {
+    public static function get_redis()
+    {
         $redis_config = Common::get_config('redis');
         if (empty($redis_config)) {
             $err = 'error redis config';
             Common::echo_log($err);
             Common::report_err($err);
 
-            return NULL;
+            return null;
         }
 
         $redis = new Redis();
@@ -35,17 +36,18 @@ class Db
      * @return array|bool|mixed|null|string
      * @throws Exception
      */
-    static function get_bot_info() {
+    public static function get_bot_info()
+    {
         $token = Common::get_config('token');
         if (empty($token)) {
             $err = 'error token';
             Common::echo_log($err);
             Common::report_err($err);
 
-            return NULL;
+            return null;
         }
 
-        $key   = BOT . ':' . (string)$token;
+        $key = BOT . ':' . (string) $token;
         $redis = self::get_redis();
 
         $bot_info = $redis->get($key);
@@ -65,10 +67,11 @@ class Db
      * 得到机器人的名字
      * @return string
      */
-    static function get_bot_name() {
+    public static function get_bot_name($join = ':')
+    {
         $bot_info = self::get_bot_info();
 
-        return BOT . ':' . strtolower($bot_info['username']) . ':';
+        return BOT . $join . strtolower($bot_info['username']) . $join;
     }
 
     /**
@@ -76,11 +79,12 @@ class Db
      * @return int
      * @throws Exception
      */
-    static function get_update_id() {
-        $key   = self::get_bot_name() . 'update_id';
+    public static function get_update_id()
+    {
+        $key = self::get_bot_name() . 'update_id';
         $redis = self::get_redis();
 
-        $id = (int)$redis->get($key);
+        $id = (int) $redis->get($key);
 
         Common::echo_log('update_id:%s', $id);
 
@@ -93,11 +97,12 @@ class Db
      * @return int
      * @throws Exception
      */
-    static function set_update_id($id) {
-        $key   = self::get_bot_name() . 'update_id';
+    public static function set_update_id($id)
+    {
+        $key = self::get_bot_name() . 'update_id';
         $redis = self::get_redis();
 
-        return (int)$redis->set($key, $id);
+        return (int) $redis->set($key, $id);
     }
 
     /**
@@ -105,12 +110,13 @@ class Db
      * @return bool|mixed|string
      * @throws Exception
      */
-    static function get_router($use_cache = true) {
-        $key    = self::get_bot_name() . 'config:router';
-        $redis  = self::get_redis();
+    public static function get_router($use_cache = true)
+    {
+        $key = self::get_bot_name() . 'config:router';
+        $redis = self::get_redis();
         $router = $redis->get($key);
         if ($use_cache == false || empty($router)) {
-            $tmp      = Common::get_router();
+            $tmp = Common::get_router();
             $bot_info = Db::get_bot_info();
 
             foreach ($tmp as $reg => $class) {
@@ -140,8 +146,9 @@ class Db
      * @return bool
      * @throws Exception
      */
-    static function set($key, $val, $time = NULL) {
-        $key   = self::get_bot_name() . $key;
+    public static function set($key, $val, $time = null)
+    {
+        $key = self::get_bot_name() . $key;
         $redis = self::get_redis();
 
         if (!is_string($val)) {
@@ -165,8 +172,9 @@ class Db
      * @return bool|string
      * @throws Exception
      */
-    static function get($key) {
-        $key   = self::get_bot_name() . $key;
+    public static function get($key)
+    {
+        $key = self::get_bot_name() . $key;
         $redis = self::get_redis();
 
         $val = $redis->get($key);

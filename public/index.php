@@ -11,7 +11,7 @@ define('BASE_PATH', dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR);
 define('LIB_PATH', BASE_PATH . 'lib' . DIRECTORY_SEPARATOR);
 
 //加载包文件
-require_once(LIB_PATH . 'process.php');
+require_once LIB_PATH . 'process.php';
 
 //设置时区
 date_default_timezone_set(Common::get_config('timezone', 'Asia/Shanghai'));
@@ -26,7 +26,7 @@ if (isset($_GET['token'])) {
     ini_set("display_errors", 0);
     if ($log_path = Common::get_config('log_path')) {
         ini_set("error_reporting", E_ALL);
-        ini_set("error_log", $log_path . Db::get_bot_name() . '.log');
+        ini_set("error_log", $log_path . Db::get_bot_name('-') . '.log');
         ini_set("log_errors", 1);
     }
 
