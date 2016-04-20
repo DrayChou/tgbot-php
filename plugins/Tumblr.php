@@ -5,7 +5,7 @@
  * @Author: dray
  * @Date:   2016-04-20 20:06:13
  * @Last Modified by:   dray
- * @Last Modified time: 2016-04-20 21:30:10
+ * @Last Modified time: 2016-04-20 21:37:43
  */
 
 class Tumblr extends Base
@@ -86,6 +86,11 @@ class Tumblr extends Base
         $res_str = 'Cannot get that blog, trying another one...';
         if (isset($res['meta']) && isset($res['meta']['status']) && $res['meta']['status'] == 200) {
             if (isset($res['response']) && isset($res['response']['posts'])) {
+
+                //增加到列表中
+                if (!$redis->sIsMember($blog_arr_key, $blog_url)) {
+                    $redis->sAdd($blog_arr_key, $blog_url);
+                }
 
                 $posts = $res['response']['posts'];
                 $post = $posts[array_rand($posts)];
