@@ -5,7 +5,7 @@
  * @Author: dray
  * @Date:   2016-04-20 20:06:13
  * @Last Modified by:   dray
- * @Last Modified time: 2016-04-20 23:09:58
+ * @Last Modified time: 2016-04-20 23:11:56
  */
 
 class Tumblr extends Base
@@ -65,6 +65,7 @@ class Tumblr extends Base
         } elseif (count($this->parms) == 2) {
             if (is_numeric($this->parms[1])) {
                 $send_image_num = $this->parms[1];
+                $blog_url = $redis->sRandMember($blog_arr_key);
             } else {
                 $tmp = parse_url($this->parms[1], PHP_URL_HOST);
                 if (empty($tmp)) {
