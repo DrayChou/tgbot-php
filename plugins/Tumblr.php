@@ -5,7 +5,7 @@
  * @Author: dray
  * @Date:   2016-04-20 20:06:13
  * @Last Modified by:   dray
- * @Last Modified time: 2016-04-20 21:37:43
+ * @Last Modified time: 2016-04-20 23:09:58
  */
 
 class Tumblr extends Base
@@ -57,21 +57,39 @@ class Tumblr extends Base
             }
         }
 
+        $send_image_num = 1;
+
         // 生成 Blog 地址
-        if (empty($this->text)) {
+        if (count($this->parms) == 1) {
             $blog_url = $redis->sRandMember($blog_arr_key);
-        } else {
-            $tmp = parse_url($this->text, PHP_URL_HOST);
+        } elseif (count($this->parms) == 2) {
+            if (is_numeric($this->parms[1])) {
+                $send_image_num = $this->parms[1];
+            } else {
+                $tmp = parse_url($this->parms[1], PHP_URL_HOST);
+                if (empty($tmp)) {
+                    $blog_url = $this->parms[1];
+                } else {
+                    $blog_url = $tmp;
+                }
+            }
+        } elseif (count($this->parms) == 3) {
+            if (is_numeric($this->parms[2])) {
+                $send_image_num = $this->parms[2];
+            }
+
+            $tmp = parse_url($this->parms[1], PHP_URL_HOST);
             if (empty($tmp)) {
-                $blog_url = $this->text;
+                $blog_url = $this->parms[1];
             } else {
                 $blog_url = $tmp;
             }
+        }
 
-            $tmp = explode('.', $blog_url);
-            if (count($tmp) == 1) {
-                $blog_url .= '.tumblr.com';
-            }
+        //处理成 URL
+        $tmp = explode('.', $blog_url);
+        if (count($tmp) == 1) {
+            $blog_url .= '.tumblr.com';
         }
 
         // 查询
@@ -93,17 +111,20 @@ class Tumblr extends Base
                 }
 
                 $posts = $res['response']['posts'];
-                $post = $posts[array_rand($posts)];
+                shuffle($posts);
 
-                $res_str = $post['slug'] . ' - ' . $post['photos'][0]['original_size']['url'];
+                for ($i = 0; $i < count($posts) && $i < $send_image_num; $i++) {
+                    $post = $posts[$i];
+                    $res_str = $post['slug'] . ' - ' . $post['photos'][0]['original_size']['url'];
+
+                    //回复消息
+                    Telegram::singleton()->send_message(array(
+                        'chat_id' => $this->from_id,
+                        'text' => $res_str,
+                        // 'reply_to_message_id' => $this->msg_id,
+                    ));
+                }
             }
         }
-
-        //回复消息
-        Telegram::singleton()->send_message(array(
-            'chat_id' => $this->from_id,
-            'text' => $res_str,
-            // 'reply_to_message_id' => $this->msg_id,
-        ));
     }
 }
