@@ -19,6 +19,23 @@ date_default_timezone_set(Common::get_config('timezone', 'Asia/Shanghai'));
 //如果有 token 带过来，那么调用对应的机器人
 if (isset($_GET['token'])) {
 
+    //如果需要设置回调
+    if (isset($_GET['setWebhook'])) {
+        $res = Common::post(
+            "https://api.telegram.org/{$_GET['token']}/setWebhook",
+            array(
+                'url' => "https://{$_SERVER['SERVER_NAME']}/?token={$_GET['token']}",
+            )
+        );
+        if ($res) {
+            echo 'setWebhook success!' . PHP_EOL;
+        } else {
+            echo 'setWebhook failed!' . PHP_EOL;
+        }
+
+        exit();
+    }
+
     // 设置 token
     Common::set_config('token', $_GET['token']);
 
