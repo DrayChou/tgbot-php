@@ -5,7 +5,7 @@
  * @Author: dray
  * @Date:   2016-04-20 20:06:13
  * @Last Modified by:   dray
- * @Last Modified time: 2016-04-20 21:28:12
+ * @Last Modified time: 2016-04-20 21:30:10
  */
 
 class Tumblr extends Base
@@ -90,7 +90,7 @@ class Tumblr extends Base
                 $posts = $res['response']['posts'];
                 $post = $posts[array_rand($posts)];
 
-                $res_str = $post['slug'] . ' - ' . $post['photos']['original_size']['url'];
+                $res_str = $post['slug'] . ' - ' . $post['photos'][0]['original_size']['url'];
             }
         }
 
