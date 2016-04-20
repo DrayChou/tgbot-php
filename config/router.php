@@ -70,4 +70,7 @@ return array(
 
     //管理后台
     '#^/(admin)(@%%bot_name%%| |)(.*)$#iu' => 'admin',
+
+    //tumblr
+    '#^/(tumblr)(@%%bot_name%%| |)(.*)$#iu' => 'tumblr',
 );
