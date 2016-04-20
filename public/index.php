@@ -33,7 +33,7 @@ if (isset($_GET['token'])) {
     //如果需要设置回调
     if (isset($_GET['setWebhook'])) {
         $res = Common::post(
-            "https://api.telegram.org/{$_GET['token']}/setWebhook",
+            "https://api.telegram.org/bot{$_GET['token']}/setWebhook",
             array(
                 'url' => "https://{$_SERVER['SERVER_NAME']}/?token={$_GET['token']}",
             )
