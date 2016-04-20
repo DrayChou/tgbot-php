@@ -14,14 +14,16 @@ class Bot extends Base
 
     static $BOT_MAP = array(
         self::BOT_TULING123 => 'tuling123',
-        self::BOT_CLEVER    => 'cleverbot',
+        self::BOT_CLEVER => 'cleverbot',
     );
 
-    static function desc() {
+    public static function desc()
+    {
         return "/bot - say to bot...";
     }
 
-    static function usage() {
+    public static function usage()
+    {
         return array(
             "/bot set: set default bot.",
             "/bot - say to bot...",
@@ -33,13 +35,22 @@ class Bot extends Base
      * @param $user_id
      * @return Base|null
      */
-    static function get_my_bot($user_id) {
-        $bot_id = (int)Db::get_redis()->hGet('bot_index', $user_id);
+    public static function get_my_bot($user_id, $param = null)
+    {
+        $bot_id = (int) Db::get_redis()->hGet('bot_index', $user_id);
 
         //如果没有设置过机器人，那么使用默认机器人
         if (!isset(self::$BOT_MAP[$bot_id])) {
             $bot_id = 1;
-//            return NULL;
+
+            if (!empty($param)) {
+                if (preg_match("/^[\x7f-\xff]+$/", $param)) {
+                    //兼容gb2312,utf-8
+                    $bot_id = 1;
+                } else {
+                    $bot_id = 2;
+                }
+            }
         }
 
         return Process::get_class(self::$BOT_MAP[$bot_id]);
@@ -51,9 +62,10 @@ class Bot extends Base
      * @param $bot_id
      * @return int|null
      */
-    static function set_my_bot($user_id, $bot_id) {
+    public static function set_my_bot($user_id, $bot_id)
+    {
         if (!isset(self::$BOT_MAP[$bot_id])) {
-            return NULL;
+            return null;
         }
 
         return Db::get_redis()->hSet('bot_index', $user_id, $bot_id);
@@ -62,7 +74,8 @@ class Bot extends Base
     /**
      * 不管什么情况都会执行的函数
      */
-    public function pre_process() {
+    public function pre_process()
+    {
         //如果有调用参数，那么跳过
         if (isset($this->parms[0])) {
             return;
@@ -75,7 +88,7 @@ class Bot extends Base
                 return;
             }
 
-            $bot = self::get_my_bot($this->from_id);
+            $bot = self::get_my_bot($this->from_id, $this->parm);
             if ($bot) {
                 $bot->text = $this->parm;
                 $bot->run();
@@ -86,10 +99,11 @@ class Bot extends Base
     /**
      * 有人回复我
      */
-    public function msg_reply_me() {
+    public function msg_reply_me()
+    {
         //群组聊天的时候，开启这个模式，方式跟私聊的冲突
         if ($this->chat_id < 0) {
-            $bot = self::get_my_bot($this->from_id);
+            $bot = self::get_my_bot($this->from_id, $this->parm);
             if ($bot) {
                 $bot->text = $this->parm;
                 $bot->run();
@@ -100,7 +114,8 @@ class Bot extends Base
     /**
      * 当命令满足的时候，执行的基础执行函数
      */
-    public function run() {
+    public function run()
+    {
         Common::echo_log("Bot run 执行");
 
         //如果是需要回掉的请求
@@ -110,7 +125,7 @@ class Bot extends Base
             return;
         }
 
-        $is_set  = false;
+        $is_set = false;
         $set_arr = array('s', 'set');
         $set_flg = false;
 
@@ -124,7 +139,7 @@ class Bot extends Base
 
             if (false == $set_flg) {
                 if (in_array($v, $set_arr)) {
-                    $is_set  = true;
+                    $is_set = true;
                     $set_flg = true;
                     continue;
                 }
@@ -133,11 +148,11 @@ class Bot extends Base
             $parms[] = $v;
         }
 
-        $bot = self::get_my_bot($this->from_id);
+        $bot = self::get_my_bot($this->from_id, $this->parm);
         if (empty($bot) || $is_set) {
             if (empty($bot_id)) {
 
-                $key_board = NULL;
+                $key_board = null;
                 foreach (self::$BOT_MAP as $v) {
                     $key_board[] = array(
                         '/bot set ' . $v,
@@ -146,22 +161,22 @@ class Bot extends Base
 
                 //发送
                 Telegram::singleton()->send_message(array(
-                    'chat_id'             => $this->chat_id,
-                    'text'                => '请选择你要使用的机器人！' . PHP_EOL . '目前支持：' . PHP_EOL . implode(PHP_EOL, self::$BOT_MAP) . PHP_EOL,
+                    'chat_id' => $this->chat_id,
+                    'text' => '请选择你要使用的机器人！' . PHP_EOL . '目前支持：' . PHP_EOL . implode(PHP_EOL, self::$BOT_MAP) . PHP_EOL,
                     'reply_to_message_id' => $this->msg_id,
-                    'reply_markup'        => json_encode(array(
-                        'keyboard'          => $key_board,
-                        'resize_keyboard'   => true,
+                    'reply_markup' => json_encode(array(
+                        'keyboard' => $key_board,
+                        'resize_keyboard' => true,
                         'one_time_keyboard' => true,
-                        'selective'         => true,
+                        'selective' => true,
                     )),
                 ));
             } else {
                 //发送
                 self::set_my_bot($this->from_id, $bot_id);
                 Telegram::singleton()->send_message(array(
-                    'chat_id'             => $this->chat_id,
-                    'text'                => '机器人已经设置好了，亲！',
+                    'chat_id' => $this->chat_id,
+                    'text' => '机器人已经设置好了，亲！',
                     'reply_to_message_id' => $this->msg_id,
                 ));
             }
