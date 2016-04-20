@@ -5,7 +5,7 @@
  * @Author: dray
  * @Date:   2016-04-20 20:06:13
  * @Last Modified by:   dray
- * @Last Modified time: 2016-04-20 23:11:56
+ * @Last Modified time: 2016-04-20 23:13:36
  */
 
 class Tumblr extends Base
@@ -102,7 +102,7 @@ class Tumblr extends Base
         $url = "https://api.tumblr.com/v2/blog/{$blog_url}/posts?" . http_build_query($data);
         $res = Common::curl($url);
 
-        $res_str = 'Cannot get that blog, trying another one...';
+        $res_str = null;
         if (isset($res['meta']) && isset($res['meta']['status']) && $res['meta']['status'] == 200) {
             if (isset($res['response']) && isset($res['response']['posts'])) {
 
@@ -126,6 +126,16 @@ class Tumblr extends Base
                     ));
                 }
             }
+        }
+
+        if (empty($res_str)) {
+            $res_str = 'Cannot get that blog, trying another one...';
+            //回复消息
+            Telegram::singleton()->send_message(array(
+                'chat_id' => $this->from_id,
+                'text' => $res_str,
+                // 'reply_to_message_id' => $this->msg_id,
+            ));
         }
     }
 }
