@@ -85,7 +85,11 @@ class Admin extends Base
         $res_str = '操作完成，亲！';
         switch ($do_) {
             case 1:{
-                    Db::get_router(false);
+                    $key = Db::get_bot_name() . 'config:router';
+                    $redis = Db::get_redis();
+                    if (!$redis->delete($key)) {
+                        $res_str .= '清理失败';
+                    }
                     break;
                 }
             case 2:{
@@ -131,20 +135,20 @@ class Admin extends Base
                     break;
                 }
             case 4:{
-                    $bot   = Db::get_bot_name();
+                    $bot = Db::get_bot_name();
                     $exec = "redis-cli keys \"{$bot}chat:*:users\" | wc -l";
                     $output = shell_exec($exec);
 
                     $res_str = '';
-                    $res_str .= $exec . PHP_EOL;
+                    $res_str .= '当前群数:' . PHP_EOL;
                     $res_str .= print_r($output, true) . PHP_EOL;
 
-                    $bot   = Db::get_bot_name();
+                    $bot = Db::get_bot_name();
                     $exec = "redis-cli hlen \"{$bot}users:ids\"";
                     $output = shell_exec($exec);
 
                     // $res_str = '';
-                    $res_str .= $exec . PHP_EOL;
+                    $res_str .= '当前用户数' . PHP_EOL;
                     $res_str .= print_r($output, true) . PHP_EOL;
                     break;
                 }
