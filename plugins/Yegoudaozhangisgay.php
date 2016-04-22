@@ -4,7 +4,7 @@
  * @Author: dray
  * @Date:   2016-04-22 11:01:45
  * @Last Modified by:   dray
- * @Last Modified time: 2016-04-22 11:06:36
+ * @Last Modified time: 2016-04-22 11:14:07
  */
 
 class Yegoudaozhangisgay extends Base
@@ -28,10 +28,11 @@ class Yegoudaozhangisgay extends Base
     {
         Common::echo_log("执行 Yegoudaozhangisgay run");
 
-        $bot = self::get_my_bot($this->from_id, $this->parm);
+        $text = '野狗道长是个同性恋？';
+        $bot = self::get_my_bot($this->from_id, $text);
 
         //调用机器人
-        $bot->text = '野狗道长是个同性恋？';
+        $bot->text = $text;
         $bot->run();
     }
 }
