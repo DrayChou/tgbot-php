@@ -383,6 +383,11 @@ class Stats extends Base
             $res_str = $this->get_chat_stats($this->chat_id, $day_id, $limit);
         }
 
+        //如果太长了
+        if (mb_strlen($res_str) > 4096) {
+            $res_str = mb_substr($res_str, 0, 4000);
+        }
+
         Telegram::singleton()->send_message(array(
             'chat_id' => $this->chat_id,
             'text' => $res_str,
