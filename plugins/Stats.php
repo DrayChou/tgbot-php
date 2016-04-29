@@ -129,8 +129,8 @@ class Stats extends Base
 
         $max_day = (int) $redis->zRangeByScore($bot . 'stats:chat_day_msgs:' . $this->chat_id, 0, 1);
         $min_day = (int) $redis->zRangeByScore($bot . 'stats:chat_day_msgs:' . $this->chat_id, -1, 0);
-        $max_day = (int) $redis->zScore($bot . 'stats:chat_day_msgs:' . $this->chat_id, $max_day[0]);
-        $min_day = (int) $redis->zScore($bot . 'stats:chat_day_msgs:' . $this->chat_id, $min_day[0]);
+        $max_msgs = (int) $redis->zScore($bot . 'stats:chat_day_msgs:' . $this->chat_id, $max_day[0]);
+        $min_msgs = (int) $redis->zScore($bot . 'stats:chat_day_msgs:' . $this->chat_id, $min_day[0]);
 
         return array(
             'mxd' => $max_day,
@@ -162,23 +162,26 @@ class Stats extends Base
             }
         }
 
-        $users_info = array();
-        $users = $redis->sMembers($bot . 'chat:' . $chat_id . ':users');
-        foreach ($users as $k => $v) {
-            if ($day_id == '*') {
-                $msgs = (int) $redis->get($bot . 'msgs:' . $v . ':' . $chat_id);
-            } else {
-                $msgs = (int) $redis->get($bot . 'day_msgs:' . $day_id . ':' . $v . ':' . $chat_id);
-            }
+        // $users_info = array();
+        // $users = $redis->sMembers($bot . 'chat:' . $chat_id . ':users');
+        // foreach ($users as $k => $v) {
+        //     if ($day_id == '*') {
+        //         $msgs = (int) $redis->get($bot . 'msgs:' . $v . ':' . $chat_id);
+        //     } else {
+        //         $msgs = (int) $redis->get($bot . 'day_msgs:' . $day_id . ':' . $v . ':' . $chat_id);
+        //     }
 
-            $users_info[] = array(
-                'id' => (int) $v,
-                'name' => $redis->hGet($bot . 'users:ids', $v),
-                'msgs' => $msgs,
-            );
-        }
+        //     $users_info[] = array(
+        //         'id' => (int) $v,
+        //         'name' => $redis->hGet($bot . 'users:ids', $v),
+        //         'msgs' => $msgs,
+        //     );
+        // }
 
-        return $users_info;
+        // return $users_info;
+
+        $msg_ls = $redis->zRevRangeByScore($bot . 'stats:chat_user_day_msgs:' . $this->chat_id . ':' . $day_id, 0, 5000, array('withscores' => true));
+        return $msg_ls;
     }
 
     /**
@@ -191,42 +194,32 @@ class Stats extends Base
     private function get_chat_stats($chat_id, $day_id, $limit)
     {
         $uses_info = $this->get_chat_users($chat_id, $day_id);
-
-        $order_by = SORT_DESC;
         if ($limit < 0) {
-            $order_by = SORT_ASC;
-            $limit = -1 * $limit;
+            arsort($users_info);
         }
 
-        $sort_by = array();
-        foreach ($uses_info as $user) {
-            $sort_by[] = $user['msgs'];
-        }
-
-        array_multisort($sort_by, $order_by, SORT_NUMERIC, $uses_info);
-
-        $text = strtoupper($day_id) . ' TOP ' . $limit;
+        $text[] = strtoupper($day_id) . ' TOP ' . $limit;
 
         $top_sum = 0;
         $all_sum = 0;
-        foreach ($uses_info as $i => $user) {
-            $all_sum += $user['msgs'];
+        foreach ($uses_info as $user_id => $msgs) {
+            $all_sum += $msgs;
 
-            if ($i < $limit) {
-                $top_sum += $user['msgs'];
-                $text .= (PHP_EOL . $user['name'] . ' => ' . $user['msgs']);
+            if (count($text) <= $limit) {
+                $top_sum += $msgs;
+                $text[] = (PHP_EOL . $redis->hGet($bot . 'users:ids', $user_id) . ' => ' . $msgs);
             }
         }
 
         $chat_max = $this->get_chat_mx($chat_id);
 
-        $text .= (PHP_EOL . ' top sum:' . $top_sum);
-        $text .= (PHP_EOL . ' all sum:' . $all_sum);
-        $text .= (PHP_EOL . ' top/all:' . intval($top_sum / ($all_sum == 0 ? 1 : $all_sum) * 100) . '%');
-        $text .= (PHP_EOL . ' max day:' . ($chat_max['mxd'] . ' => ' . $chat_max['mxm']));
-        $text .= (PHP_EOL . ' min day:' . ($chat_max['mid'] . ' => ' . $chat_max['mim']));
+        $text[] = (PHP_EOL . ' top sum:' . $top_sum);
+        $text[] = (PHP_EOL . ' all sum:' . $all_sum);
+        $text[] = (PHP_EOL . ' top/all:' . intval($top_sum / ($all_sum == 0 ? 1 : $all_sum) * 100) . '%');
+        $text[] = (PHP_EOL . ' max day:' . ($chat_max['mxd'] . ' => ' . $chat_max['mxm']));
+        $text[] = (PHP_EOL . ' min day:' . ($chat_max['mid'] . ' => ' . $chat_max['mim']));
 
-        return $text;
+        return join(PHP_EOL, $text);
     }
 
     /**
@@ -253,37 +246,37 @@ class Stats extends Base
         $all_sum = 0;
         $user_sum = 0;
         $users_info = $this->get_chat_users($chat_id);
-        foreach ($users_info as $user) {
-            $all_sum += $user['msgs'];
+        foreach ($users_info as $id => $msgs) {
+            $all_sum += $msgs;
 
-            if ($user['id'] == $user_id) {
-                $user_sum = (int) $user['msgs'];
+            if ($id == $user_id) {
+                $user_sum = (int) $msgs;
             }
         }
 
         $day_all_sum = 0;
         $day_user_sum = 0;
         $day_users_info = $this->get_chat_users($chat_id, date('Ymd'));
-        foreach ($day_users_info as $user) {
-            $day_all_sum += $user['msgs'];
+        foreach ($day_users_info as $id => $msgs) {
+            $day_all_sum += $msgs;
 
-            if ($user['id'] == $user_id) {
-                $day_user_sum = (int) $user['msgs'];
+            if ($id == $user_id) {
+                $day_user_sum = (int) $msgs;
             }
         }
 
         $show_name = $redis->hGet($bot . 'users:ids', $user_id);
 
-        $text = '';
-        $text .= ($show_name . ' stats:' . PHP_EOL);
-        $text .= ('stats count:' . $user_sum . PHP_EOL);
-        $text .= ('all user sum:' . $all_sum . PHP_EOL);
-        $text .= ('user/all:' . intval($user_sum / ($all_sum == 0 ? 1 : $all_sum) * 100) . '%' . PHP_EOL);
-        $text .= ('user today count:' . $day_user_sum . PHP_EOL);
-        $text .= ('all user today sum:' . $day_all_sum . PHP_EOL);
-        $text .= ('user/all:' . intval($day_user_sum / ($day_all_sum == 0 ? 1 : $day_all_sum) * 100) . '%' . PHP_EOL);
+        $text = [];
+        $text[] = ($show_name . ' stats:' . PHP_EOL);
+        $text[] = ('stats count:' . $user_sum . PHP_EOL);
+        $text[] = ('all user sum:' . $all_sum . PHP_EOL);
+        $text[] = ('user/all:' . intval($user_sum / ($all_sum == 0 ? 1 : $all_sum) * 100) . '%' . PHP_EOL);
+        $text[] = ('user today count:' . $day_user_sum . PHP_EOL);
+        $text[] = ('all user today sum:' . $day_all_sum . PHP_EOL);
+        $text[] = ('user/all:' . intval($day_user_sum / ($day_all_sum == 0 ? 1 : $day_all_sum) * 100) . '%' . PHP_EOL);
 
-        return $text;
+        return join(PHP_EOL, $text);
     }
 
     /**
