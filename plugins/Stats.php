@@ -28,74 +28,50 @@ class Stats extends Base
         );
     }
 
-    // /**
-    //  * 重建群每日发言数数据
-    //  */
-    // private function build_stats_data($search_chat_id, $search_day_id)
-    // {
-    //     $bot = Db::get_bot_name();
-    //     $redis = Db::get_redis();
+    /**
+     * 旧版数据转为新版数据
+     * [data_to_2 description]
+     * @return [type] [description]
+     */
+    private function data_to_2()
+    {
+        $bot = Db::get_bot_name();
+        $redis = Db::get_redis();
 
-    //     $count = array();
-    //     $days_list = $redis->keys($bot . 'day_msgs:' . $search_day_id . ':*:' . $search_chat_id);
-    //     foreach ($days_list as $k => $v) {
-    //         $keys = explode(':', $v);
-    //         $day_id = $keys[2];
-    //         $user_id = $keys[3];
-    //         $chat_id = $keys[4];
+        $key1 = $bot . "day_msgs:*:*:*";
+        $days_list = $redis->keys($key1);
+        foreach ($days_list as $k => $v) {
+            $keys = explode(':', $v);
+            $day_id = $keys[2];
+            $user_id = $keys[3];
+            $chat_id = $keys[4];
 
-    //         if (!isset($count[$chat_id])) {
-    //             $count[$chat_id][$day_id] = 1;
-    //         }
+            $count = $redis->get($v);
 
-    //         if (!isset($count[$chat_id][$day_id])) {
-    //             $count[$chat_id][$day_id] = 1;
-    //         }
+            // 记录群组每天的发言数
+            $redis->zIncrBy($bot . 'stats:chat_day_msgs:' . $chat_id, $count, $day_id);
 
-    //         $count[$chat_id][$day_id] += (int) $redis->get($v);
-    //     }
+            // 记录用户在这个群组中的发言数
+            $redis->zIncrBy($bot . 'stats:chat_user_msgs:' . $chat_id, $count, $user_id);
 
-    //     foreach ($count as $c => $days) {
+            // 记录用户在这个群组中每天的发言数
+            $redis->zIncrBy($bot . 'stats:chat_user_day_msgs:' . $chat_id . ':' . $day_id, $count, $user_id);
 
-    //         $mxd = null;
-    //         $mxm = 0;
-    //         $mid = null;
-    //         $mim = PHP_INT_MAX;
+            //删除这个键
+            $redis->delete($v);
 
-    //         foreach ($days as $d => $n) {
-    //             if ($n > $mxm) {
-    //                 $mxd = $d;
-    //                 $mxm = $n;
-    //             }
+            //删除附加的一个键
+            $redis->delete("{$bot}msgs:{$user_id}:{$chat_id}");
 
-    //             if ($n < $mim) {
-    //                 $mid = $d;
-    //                 $mim = $n;
-    //             }
+            //删除附加的一个键
+            $redis->delete("{$bot}stats:chat:{$user_id}");
+            $redis->delete("{$bot}stats:chat:{$chat_id}");
+        }
 
-    //             $redis->hSet($bot . 'stats:chat:' . $c, $d, $n);
-    //         }
+        $text[] = '转换数据:' . count($days_list);
 
-    //         if ($search_day_id == '*') {
-    //             $redis->hSet($bot . 'stats:chat:' . $c, 'max_day', $mxd);
-    //             $redis->hSet($bot . 'stats:chat:' . $c, 'min_day', $mid);
-    //         } else {
-    //             $max_day = (int) $redis->hGet($bot . 'stats:chat:' . $c, 'max_day');
-    //             $min_day = (int) $redis->hGet($bot . 'stats:chat:' . $c, 'min_day');
-
-    //             $max_msgs = (int) $redis->hGet($bot . 'stats:chat:' . $c, $max_day);
-    //             $min_msgs = (int) $redis->hGet($bot . 'stats:chat:' . $c, $min_day);
-
-    //             if ($mxm > $max_msgs) {
-    //                 $redis->hSet($bot . 'stats:chat:' . $c, 'max_day', $max_day);
-    //             }
-
-    //             if ($mim < $min_msgs) {
-    //                 $redis->hSet($bot . 'stats:chat:' . $c, 'min_day', $min_day);
-    //             }
-    //         }
-    //     }
-    // }
+        return join(PHP_EOL, $text);
+    }
 
     /**
      * 得到群最热闹的一天和最不热闹的一天的数据
@@ -106,26 +82,6 @@ class Stats extends Base
     {
         $bot = Db::get_bot_name();
         $redis = Db::get_redis();
-
-        // $max_day = (int) $redis->hGet($bot . 'stats:chat:' . $chat_id, 'max_day');
-        // $min_day = (int) $redis->hGet($bot . 'stats:chat:' . $chat_id, 'min_day');
-
-        // if ($max_day == 0 || $min_day == 0) {
-        //     $this->build_stats_data($chat_id, '*');
-
-        //     $max_day = (int) $redis->hGet($bot . 'stats:chat:' . $chat_id, 'max_day');
-        //     $min_day = (int) $redis->hGet($bot . 'stats:chat:' . $chat_id, 'min_day');
-        // }
-
-        // $max_msgs = (int) $redis->hGet($bot . 'stats:chat:' . $chat_id, $max_day);
-        // $min_msgs = (int) $redis->hGet($bot . 'stats:chat:' . $chat_id, $min_day);
-
-        // return array(
-        //     'mxd' => $max_day,
-        //     'mxm' => $max_msgs,
-        //     'mid' => $min_day,
-        //     'mim' => $min_msgs,
-        // );
 
         $key1 = $bot . 'stats:chat_day_msgs:' . $this->chat_id;
         $max_day = $redis->zRevRange($key1, 0, 1);
@@ -168,24 +124,6 @@ class Stats extends Base
             }
         }
 
-        // $users_info = array();
-        // $users = $redis->sMembers($bot . 'chat:' . $chat_id . ':users');
-        // foreach ($users as $k => $v) {
-        //     if ($day_id == '*') {
-        //         $msgs = (int) $redis->get($bot . 'msgs:' . $v . ':' . $chat_id);
-        //     } else {
-        //         $msgs = (int) $redis->get($bot . 'day_msgs:' . $day_id . ':' . $v . ':' . $chat_id);
-        //     }
-
-        //     $users_info[] = array(
-        //         'id' => (int) $v,
-        //         'name' => $redis->hGet($bot . 'users:ids', $v),
-        //         'msgs' => $msgs,
-        //     );
-        // }
-
-        // return $users_info;
-
         $key = $bot . 'stats:chat_user_day_msgs:' . $this->chat_id . ':' . $day_id;
         $msg_ls = $redis->zRevRange($key, 0, 5000, true);
         Common::echo_log("Stats: {$key}=%s", print_r($msg_ls, true));
@@ -225,11 +163,11 @@ class Stats extends Base
 
         $chat_max = $this->get_chat_mx($chat_id);
 
-        $text[] = ('top sum:' . $top_sum);
-        $text[] = ('all sum:' . $all_sum);
-        $text[] = ('top/all:' . intval($top_sum / ($all_sum == 0 ? 1 : $all_sum) * 100) . '%');
-        $text[] = ('max day:' . ($chat_max['mxd'] . ' => ' . $chat_max['mxm']));
-        $text[] = ('min day:' . ($chat_max['mid'] . ' => ' . $chat_max['mim']));
+        $text[] = 'top sum:' . $top_sum;
+        $text[] = 'all sum:' . $all_sum;
+        $text[] = 'top/all:' . intval($top_sum / ($all_sum == 0 ? 1 : $all_sum) * 100) . '%';
+        $text[] = 'max day:' . ($chat_max['mxd'] . ' => ' . $chat_max['mxm']);
+        $text[] = 'min day:' . ($chat_max['mid'] . ' => ' . $chat_max['mim']);
 
         return join(PHP_EOL, $text);
     }
@@ -331,15 +269,6 @@ class Stats extends Base
         // 添加用户ID到群组中
         $redis->sadd($bot . 'chat:' . $this->chat_id . ':users', $this->from_id);
 
-        // // 记录用户在这个群组中的聊天数
-        // $redis->incr($bot . 'msgs:' . $this->from_id . ':' . $this->chat_id);
-
-        // // 记录用户在这个群组中的聊天数,这天
-        // $redis->incr($bot . 'day_msgs:' . date('Ymd') . ':' . $this->from_id . ':' . $this->chat_id);
-
-        // //刷新每天这个群的最大最小发言数
-        // $this->build_stats_data($this->chat_id, date('Ymd'));
-
         // 记录群组每天的发言数
         $redis->zIncrBy($bot . 'stats:chat_day_msgs:' . $this->chat_id, 1, date('Ymd'));
 
@@ -397,6 +326,10 @@ class Stats extends Base
             $user_id = empty($this->parms[1]) ? $this->from_id : $this->parms[1];
             $res_str = $this->get_user_stats($this->chat_id, $user_id);
 
+        } elseif ($this->parms[1] == 'to_2') {
+
+            $res_str = $this->data_to_2();
+
         } else {
 
             $day_id = date('Ymd');
@@ -415,6 +348,7 @@ class Stats extends Base
             }
 
             $res_str = $this->get_chat_stats($this->chat_id, $day_id, $limit);
+
         }
 
         Telegram::singleton()->send_message(array(
