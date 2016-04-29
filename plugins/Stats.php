@@ -127,8 +127,8 @@ class Stats extends Base
         //     'mim' => $min_msgs,
         // );
 
-        $max_day = (int) $redis->zRangeByScore($bot . 'stats:chat_day_msgs:' . $this->chat_id, 0, 1);
-        $min_day = (int) $redis->zRangeByScore($bot . 'stats:chat_day_msgs:' . $this->chat_id, -1, 0);
+        $max_day = (int) $redis->zRevRange($bot . 'stats:chat_day_msgs:' . $this->chat_id, 0, 1);
+        $min_day = (int) $redis->zRange($bot . 'stats:chat_day_msgs:' . $this->chat_id, 0, 1);
         $max_msgs = (int) $redis->zScore($bot . 'stats:chat_day_msgs:' . $this->chat_id, $max_day[0]);
         $min_msgs = (int) $redis->zScore($bot . 'stats:chat_day_msgs:' . $this->chat_id, $min_day[0]);
 
@@ -182,7 +182,7 @@ class Stats extends Base
 
         $key = $bot . 'stats:chat_user_day_msgs:' . $this->chat_id . ':' . $day_id;
         $msg_ls = $redis->zRevRange($key, 0, 5000, true);
-        Common::echo_log("Common: {$key}=%s", print_r($msg_ls, true));
+        Common::echo_log("Stats: {$key}=%s", print_r($msg_ls, true));
 
         return $msg_ls;
     }
@@ -196,6 +196,9 @@ class Stats extends Base
      */
     private function get_chat_stats($chat_id, $day_id, $limit)
     {
+        $bot = Db::get_bot_name();
+        $redis = Db::get_redis();
+
         $uses_info = $this->get_chat_users($chat_id, $day_id);
         if ($limit < 0) {
             arsort($users_info);
@@ -216,11 +219,11 @@ class Stats extends Base
 
         $chat_max = $this->get_chat_mx($chat_id);
 
-        $text[] = (' top sum:' . $top_sum);
-        $text[] = (' all sum:' . $all_sum);
-        $text[] = (' top/all:' . intval($top_sum / ($all_sum == 0 ? 1 : $all_sum) * 100) . '%');
-        $text[] = (' max day:' . ($chat_max['mxd'] . ' => ' . $chat_max['mxm']));
-        $text[] = (' min day:' . ($chat_max['mid'] . ' => ' . $chat_max['mim']));
+        $text[] = ('top sum:' . $top_sum);
+        $text[] = ('all sum:' . $all_sum);
+        $text[] = ('top/all:' . intval($top_sum / ($all_sum == 0 ? 1 : $all_sum) * 100) . '%');
+        $text[] = ('max day:' . ($chat_max['mxd'] . ' => ' . $chat_max['mxm']));
+        $text[] = ('min day:' . ($chat_max['mid'] . ' => ' . $chat_max['mim']));
 
         return join(PHP_EOL, $text);
     }
