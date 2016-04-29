@@ -38,6 +38,7 @@ class Stats extends Base
         $bot = Db::get_bot_name();
         $redis = Db::get_redis();
 
+        $s1 = 0;
         $key1 = $bot . "day_msgs:*:*:*";
         $days_list = $redis->keys($key1);
         foreach ($days_list as $k => $v) {
@@ -47,6 +48,7 @@ class Stats extends Base
             $chat_id = $keys[4];
 
             if (!is_numeric($day_id) || !is_numeric($user_id) || !is_numeric($chat_id)) {
+                Common::echo_log("data_to_2 无效ID，跳过: {$v}");
                 continue;
             }
 
@@ -73,9 +75,12 @@ class Stats extends Base
             // //删除附加的一个键
             // $redis->delete("{$bot}stats:chat:{$user_id}");
             // $redis->delete("{$bot}stats:chat:{$chat_id}");
+
+            Common::echo_log("data_to_2 处理: {$v}");
+            $s1 += 1;
         }
 
-        $text[] = '转换数据:' . count($days_list);
+        $text[] = '转换数据:' . $s1;
 
         return join(PHP_EOL, $text);
     }
@@ -360,7 +365,6 @@ class Stats extends Base
             }
 
             $res_str = $this->get_chat_stats($this->chat_id, $day_id, $limit);
-
         }
 
         Telegram::singleton()->send_message(array(
