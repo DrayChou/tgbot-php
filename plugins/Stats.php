@@ -136,11 +136,25 @@ class Stats extends Base
             }
         }
 
-        $key = $bot . 'stats:chat_user_day_msgs:' . $this->chat_id . ':' . $day_id;
-        $msg_ls = $redis->zRevRange($key, 0, 5000, true);
-        Common::echo_log("Stats: {$key}=%s", print_r($msg_ls, true));
+        $res = [];
 
-        return $msg_ls;
+        $key = $bot . 'stats:chat_user_day_msgs:' . $this->chat_id . ':' . $day_id;
+        $key_list = $redis->keys($key);
+        Common::echo_log("Stats: {$key}=%s", print_r($key_list, true));
+
+        foreach ($key_list as $k => $v) {
+            $msg_ls = $redis->zRevRange($v, 0, 5000, true);
+
+            foreach ($msg_ls as $id => $msgs) {
+                if (isset($res[$id])) {
+                    $res[$id] += $msgs;
+                } else {
+                    $res[$id] = $msgs;
+                }
+            }
+        }
+
+        return $res;
     }
 
     /**
