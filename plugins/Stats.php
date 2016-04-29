@@ -46,26 +46,33 @@ class Stats extends Base
             $user_id = $keys[3];
             $chat_id = $keys[4];
 
+            if (!is_numeric($day_id) || !is_numeric($user_id) || !is_numeric($chat_id)) {
+                continue;
+            }
+
             $count = $redis->get($v);
 
             // 记录群组每天的发言数
+            $redis->zDelete($bot . 'stats:chat_day_msgs:' . $chat_id, $day_id);
             $redis->zIncrBy($bot . 'stats:chat_day_msgs:' . $chat_id, $count, $day_id);
 
             // 记录用户在这个群组中的发言数
+            $redis->zDelete($bot . 'stats:chat_user_msgs:' . $chat_id, $user_id);
             $redis->zIncrBy($bot . 'stats:chat_user_msgs:' . $chat_id, $count, $user_id);
 
             // 记录用户在这个群组中每天的发言数
+            $redis->zDelete($bot . 'stats:chat_user_day_msgs:' . $chat_id . ':' . $day_id, $user_id);
             $redis->zIncrBy($bot . 'stats:chat_user_day_msgs:' . $chat_id . ':' . $day_id, $count, $user_id);
 
-            //删除这个键
-            $redis->delete($v);
+            // //删除这个键
+            // $redis->delete($v);
 
-            //删除附加的一个键
-            $redis->delete("{$bot}msgs:{$user_id}:{$chat_id}");
+            // //删除附加的一个键
+            // $redis->delete("{$bot}msgs:{$user_id}:{$chat_id}");
 
-            //删除附加的一个键
-            $redis->delete("{$bot}stats:chat:{$user_id}");
-            $redis->delete("{$bot}stats:chat:{$chat_id}");
+            // //删除附加的一个键
+            // $redis->delete("{$bot}stats:chat:{$user_id}");
+            // $redis->delete("{$bot}stats:chat:{$chat_id}");
         }
 
         $text[] = '转换数据:' . count($days_list);
@@ -268,6 +275,11 @@ class Stats extends Base
 
         // 添加用户ID到群组中
         $redis->sadd($bot . 'chat:' . $this->chat_id . ':users', $this->from_id);
+
+        // 记录用户在这个群组中的聊天数
+        $redis->incr($bot . 'msgs:' . $this->from_id . ':' . $this->chat_id);
+        // 记录用户在这个群组中的聊天数,这天
+        $redis->incr($bot . 'day_msgs:' . date('Ymd') . ':' . $this->from_id . ':' . $this->chat_id);
 
         // 记录群组每天的发言数
         $redis->zIncrBy($bot . 'stats:chat_day_msgs:' . $this->chat_id, 1, date('Ymd'));
