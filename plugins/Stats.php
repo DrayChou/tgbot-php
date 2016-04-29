@@ -12,11 +12,13 @@ class Stats extends Base
     const NUM_MSG_MAX = 5;
     const TIME_CHECK = 4;
 
-    static function desc() {
+    public static function desc()
+    {
         return "/stats - Plugin to update user stats.  ";
     }
 
-    static function usage() {
+    public static function usage()
+    {
         return array(
             "/stats - Returns a list of Username [telegram_id]: msg_num only top." . self::DEFAULT_SHOW_LIMIT,
             "/stats 20150528 - Returns this day stats",
@@ -26,95 +28,109 @@ class Stats extends Base
         );
     }
 
-    /**
-     * 重建群每日发言数数据
-     */
-    private function build_stats_data($search_chat_id, $search_day_id) {
-        $bot   = Db::get_bot_name();
-        $redis = Db::get_redis();
+    // /**
+    //  * 重建群每日发言数数据
+    //  */
+    // private function build_stats_data($search_chat_id, $search_day_id)
+    // {
+    //     $bot = Db::get_bot_name();
+    //     $redis = Db::get_redis();
 
-        $count     = array();
-        $days_list = $redis->keys($bot . 'day_msgs:' . $search_day_id . ':*:' . $search_chat_id);
-        foreach ($days_list as $k => $v) {
-            $keys    = explode(':', $v);
-            $day_id  = $keys[2];
-            $user_id = $keys[3];
-            $chat_id = $keys[4];
+    //     $count = array();
+    //     $days_list = $redis->keys($bot . 'day_msgs:' . $search_day_id . ':*:' . $search_chat_id);
+    //     foreach ($days_list as $k => $v) {
+    //         $keys = explode(':', $v);
+    //         $day_id = $keys[2];
+    //         $user_id = $keys[3];
+    //         $chat_id = $keys[4];
 
-            if (!isset($count[$chat_id])) {
-                $count[$chat_id][$day_id] = 1;
-            }
+    //         if (!isset($count[$chat_id])) {
+    //             $count[$chat_id][$day_id] = 1;
+    //         }
 
-            if (!isset($count[$chat_id][$day_id])) {
-                $count[$chat_id][$day_id] = 1;
-            }
+    //         if (!isset($count[$chat_id][$day_id])) {
+    //             $count[$chat_id][$day_id] = 1;
+    //         }
 
-            $count[$chat_id][$day_id] += (int)$redis->get($v);
-        }
+    //         $count[$chat_id][$day_id] += (int) $redis->get($v);
+    //     }
 
-        foreach ($count as $c => $days) {
+    //     foreach ($count as $c => $days) {
 
-            $mxd = NULL;
-            $mxm = 0;
-            $mid = NULL;
-            $mim = PHP_INT_MAX;
+    //         $mxd = null;
+    //         $mxm = 0;
+    //         $mid = null;
+    //         $mim = PHP_INT_MAX;
 
-            foreach ($days as $d => $n) {
-                if ($n > $mxm) {
-                    $mxd = $d;
-                    $mxm = $n;
-                }
+    //         foreach ($days as $d => $n) {
+    //             if ($n > $mxm) {
+    //                 $mxd = $d;
+    //                 $mxm = $n;
+    //             }
 
-                if ($n < $mim) {
-                    $mid = $d;
-                    $mim = $n;
-                }
+    //             if ($n < $mim) {
+    //                 $mid = $d;
+    //                 $mim = $n;
+    //             }
 
-                $redis->hSet($bot . 'stats:chat:' . $c, $d, $n);
-            }
+    //             $redis->hSet($bot . 'stats:chat:' . $c, $d, $n);
+    //         }
 
-            if ($search_day_id == '*') {
-                $redis->hSet($bot . 'stats:chat:' . $c, 'max_day', $mxd);
-                $redis->hSet($bot . 'stats:chat:' . $c, 'min_day', $mid);
-            } else {
-                $max_day = (int)$redis->hGet($bot . 'stats:chat:' . $c, 'max_day');
-                $min_day = (int)$redis->hGet($bot . 'stats:chat:' . $c, 'min_day');
+    //         if ($search_day_id == '*') {
+    //             $redis->hSet($bot . 'stats:chat:' . $c, 'max_day', $mxd);
+    //             $redis->hSet($bot . 'stats:chat:' . $c, 'min_day', $mid);
+    //         } else {
+    //             $max_day = (int) $redis->hGet($bot . 'stats:chat:' . $c, 'max_day');
+    //             $min_day = (int) $redis->hGet($bot . 'stats:chat:' . $c, 'min_day');
 
-                $max_msgs = (int)$redis->hGet($bot . 'stats:chat:' . $c, $max_day);
-                $min_msgs = (int)$redis->hGet($bot . 'stats:chat:' . $c, $min_day);
+    //             $max_msgs = (int) $redis->hGet($bot . 'stats:chat:' . $c, $max_day);
+    //             $min_msgs = (int) $redis->hGet($bot . 'stats:chat:' . $c, $min_day);
 
-                if ($mxm > $max_msgs) {
-                    $redis->hSet($bot . 'stats:chat:' . $c, 'max_day', $max_day);
-                }
+    //             if ($mxm > $max_msgs) {
+    //                 $redis->hSet($bot . 'stats:chat:' . $c, 'max_day', $max_day);
+    //             }
 
-                if ($mim < $min_msgs) {
-                    $redis->hSet($bot . 'stats:chat:' . $c, 'min_day', $min_day);
-                }
-            }
-        }
-    }
+    //             if ($mim < $min_msgs) {
+    //                 $redis->hSet($bot . 'stats:chat:' . $c, 'min_day', $min_day);
+    //             }
+    //         }
+    //     }
+    // }
 
     /**
      * 得到群最热闹的一天和最不热闹的一天的数据
      * @param $chat_id
      * @return array
      */
-    private function get_chat_mx($chat_id) {
-        $bot   = Db::get_bot_name();
+    private function get_chat_mx($chat_id)
+    {
+        $bot = Db::get_bot_name();
         $redis = Db::get_redis();
 
-        $max_day = (int)$redis->hGet($bot . 'stats:chat:' . $chat_id, 'max_day');
-        $min_day = (int)$redis->hGet($bot . 'stats:chat:' . $chat_id, 'min_day');
+        // $max_day = (int) $redis->hGet($bot . 'stats:chat:' . $chat_id, 'max_day');
+        // $min_day = (int) $redis->hGet($bot . 'stats:chat:' . $chat_id, 'min_day');
 
-        if ($max_day == 0 || $min_day == 0) {
-            $this->build_stats_data($chat_id, '*');
+        // if ($max_day == 0 || $min_day == 0) {
+        //     $this->build_stats_data($chat_id, '*');
 
-            $max_day = (int)$redis->hGet($bot . 'stats:chat:' . $chat_id, 'max_day');
-            $min_day = (int)$redis->hGet($bot . 'stats:chat:' . $chat_id, 'min_day');
-        }
+        //     $max_day = (int) $redis->hGet($bot . 'stats:chat:' . $chat_id, 'max_day');
+        //     $min_day = (int) $redis->hGet($bot . 'stats:chat:' . $chat_id, 'min_day');
+        // }
 
-        $max_msgs = (int)$redis->hGet($bot . 'stats:chat:' . $chat_id, $max_day);
-        $min_msgs = (int)$redis->hGet($bot . 'stats:chat:' . $chat_id, $min_day);
+        // $max_msgs = (int) $redis->hGet($bot . 'stats:chat:' . $chat_id, $max_day);
+        // $min_msgs = (int) $redis->hGet($bot . 'stats:chat:' . $chat_id, $min_day);
+
+        // return array(
+        //     'mxd' => $max_day,
+        //     'mxm' => $max_msgs,
+        //     'mid' => $min_day,
+        //     'mim' => $min_msgs,
+        // );
+
+        $max_day = (int) $redis->zRangeByScore($bot . 'stats:chat_day_msgs:' . $this->chat_id, 0, 1);
+        $min_day = (int) $redis->zRangeByScore($bot . 'stats:chat_day_msgs:' . $this->chat_id, -1, 0);
+        $max_day = (int) $redis->zScore($bot . 'stats:chat_day_msgs:' . $this->chat_id, $max_day[0]);
+        $min_day = (int) $redis->zScore($bot . 'stats:chat_day_msgs:' . $this->chat_id, $min_day[0]);
 
         return array(
             'mxd' => $max_day,
@@ -130,8 +146,9 @@ class Stats extends Base
      * @param null $day_id
      * @return array
      */
-    private function get_chat_users($chat_id, $day_id = NULL) {
-        $bot   = Db::get_bot_name();
+    private function get_chat_users($chat_id, $day_id = null)
+    {
+        $bot = Db::get_bot_name();
         $redis = Db::get_redis();
 
         //预处理
@@ -146,16 +163,16 @@ class Stats extends Base
         }
 
         $users_info = array();
-        $users      = $redis->sMembers($bot . 'chat:' . $chat_id . ':users');
+        $users = $redis->sMembers($bot . 'chat:' . $chat_id . ':users');
         foreach ($users as $k => $v) {
             if ($day_id == '*') {
-                $msgs = (int)$redis->get($bot . 'msgs:' . $v . ':' . $chat_id);
+                $msgs = (int) $redis->get($bot . 'msgs:' . $v . ':' . $chat_id);
             } else {
-                $msgs = (int)$redis->get($bot . 'day_msgs:' . $day_id . ':' . $v . ':' . $chat_id);
+                $msgs = (int) $redis->get($bot . 'day_msgs:' . $day_id . ':' . $v . ':' . $chat_id);
             }
 
             $users_info[] = array(
-                'id'   => (int)$v,
+                'id' => (int) $v,
                 'name' => $redis->hGet($bot . 'users:ids', $v),
                 'msgs' => $msgs,
             );
@@ -171,13 +188,14 @@ class Stats extends Base
      * @param $limit
      * @return string
      */
-    private function get_chat_stats($chat_id, $day_id, $limit) {
+    private function get_chat_stats($chat_id, $day_id, $limit)
+    {
         $uses_info = $this->get_chat_users($chat_id, $day_id);
 
         $order_by = SORT_DESC;
         if ($limit < 0) {
             $order_by = SORT_ASC;
-            $limit    = -1 * $limit;
+            $limit = -1 * $limit;
         }
 
         $sort_by = array();
@@ -211,8 +229,15 @@ class Stats extends Base
         return $text;
     }
 
-    private function get_user_stats($chat_id, $user_id) {
-        $bot   = Db::get_bot_name();
+    /**
+     * 得到用户的聊天情况
+     * @param  [type] $chat_id [description]
+     * @param  [type] $user_id [description]
+     * @return [type]          [description]
+     */
+    private function get_user_stats($chat_id, $user_id)
+    {
+        $bot = Db::get_bot_name();
         $redis = Db::get_redis();
 
         if ($user_id == 'me') {
@@ -225,25 +250,25 @@ class Stats extends Base
             }
         }
 
-        $all_sum    = 0;
-        $user_sum   = 0;
+        $all_sum = 0;
+        $user_sum = 0;
         $users_info = $this->get_chat_users($chat_id);
         foreach ($users_info as $user) {
             $all_sum += $user['msgs'];
 
             if ($user['id'] == $user_id) {
-                $user_sum = (int)$user['msgs'];
+                $user_sum = (int) $user['msgs'];
             }
         }
 
-        $day_all_sum    = 0;
-        $day_user_sum   = 0;
+        $day_all_sum = 0;
+        $day_user_sum = 0;
         $day_users_info = $this->get_chat_users($chat_id, date('Ymd'));
         foreach ($day_users_info as $user) {
             $day_all_sum += $user['msgs'];
 
             if ($user['id'] == $user_id) {
-                $day_user_sum = (int)$user['msgs'];
+                $day_user_sum = (int) $user['msgs'];
             }
         }
 
@@ -264,7 +289,8 @@ class Stats extends Base
     /**
      * 不管什么情况都会执行的函数
      */
-    public function pre_process() {
+    public function pre_process()
+    {
         Common::echo_log("统计数据 开始");
 
         if (empty($this->parm)) {
@@ -290,7 +316,7 @@ class Stats extends Base
 
         Common::echo_log("统计数据 更新数据");
 
-        $bot   = Db::get_bot_name();
+        $bot = Db::get_bot_name();
         $redis = Db::get_redis();
 
         //记录发言人的信息
@@ -300,14 +326,23 @@ class Stats extends Base
         // 添加用户ID到群组中
         $redis->sadd($bot . 'chat:' . $this->chat_id . ':users', $this->from_id);
 
-        // 记录用户在这个群组中的聊天数
-        $redis->incr($bot . 'msgs:' . $this->from_id . ':' . $this->chat_id);
+        // // 记录用户在这个群组中的聊天数
+        // $redis->incr($bot . 'msgs:' . $this->from_id . ':' . $this->chat_id);
 
-        // 记录用户在这个群组中的聊天数,这天
-        $redis->incr($bot . 'day_msgs:' . date('Ymd') . ':' . $this->from_id . ':' . $this->chat_id);
+        // // 记录用户在这个群组中的聊天数,这天
+        // $redis->incr($bot . 'day_msgs:' . date('Ymd') . ':' . $this->from_id . ':' . $this->chat_id);
 
-        //刷新每天这个群的最大最小发言数
-        $this->build_stats_data($this->chat_id, date('Ymd'));
+        // //刷新每天这个群的最大最小发言数
+        // $this->build_stats_data($this->chat_id, date('Ymd'));
+
+        // 记录群组每天的发言数
+        $redis->zIncrBy($bot . 'stats:chat_day_msgs:' . $this->chat_id, 1, date('Ymd'));
+
+        // 记录用户在这个群组中的发言数
+        $redis->zIncrBy($bot . 'stats:chat_user_msgs:' . $this->chat_id, 1, $this->from_id);
+
+        // 记录用户在这个群组中每天的发言数
+        $redis->zIncrBy($bot . 'stats:chat_user_day_msgs:' . $this->chat_id . ':' . date('Ymd'), 1, $this->from_id);
 
         Common::echo_log("统计数据 数据更新完毕");
     }
@@ -315,10 +350,11 @@ class Stats extends Base
     /**
      * 当有人进入群的时候
      */
-    public function msg_enter_chat() {
+    public function msg_enter_chat()
+    {
         Common::echo_log("有人进入群");
 
-        $bot   = Db::get_bot_name();
+        $bot = Db::get_bot_name();
         $redis = Db::get_redis();
 
         //记录进入群的时间
@@ -328,10 +364,11 @@ class Stats extends Base
     /**
      * 有人离开群的时候
      */
-    public function msg_left_chat() {
+    public function msg_left_chat()
+    {
         Common::echo_log("有人离开群");
 
-        $bot   = Db::get_bot_name();
+        $bot = Db::get_bot_name();
         $redis = Db::get_redis();
 
         //记录离开群的时间
@@ -346,7 +383,8 @@ class Stats extends Base
     /**
      * 当命令满足的时候，执行的基础执行函数
      */
-    public function run() {
+    public function run()
+    {
         Common::echo_log("执行 Stats run text=%s", $this->parms);
 
         if ($this->parms[0] == 'state') {
@@ -357,7 +395,7 @@ class Stats extends Base
         } else {
 
             $day_id = date('Ymd');
-            $limit  = self::DEFAULT_SHOW_LIMIT;
+            $limit = self::DEFAULT_SHOW_LIMIT;
 
             if (!empty($this->parms[1])) {
                 $day_id = $this->parms[1];
@@ -375,8 +413,8 @@ class Stats extends Base
         }
 
         Telegram::singleton()->send_message(array(
-            'chat_id'             => $this->chat_id,
-            'text'                => $res_str,
+            'chat_id' => $this->chat_id,
+            'text' => $res_str,
             'reply_to_message_id' => $this->msg_id,
         ));
     }
