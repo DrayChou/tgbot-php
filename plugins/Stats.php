@@ -180,7 +180,10 @@ class Stats extends Base
 
         // return $users_info;
 
-        $msg_ls = $redis->zRevRangeByScore($bot . 'stats:chat_user_day_msgs:' . $this->chat_id . ':' . $day_id, 0, 5000, array('withscores' => true));
+        $key = $bot . 'stats:chat_user_day_msgs:' . $this->chat_id . ':' . $day_id;
+        $msg_ls = $redis->zRevRangeByScore($key, 0, 5000, array('withscores' => true));
+        Common::echo_log("Common: {$key}=%s", print_r($msg_ls, true));
+
         return $msg_ls;
     }
 
