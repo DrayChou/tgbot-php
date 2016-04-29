@@ -207,17 +207,17 @@ class Stats extends Base
 
             if (count($text) <= $limit) {
                 $top_sum += $msgs;
-                $text[] = (PHP_EOL . $redis->hGet($bot . 'users:ids', $user_id) . ' => ' . $msgs);
+                $text[] = ($redis->hGet($bot . 'users:ids', $user_id) . ' => ' . $msgs);
             }
         }
 
         $chat_max = $this->get_chat_mx($chat_id);
 
-        $text[] = (PHP_EOL . ' top sum:' . $top_sum);
-        $text[] = (PHP_EOL . ' all sum:' . $all_sum);
-        $text[] = (PHP_EOL . ' top/all:' . intval($top_sum / ($all_sum == 0 ? 1 : $all_sum) * 100) . '%');
-        $text[] = (PHP_EOL . ' max day:' . ($chat_max['mxd'] . ' => ' . $chat_max['mxm']));
-        $text[] = (PHP_EOL . ' min day:' . ($chat_max['mid'] . ' => ' . $chat_max['mim']));
+        $text[] = (' top sum:' . $top_sum);
+        $text[] = (' all sum:' . $all_sum);
+        $text[] = (' top/all:' . intval($top_sum / ($all_sum == 0 ? 1 : $all_sum) * 100) . '%');
+        $text[] = (' max day:' . ($chat_max['mxd'] . ' => ' . $chat_max['mxm']));
+        $text[] = (' min day:' . ($chat_max['mid'] . ' => ' . $chat_max['mim']));
 
         return join(PHP_EOL, $text);
     }
