@@ -43,9 +43,9 @@ class Stats extends Base
         $days_list = $redis->keys($key1);
         foreach ($days_list as $k => $v) {
             $keys = explode(':', $v);
-            $day_id = $keys[2];
-            $user_id = $keys[3];
-            $chat_id = $keys[4];
+            $day_id = $keys[3];
+            $user_id = $keys[4];
+            $chat_id = $keys[5];
 
             if (!is_numeric($day_id) || !is_numeric($user_id) || !is_numeric($chat_id)) {
                 Common::echo_log("data_to_2 无效ID，跳过: {$v}");
