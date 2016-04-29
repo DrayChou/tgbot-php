@@ -154,6 +154,8 @@ class Stats extends Base
             }
         }
 
+        arsort($res);
+
         return $res;
     }
 
@@ -171,7 +173,7 @@ class Stats extends Base
 
         $uses_info = $this->get_chat_users($chat_id, $day_id);
         if ($limit < 0) {
-            arsort($users_info);
+            asort($users_info);
         }
 
         $text[] = strtoupper($day_id) . ' TOP ' . $limit;
