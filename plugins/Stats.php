@@ -280,13 +280,13 @@ class Stats extends Base
         $show_name = $redis->hGet($bot . 'users:ids', $user_id);
 
         $text = [];
-        $text[] = ($show_name . ' stats:' . PHP_EOL);
-        $text[] = ('stats count:' . $user_sum . PHP_EOL);
-        $text[] = ('all user sum:' . $all_sum . PHP_EOL);
-        $text[] = ('user/all:' . intval($user_sum / ($all_sum == 0 ? 1 : $all_sum) * 100) . '%' . PHP_EOL);
-        $text[] = ('user today count:' . $day_user_sum . PHP_EOL);
-        $text[] = ('all user today sum:' . $day_all_sum . PHP_EOL);
-        $text[] = ('user/all:' . intval($day_user_sum / ($day_all_sum == 0 ? 1 : $day_all_sum) * 100) . '%' . PHP_EOL);
+        $text[] = $show_name . ' stats:';
+        $text[] = 'stats count:' . $user_sum;
+        $text[] = 'all user sum:' . $all_sum;
+        $text[] = 'user/all:' . intval($user_sum / ($all_sum == 0 ? 1 : $all_sum) * 100) . '%';
+        $text[] = 'user today count:' . $day_user_sum;
+        $text[] = 'all user today sum:' . $day_all_sum;
+        $text[] = 'user/all:' . intval($day_user_sum / ($day_all_sum == 0 ? 1 : $day_all_sum) * 100) . '%';
 
         return join(PHP_EOL, $text);
     }
