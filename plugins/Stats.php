@@ -127,8 +127,14 @@ class Stats extends Base
         //     'mim' => $min_msgs,
         // );
 
-        $max_day = $redis->zRevRange($bot . 'stats:chat_day_msgs:' . $this->chat_id, 0, 0);
-        $min_day = $redis->zRange($bot . 'stats:chat_day_msgs:' . $this->chat_id, 0, 0);
+        $key1 = $bot . 'stats:chat_day_msgs:' . $this->chat_id;
+        $max_day = $redis->zRevRange($key1, 0, 1);
+        Common::echo_log("Stats: {$key1}=%s", print_r($max_day, true));
+
+        $key2 = $bot . 'stats:chat_day_msgs:' . $this->chat_id;
+        $min_day = $redis->zRange($key2, 0, 1);
+        Common::echo_log("Stats: {$redis}=%s", print_r($min_day, true));
+
         $max_msgs = (int) $redis->zScore($bot . 'stats:chat_day_msgs:' . $this->chat_id, $max_day[0]);
         $min_msgs = (int) $redis->zScore($bot . 'stats:chat_day_msgs:' . $this->chat_id, $min_day[0]);
 
