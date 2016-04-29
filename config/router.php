@@ -75,5 +75,5 @@ return array(
     '#^/(tumblr)(@%%bot_name%%| |)(.*)$#iu' => 'tumblr',
 
     //yegoudaozhangisgay
-    '#^/(yegoudaozhangisgay)(@%%bot_name%%| |)(.*)$#iu' => 'Yegoudaozhangisgay',
+    '#^[/|@](yegoudaozhangisgay)(@%%bot_name%%| |)(.*)$#iu' => 'Yegoudaozhangisgay',
 );

@@ -45,7 +45,7 @@ class Admin extends Base
             $is_flg = false;
             foreach (self::$ADMIN_MAP as $m => $n) {
                 if (0 == strcasecmp($v, $n)) {
-                    $do_ = $m;
+                    $do_ = $n;
                     $is_flg = true;
                     break;
                 }
@@ -84,7 +84,7 @@ class Admin extends Base
 
         $res_str = '操作完成，亲！';
         switch ($do_) {
-            case 1:{
+            case 'reset_routing':{
                     $key = Db::get_bot_name() . 'config:router';
                     $redis = Db::get_redis();
                     if (!$redis->delete($key)) {
@@ -92,7 +92,7 @@ class Admin extends Base
                     }
                     break;
                 }
-            case 2:{
+            case 'sys_info':{
                     $res_str = '';
                     $sys_info = $this->sys_linux();
                     if (empty($sys_info)) {
@@ -121,7 +121,7 @@ class Admin extends Base
 
                     break;
                 }
-            case 3:{
+            case 'git_pull':{
                     $dir = dirname(dirname(__FILE__));
                     $exec = "cd {$dir} && /usr/lib/git-core/git pull && cd -";
                     $output = shell_exec($exec);
@@ -134,7 +134,7 @@ class Admin extends Base
 
                     break;
                 }
-            case 4:{
+            case 'redis_info':{
                     $bot = Db::get_bot_name();
                     $exec = "redis-cli keys \"{$bot}chat:*:users\" | wc -l";
                     $output = shell_exec($exec);
