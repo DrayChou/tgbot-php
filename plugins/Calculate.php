@@ -9,11 +9,13 @@
  */
 class Calculate extends Base
 {
-    static function desc() {
+    public static function desc()
+    {
         return "/calc - Calculate math expressions with mathjs API.";
     }
 
-    static function usage() {
+    public static function usage()
+    {
         return array(
             "/calc [expression]: evaluates the expression and sends the result.",
         );
@@ -22,7 +24,8 @@ class Calculate extends Base
     /**
      * 当命令满足的时候，执行的基础执行函数
      */
-    public function run() {
+    public function run()
+    {
         Common::echo_log("执行 Calculate run");
 
         //如果是需要回掉的请求

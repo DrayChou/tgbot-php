@@ -7,7 +7,7 @@
  * Date: 15/7/10
  * Time: 下午6:43
  */
-class Common
+class common
 {
 
     private static $router = array();
@@ -181,7 +181,6 @@ class Common
         $before_time = self::microtime_float();
 
         try {
-
             $curl = curl_init();
             curl_setopt($curl, CURLOPT_URL, $url);
             curl_setopt($curl, CURLOPT_HEADER, 0);
@@ -219,7 +218,6 @@ class Common
 
             Common::echo_log('Common: res=%s', print_r($res, true));
             Common::echo_log('Common: time=%s', (self::microtime_float() - $before_time));
-
         } catch (Exception $exc) {
             $err = "post token url={$url} contents=" . print_r($post, true) . ' res=' . print_r($res, true);
             Common::echo_log($err);
@@ -235,7 +233,7 @@ class Common
      */
     public static function report_err($text)
     {
-//        $admins = Common::get_config('admins');
+        //        $admins = Common::get_config('admins');
         //        foreach ($admins as $v) {
         //            $msg = Telegram::singleton()->sendMessage(array(
         //                'chat_id' => $v,

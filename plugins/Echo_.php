@@ -8,11 +8,13 @@
  */
 class Echo_ extends Base
 {
-    static function desc() {
+    public static function desc()
+    {
         return "/echo - echoes the msg.  ";
     }
 
-    static function usage() {
+    public static function usage()
+    {
         return array(
             "/echo [whatever] - echoes the msg.",
         );
@@ -21,7 +23,8 @@ class Echo_ extends Base
     /**
      * 当命令满足的时候，执行的基础执行函数
      */
-    public function run() {
+    public function run()
+    {
         Common::echo_log("执行 Echo_ run");
 
         if (empty($this->text)) {

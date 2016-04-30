@@ -6,13 +6,16 @@
  * Date: 15/7/10
  * Time: 下午3:43
  */
-class Start extends Base {
+class Start extends Base
+{
 
-    static function desc() {
+    public static function desc()
+    {
         return "/start - Start using robots.";
     }
 
-    static function usage() {
+    public static function usage()
+    {
         return array(
             "/start - Start using robots.",
         );
@@ -21,7 +24,8 @@ class Start extends Base {
     /**
      * 当命令满足的时候，执行的基础执行函数
      */
-    public function run() {
+    public function run()
+    {
         Common::echo_log("执行 Start run");
 
         $help = Process::get_class('Help');
@@ -32,5 +36,4 @@ class Start extends Base {
         $help->msg_id  = $this->msg_id;
         $help->run();
     }
-
 }

@@ -11,11 +11,13 @@ class Tuling123 extends Base
 {
     const LIST_SHOW_MAX = 1;
 
-    static function desc() {
+    public static function desc()
+    {
         return "/tuling123 - 询问图灵小机器人.  ";
     }
 
-    static function usage() {
+    public static function usage()
+    {
         return array(
             "/tuling123 info: 请求图灵的机器人接口，并返回回答。",
             "Request Turing robot, and return the results. Only support Chinese.",
@@ -28,12 +30,12 @@ class Tuling123 extends Base
     /**
      * 当命令满足的时候，执行的基础执行函数
      */
-    public function run() {
+    public function run()
+    {
         Common::echo_log("Tuling123 run 执行");
 
         //如果是需要回掉的请求
         if (empty($this->text)) {
-
             $res_str = '';
             $res_str .= '你想问什么呢？ E.g.:' . PHP_EOL;
             $res_str .= '今天星期几？' . PHP_EOL;

@@ -8,11 +8,13 @@
  */
 class Wiki extends Base
 {
-    static function desc() {
+    public static function desc()
+    {
         return "/wiki - Searches Wikipedia and send results";
     }
 
-    static function usage() {
+    public static function usage()
+    {
         return array(
             "/wiki [text]: Read extract from default Wikipedia (EN)",
             "/wiki [lang] [text]: Read extract from 'lang' Wikipedia. Example: !wikies hola",
@@ -25,7 +27,8 @@ class Wiki extends Base
      * 当命令满足的时候，执行的基础执行函数
      * @throws Exception
      */
-    public function run() {
+    public function run()
+    {
         Common::echo_log("执行 Wiki run ");
 
         //如果是需要回掉的请求

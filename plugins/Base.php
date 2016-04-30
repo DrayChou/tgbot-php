@@ -37,7 +37,8 @@ class Base
      * @param $msg
      * @throws Exception
      */
-    public function set_msg($msg, $text = NULL, $parms = NULL) {
+    public function set_msg($msg, $text = null, $parms = null)
+    {
         if (empty($msg['message_id'])) {
             throw new Exception('error message');
         }
@@ -83,28 +84,32 @@ class Base
     /**
      * 当有人进入群的时候
      */
-    public function msg_enter_chat() {
+    public function msg_enter_chat()
+    {
         Common::echo_log("有人进入群");
     }
 
     /**
      * 有人离开群的时候
      */
-    public function msg_left_chat() {
+    public function msg_left_chat()
+    {
         Common::echo_log("有人离开群");
     }
 
     /**
      * 有人回复我
      */
-    public function msg_reply_me() {
+    public function msg_reply_me()
+    {
         Common::echo_log("有人回复我");
     }
 
     /**
      * 不管什么情况都会执行的函数
      */
-    public function pre_process() {
+    public function pre_process()
+    {
         $class = get_called_class();
         if (false == $this->is_has_reply()) {
             Common::echo_log($class . " pre_process 没有需要处理的 跳过");
@@ -115,7 +120,7 @@ class Base
         Common::echo_log($class . " pre_process 抓到需要处理的回复 parm=%s", $this->parm);
 
         $key = 'need_reply:' . $class . ':' . $this->chat_id . ':' . $this->from_id;
-        Db::set($key, NULL, -1);
+        Db::set($key, null, -1);
 
         $this->text = $this->parm;
         $this->run();
@@ -124,7 +129,8 @@ class Base
     /**
      * 当命令满足的时候，执行的基础执行函数
      */
-    public function run() {
+    public function run()
+    {
         Common::echo_log("做点什么");
     }
 
@@ -132,7 +138,8 @@ class Base
      * 返回命令说明，一般只有一行
      * @return string
      */
-    static public function desc() {
+    public static function desc()
+    {
         return "插件说明，一行，用在 help 中";
     }
 
@@ -140,7 +147,8 @@ class Base
      * 返回命令详细信息
      * @return string
      */
-    static public function usage() {
+    public static function usage()
+    {
         return "插件说明，数组，用在功能调用的说明上。";
     }
 
@@ -149,7 +157,8 @@ class Base
      * @param $res_str
      * @throws Exception
      */
-    protected function set_reply($res_str = NULL) {
+    protected function set_reply($res_str = null)
+    {
         $class = get_called_class();
         Common::echo_log($class . " 设置回掉信息: chat_id=%s from_id=%s", $this->chat_id, $this->from_id);
 
@@ -178,7 +187,8 @@ class Base
      * 检查是否有需要回掉的消息
      * @return bool
      */
-    protected function is_has_reply() {
+    protected function is_has_reply()
+    {
         $class = get_called_class();
         $key   = 'need_reply:' . $class . ':' . $this->chat_id . ':' . $this->from_id;
 
@@ -190,7 +200,8 @@ class Base
      * @param $data
      * @return string
      */
-    static protected function getUserName($data) {
+    protected static function getUserName($data)
+    {
         $name = '';
         if (isset($data['first_name'])) {
             $name = $data['first_name'];

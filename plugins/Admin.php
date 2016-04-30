@@ -8,7 +8,7 @@
  */
 class Admin extends Base
 {
-    static $ADMIN_MAP = array(
+    public static $ADMIN_MAP = array(
         1 => 'reset_routing',
         2 => 'sys_info',
         3 => 'git_pull',
@@ -213,7 +213,6 @@ class Admin extends Base
             if (false !== is_array($res['cpu']['bogomips'])) {
                 $res['cpu']['bogomips'] = implode("<br />", $res['cpu']['bogomips']);
             }
-
         }
 
         // NETWORK

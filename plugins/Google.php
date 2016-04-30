@@ -8,11 +8,13 @@
  */
 class Google extends Base
 {
-    static function desc() {
+    public static function desc()
+    {
         return "/google - Searches Google and send results.";
     }
 
-    static function usage() {
+    public static function usage()
+    {
         return array(
             "/google - Searches Google and send results."
         );
@@ -22,7 +24,8 @@ class Google extends Base
      * 当命令满足的时候，执行的基础执行函数
      * @throws Exception
      */
-    public function run() {
+    public function run()
+    {
         Common::echo_log("Google run 执行");
 
         //如果是需要回掉的请求

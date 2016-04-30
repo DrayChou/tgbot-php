@@ -29,58 +29,114 @@ class Stats extends Base
     }
 
     /**
-     * 旧版数据转为新版数据
+     * 重建每日数据
      * [data_to_2 description]
      * @return [type] [description]
      */
-    private function data_to_2()
+    private function rebuild_day_msgs()
+    {
+        $bot = Db::get_bot_name();
+        $redis = Db::get_redis();
+
+        $day_keys = array();
+        $user_keys = array();
+        $sum = 0;
+
+        $days_list = $redis->keys("{$bot}stats:chat_user_day_msgs:*:*");
+        foreach ($days_list as $k => $v) {
+            $keys = explode(':', $v);
+            $chat_id = $keys[2];
+            $day_id = $keys[3];
+
+            if (!is_numeric($day_id) || !is_numeric($chat_id)) {
+                Common::echo_log("data_to_2 无效ID，跳过: {$v}");
+                continue;
+            }
+
+            $msg_ls = $redis->zRevRange("{$bot}stats:chat_user_day_msgs:{$chat_id}:{$day_id}", 0, -1, true);
+            foreach ($msg_ls as $user_id => $count) {
+                //如果是第一次记录，那么删除之前的数据
+                if (!isset($day_keys[$day_id])) {
+                    $day_keys[$day_id] = 1;
+                    $redis->zDelete($bot . 'stats:chat_day_msgs:' . $chat_id, $day_id);
+                }
+
+                // 记录群组每天的发言数
+                $redis->zIncrBy($bot . 'stats:chat_day_msgs:' . $chat_id, $count, $day_id);
+
+                //如果是第一次记录，那么删除之前的数据
+                if (!isset($user_keys[$user_id])) {
+                    $user_keys[$user_id] = 1;
+                    $redis->zDelete($bot . 'stats:chat_user_msgs:' . $chat_id, $user_id);
+                }
+
+                // 记录群组每天的发言数
+                $redis->zIncrBy($bot . 'stats:chat_user_msgs:' . $chat_id, $count, $user_id);
+
+                $sum += 1;
+            }
+
+            Common::echo_log("data_to_2 处理: {$v}");
+        }
+
+        $text[] = '重建数据:' . $sum;
+
+        return join(PHP_EOL, $text);
+    }
+
+    /**
+     * 删除旧版无效的数据
+     * [data_to_2 description]
+     * @return [type] [description]
+     */
+    private function data_d1()
     {
         $bot = Db::get_bot_name();
         $redis = Db::get_redis();
 
         $s1 = 0;
-        $key1 = $bot . "day_msgs:*:*:*";
+        $key1 = "chat:*";
         $days_list = $redis->keys($key1);
         foreach ($days_list as $k => $v) {
-            $keys = explode(':', $v);
-            $day_id = $keys[3];
-            $user_id = $keys[4];
-            $chat_id = $keys[5];
-
-            if (!is_numeric($day_id) || !is_numeric($user_id) || !is_numeric($chat_id)) {
-                Common::echo_log("data_to_2 无效ID，跳过: {$v}");
-                continue;
-            }
-
-            $count = $redis->get($v);
-
-            // 记录群组每天的发言数
-            $redis->zDelete($bot . 'stats:chat_day_msgs:' . $chat_id, $day_id);
-            $redis->zIncrBy($bot . 'stats:chat_day_msgs:' . $chat_id, $count, $day_id);
-
-            // 记录用户在这个群组中的发言数
-            $redis->zDelete($bot . 'stats:chat_user_msgs:' . $chat_id, $user_id);
-            $redis->zIncrBy($bot . 'stats:chat_user_msgs:' . $chat_id, $count, $user_id);
-
-            // 记录用户在这个群组中每天的发言数
-            $redis->zDelete($bot . 'stats:chat_user_day_msgs:' . $chat_id . ':' . $day_id, $user_id);
-            $redis->zIncrBy($bot . 'stats:chat_user_day_msgs:' . $chat_id . ':' . $day_id, $count, $user_id);
-
             //删除这个键
             $redis->delete($v);
-
-            //删除附加的一个键
-            $redis->delete("{$bot}msgs:{$user_id}:{$chat_id}");
-
-            //删除附加的一个键
-            $redis->delete("{$bot}stats:chat:{$user_id}");
-            $redis->delete("{$bot}stats:chat:{$chat_id}");
-
-            Common::echo_log("data_to_2 处理: {$v}");
             $s1 += 1;
         }
 
-        $text[] = '转换数据:' . $s1;
+        $text[] = '删除数据:' . $s1;
+
+        $s1 = 0;
+        $key1 = "msgs:*";
+        $days_list = $redis->keys($key1);
+        foreach ($days_list as $k => $v) {
+            //删除这个键
+            $redis->delete($v);
+            $s1 += 1;
+        }
+
+        $text[] = '删除数据:' . $s1;
+
+        $s1 = 0;
+        $key1 = "stats:*";
+        $days_list = $redis->keys($key1);
+        foreach ($days_list as $k => $v) {
+            //删除这个键
+            $redis->delete($v);
+            $s1 += 1;
+        }
+
+        $text[] = '删除数据:' . $s1;
+
+        $s1 = 0;
+        $key1 = "user:*";
+        $days_list = $redis->keys($key1);
+        foreach ($days_list as $k => $v) {
+            //删除这个键
+            $redis->delete($v);
+            $s1 += 1;
+        }
+
+        $text[] = '删除数据:' . $s1;
 
         return join(PHP_EOL, $text);
     }
@@ -103,15 +159,10 @@ class Stats extends Base
         $min_day = $redis->zRange($key2, 0, 1);
         Common::echo_log("Stats: {$key2}=%s", print_r($min_day, true));
 
-        $max_msgs = (int) $redis->zScore($bot . 'stats:chat_day_msgs:' . $this->chat_id, $max_day[0]);
-        $min_msgs = (int) $redis->zScore($bot . 'stats:chat_day_msgs:' . $this->chat_id, $min_day[0]);
+        $max_msgs = (int)$redis->zScore($bot . 'stats:chat_day_msgs:' . $this->chat_id, $max_day[0]);
+        $min_msgs = (int)$redis->zScore($bot . 'stats:chat_day_msgs:' . $this->chat_id, $min_day[0]);
 
-        return array(
-            'mxd' => $max_day[0],
-            'mxm' => $max_msgs,
-            'mid' => $min_day[0],
-            'mim' => $min_msgs,
-        );
+        return array('mxd' => $max_day[0], 'mxm' => $max_msgs, 'mid' => $min_day[0], 'mim' => $min_msgs,);
     }
 
     /**
@@ -143,7 +194,7 @@ class Stats extends Base
         Common::echo_log("Stats: {$key}=%s", print_r($key_list, true));
 
         foreach ($key_list as $k => $v) {
-            $msg_ls = $redis->zRevRange($v, 0, 5000, true);
+            $msg_ls = $redis->zRevRange($v, 0, -1, true);
 
             foreach ($msg_ls as $id => $msgs) {
                 if (isset($res[$id])) {
@@ -228,7 +279,7 @@ class Stats extends Base
             $all_sum += $msgs;
 
             if ($id == $user_id) {
-                $user_sum = (int) $msgs;
+                $user_sum = (int)$msgs;
             }
         }
 
@@ -239,7 +290,7 @@ class Stats extends Base
             $day_all_sum += $msgs;
 
             if ($id == $user_id) {
-                $day_user_sum = (int) $msgs;
+                $day_user_sum = (int)$msgs;
             }
         }
 
@@ -355,16 +406,13 @@ class Stats extends Base
         Common::echo_log("执行 Stats run text=%s", $this->parms);
 
         if ($this->parms[0] == 'state') {
-
             $user_id = empty($this->parms[1]) ? $this->from_id : $this->parms[1];
             $res_str = $this->get_user_stats($this->chat_id, $user_id);
-
-        } elseif ($this->parms[1] == 'to_2') {
-
-            $res_str = $this->data_to_2();
-
+        } elseif ($this->parms[1] == 'rebuild') {
+            $res_str = $this->rebuild_day_msgs();
+        } elseif ($this->parms[1] == 'd1') {
+            $res_str = $this->data_d1();
         } else {
-
             $day_id = date('Ymd');
             $limit = self::DEFAULT_SHOW_LIMIT;
 

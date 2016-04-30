@@ -9,7 +9,7 @@
 
 require_once LIB_PATH . 'db.php';
 
-class Process
+class process
 {
 
     private static $instance = array();
@@ -194,5 +194,4 @@ class Process
             }
         }
     }
-
 }

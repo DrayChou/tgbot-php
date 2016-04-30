@@ -7,11 +7,13 @@
  */
 class Id extends Base
 {
-    static function desc() {
+    public static function desc()
+    {
         return "/id - echo my id.  ";
     }
 
-    static function usage() {
+    public static function usage()
+    {
         return array(
             "/id - echoes my id.",
             "/id user - echoes user id.",
@@ -21,7 +23,8 @@ class Id extends Base
     /**
      * 当命令满足的时候，执行的基础执行函数
      */
-    public function run() {
+    public function run()
+    {
         Common::echo_log("执行 Id run");
 
         $user_id = $this->from_id;

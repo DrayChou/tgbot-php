@@ -8,11 +8,13 @@
  */
 class Googleimg extends Base
 {
-    static function desc() {
+    public static function desc()
+    {
         return "/img - Search image with Google API and sends it. ";
     }
 
-    static function usage() {
+    public static function usage()
+    {
         return array(
             "/img info: Random search an image with Google API.",
         );
@@ -21,7 +23,8 @@ class Googleimg extends Base
     /**
      * 当命令满足的时候，执行的基础执行函数
      */
-    public function run() {
+    public function run()
+    {
         Common::echo_log("执行 GoogleImg run");
 
         //如果是需要回掉的请求

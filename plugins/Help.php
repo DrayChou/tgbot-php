@@ -7,11 +7,13 @@
  */
 class Help extends Base
 {
-    static function desc() {
+    public static function desc()
+    {
         return "/help - Help plugin. Get info from other plugins.  ";
     }
 
-    static function usage() {
+    public static function usage()
+    {
         return array(
             "/help - Show list of plugins.",
             "/help all - Show all commands for every plugin.",
@@ -25,7 +27,8 @@ class Help extends Base
      * @param null $text
      * @return string
      */
-    private function get_helps($text = NULL) {
+    private function get_helps($text = null)
+    {
         $helps    = array();
         $router   = Db::get_router();
         $bot_info = Db::get_bot_info();
@@ -34,7 +37,7 @@ class Help extends Base
         $one = false;
         foreach ($router as $reg => $class) {
             if ($text) {
-                $desc = NULL;
+                $desc = null;
 
                 // 如果是单个拿取的话，直接跳出
                 if (strtolower($class) == strtolower($text)) {
@@ -93,7 +96,8 @@ class Help extends Base
     /**
      * 当命令满足的时候，执行的基础执行函数
      */
-    public function run() {
+    public function run()
+    {
         Common::echo_log("执行 Help run");
 
         $res_str = $this->get_helps($this->text);

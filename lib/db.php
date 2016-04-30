@@ -7,7 +7,7 @@
 
 require_once LIB_PATH . 'telegram.php';
 
-class Db
+class db
 {
     /**
      * 得到 redis 对象

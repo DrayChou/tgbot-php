@@ -12,7 +12,7 @@ class Bot extends Base
     const BOT_TULING123 = 1;
     const BOT_CLEVER = 2;
 
-    static $BOT_MAP = array(
+    public static $BOT_MAP = array(
         self::BOT_TULING123 => 'tuling123',
         self::BOT_CLEVER => 'cleverbot',
     );
@@ -151,7 +151,6 @@ class Bot extends Base
         $bot = self::get_my_bot($this->from_id, $this->parm);
         if (empty($bot) || $is_set) {
             if (empty($bot_id)) {
-
                 $key_board = null;
                 foreach (self::$BOT_MAP as $v) {
                     $key_board[] = array(
@@ -188,5 +187,4 @@ class Bot extends Base
         $bot->text = $this->parm;
         $bot->run();
     }
-
 }

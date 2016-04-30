@@ -10,11 +10,13 @@
  */
 class Cleverbot extends Base
 {
-    static function desc() {
+    public static function desc()
+    {
         return "/cleverbot - say to cleverbot...";
     }
 
-    static function usage() {
+    public static function usage()
+    {
         return array(
             "/cleverbot info: say to cleverbot...",
             "http://www.cleverbot.com/",
@@ -24,7 +26,8 @@ class Cleverbot extends Base
     /**
      * 当命令满足的时候，执行的基础执行函数
      */
-    public function run() {
+    public function run()
+    {
         Common::echo_log("Cleverbot run 执行");
 
         //如果是需要回掉的请求
@@ -85,7 +88,8 @@ class ChatterBotType
 
 class ChatterBotFactory
 {
-    public function create($type, $arg = NULL) {
+    public function create($type, $arg = null)
+    {
         switch ($type) {
             case ChatterBotType::CLEVERBOT: {
                 return new _Cleverbot('http://www.cleverbot.com', 'http://www.cleverbot.com/webservicemin', 26);
@@ -94,7 +98,7 @@ class ChatterBotFactory
                 return new _Cleverbot('http://jabberwacky.com', 'http://jabberwacky.com/webservicemin', 20);
             }
             case ChatterBotType::PANDORABOTS: {
-                if ($arg == NULL) {
+                if ($arg == null) {
                     throw new Exception('PANDORABOTS needs a botid arg');
                 }
 
@@ -106,18 +110,21 @@ class ChatterBotFactory
 
 abstract class ChatterBot
 {
-    public function createSession() {
-        return NULL;
+    public function createSession()
+    {
+        return null;
     }
 }
 
 abstract class ChatterBotSession
 {
-    public function thinkThought($thought) {
+    public function thinkThought($thought)
+    {
         return $thought;
     }
 
-    public function think($text) {
+    public function think($text)
+    {
         $thought = new ChatterBotThought();
         $thought->setText($text);
 
@@ -129,11 +136,13 @@ class ChatterBotThought
 {
     private $text;
 
-    public function getText() {
+    public function getText()
+    {
         return $this->text;
     }
 
-    public function setText($text) {
+    public function setText($text)
+    {
         $this->text = $text;
     }
 }
@@ -148,29 +157,35 @@ class _Cleverbot extends ChatterBot
     private $serviceUrl;
     private $endIndex;
 
-    public function __construct($baseUrl, $serviceUrl, $endIndex) {
+    public function __construct($baseUrl, $serviceUrl, $endIndex)
+    {
         $this->baseUrl    = $baseUrl;
         $this->serviceUrl = $serviceUrl;
         $this->endIndex   = $endIndex;
     }
 
-    public function getBaseUrl() {
+    public function getBaseUrl()
+    {
         return $this->baseUrl;
     }
 
-    public function getServiceUrl() {
+    public function getServiceUrl()
+    {
         return $this->serviceUrl;
     }
 
-    public function getEndIndex() {
+    public function getEndIndex()
+    {
         return $this->endIndex;
     }
 
-    public function setEndIndex($endIndex) {
+    public function setEndIndex($endIndex)
+    {
         $this->endIndex = $endIndex;
     }
 
-    public function createSession() {
+    public function createSession()
+    {
         return new _CleverbotSession($this);
     }
 }
@@ -181,7 +196,8 @@ class _CleverbotSession extends ChatterBotSession
     private $cookies;
     private $vars;
 
-    public function __construct($bot) {
+    public function __construct($bot)
+    {
         $this->bot                = $bot;
         $this->vars               = array();
         $this->vars['start']      = 'y';
@@ -191,10 +207,11 @@ class _CleverbotSession extends ChatterBotSession
         $this->vars['islearning'] = '1';
         $this->vars['cleanslate'] = 'false';
         $this->cookies            = array();
-        _utils_request($this->bot->getBaseUrl(), $this->cookies, NULL);
+        _utils_request($this->bot->getBaseUrl(), $this->cookies, null);
     }
 
-    public function thinkThought($thought) {
+    public function thinkThought($thought)
+    {
         $this->vars['stimulus']    = $thought->getText();
         $data                      = http_build_query($this->vars);
         $dataToDigest              = substr($data, 9, $this->bot->getEndIndex());
@@ -252,19 +269,23 @@ class _Pandorabots extends ChatterBot
 {
     private $botid;
 
-    public function __construct($botid) {
+    public function __construct($botid)
+    {
         $this->botid = $botid;
     }
 
-    public function getBotid() {
+    public function getBotid()
+    {
         return $this->botid;
     }
 
-    public function setBotid($botid) {
+    public function setBotid($botid)
+    {
         $this->botid = $botid;
     }
 
-    public function createSession() {
+    public function createSession()
+    {
         return new _PandorabotsSession($this);
     }
 }
@@ -273,15 +294,17 @@ class _PandorabotsSession extends ChatterBotSession
 {
     private $vars;
 
-    public function __construct($bot) {
+    public function __construct($bot)
+    {
         $this->vars           = array();
         $this->vars['botid']  = $bot->getBotid();
         $this->vars['custid'] = uniqid();
     }
 
-    public function thinkThought($thought) {
+    public function thinkThought($thought)
+    {
         $this->vars['input'] = $thought->getText();
-        $dummy               = NULL;
+        $dummy               = null;
         $response            = _utils_request('http://www.pandorabots.com/pandora/talk-xml', $dummy, $this->vars);
         $element             = new SimpleXMLElement($response);
         $result              = $element->xpath('//result/that/text()');
@@ -300,7 +323,8 @@ class _PandorabotsSession extends ChatterBotSession
 # Utils
 #################################################
 
-function _utils_request($url, &$cookies, $params) {
+function _utils_request($url, &$cookies, $params)
+{
     $contextParams         = array();
     $contextParams['http'] = array();
     if ($params) {
@@ -337,7 +361,8 @@ function _utils_request($url, &$cookies, $params) {
     return $response;
 }
 
-function _utils_string_at_index($strings, $index) {
+function _utils_string_at_index($strings, $index)
+{
     if (count($strings) > $index) {
         return $strings[$index];
     } else {

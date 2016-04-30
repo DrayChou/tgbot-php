@@ -8,11 +8,13 @@
  */
 class Zhihu extends Base
 {
-    static function desc() {
+    public static function desc()
+    {
         return "/zhihu - 知乎日报";
     }
 
-    static function usage() {
+    public static function usage()
+    {
         return array(
             "/zhihu - 知乎日报"
         );
@@ -22,7 +24,8 @@ class Zhihu extends Base
      * 当命令满足的时候，执行的基础执行函数
      * @throws Exception
      */
-    public function run() {
+    public function run()
+    {
         Common::echo_log("Zhihu run 执行");
 
         $url = "http://news-at.zhihu.com/api/4/news/latest";

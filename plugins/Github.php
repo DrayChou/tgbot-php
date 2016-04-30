@@ -8,11 +8,13 @@
  */
 class Github extends Base
 {
-    static function desc() {
+    public static function desc()
+    {
         return "/github - get github user info";
     }
 
-    static function usage() {
+    public static function usage()
+    {
         return array(
             "/github - get github user info"
         );
@@ -22,7 +24,8 @@ class Github extends Base
      * 当命令满足的时候，执行的基础执行函数
      * @throws Exception
      */
-    public function run() {
+    public function run()
+    {
         Common::echo_log("Github run 执行");
 
         //如果是需要回掉的请求

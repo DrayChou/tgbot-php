@@ -9,7 +9,7 @@
 
 require_once LIB_PATH . 'common.php';
 
-class Telegram
+class telegram
 {
 
     private static $instance = array();
