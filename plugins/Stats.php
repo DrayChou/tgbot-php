@@ -187,7 +187,7 @@ class Stats extends Base
             }
         }
 
-        $res = [];
+        $res = array();
 
         $key = $bot . 'stats:chat_user_day_msgs:' . $this->chat_id . ':' . $day_id;
         $key_list = $redis->keys($key);
@@ -296,7 +296,7 @@ class Stats extends Base
 
         $show_name = $redis->hGet($bot . 'users:ids', $user_id);
 
-        $text = [];
+        $text = array();
         $text[] = $show_name . ' stats:';
         $text[] = 'stats count:' . $user_sum;
         $text[] = 'all user sum:' . $all_sum;

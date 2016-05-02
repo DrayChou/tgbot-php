@@ -54,6 +54,15 @@ class common
             self::$router = require BASE_PATH . 'config' . DIRECTORY_SEPARATOR . 'router.php';
         }
 
+        if ($handle = opendir(BASE_PATH . 'plugins' . DIRECTORY_SEPARATOR)) {
+            while (false !== ($file = readdir($handle))) {
+                if ($file != "." && $file != "..") {
+                    $plugin = $file;
+                }
+            }
+            closedir($handle);
+        }
+
         return self::$router;
     }
 

@@ -7,17 +7,47 @@
  */
 class Help extends Base
 {
+    /**
+     * 命令说明
+     * Command Description
+     * @return string
+     */
     public static function desc()
     {
-        return "/help - Help plugin. Get info from other plugins.  ";
+        return array(
+            "/help - Help plugin. Get info from other plugins.",
+            "/帮助 - 返回帮助信息。",
+        );
     }
 
+    /**
+     * 命令操作详解
+     * Detailed command operation
+     * @return array
+     */
     public static function usage()
     {
         return array(
             "/help - Show list of plugins.",
             "/help all - Show all commands for every plugin.",
             "/help [plugin name] -  Commands for that plugin.",
+            "/帮助 - 显示插件列表。",
+            "/帮助 所有 - 显示所有插件的命令详情。.",
+            "/帮助 [plugin name] -  单个插件的命令详情。",
+        );
+    }
+
+    /**
+     * 插件的路由配置
+     * plugin matching rules
+     * @return array
+     */
+    public static function router()
+    {
+        return array(
+            //帮助脚本匹配的命令
+            '/help',
+            '/帮助',
         );
     }
 
@@ -29,8 +59,8 @@ class Help extends Base
      */
     private function get_helps($text = null)
     {
-        $helps    = array();
-        $router   = Db::get_router();
+        $helps = array();
+        $router = Db::get_router();
         $bot_info = Db::get_bot_info();
 
         //抓文字里的关键词，抓到是要请求什么插件
@@ -43,8 +73,8 @@ class Help extends Base
                 if (strtolower($class) == strtolower($text)) {
                     $desc = $class::usage();
                 } elseif (preg_match($reg, ('/' . $text), $m)) {
-                    Common::echo_log('Help:get_helps 正则匹配结果: $reg=%s $text=%s $m=%s', $reg, $text, $m);
-                    Common::echo_log('Help:get_helps 正则匹配到的插件: $class=%s', $class);
+                    Common::echo_log('Help:get_helps 匹配结果: $reg=%s $text=%s $m=%s', $reg, $text, $m);
+                    Common::echo_log('Help:get_helps 匹配到的插件: $class=%s', $class);
 
                     $desc = $class::usage();
                 }
@@ -55,7 +85,7 @@ class Help extends Base
                     }
 
                     $helps = $desc;
-                    $one   = true;
+                    $one = true;
                     break;
                 }
             }
@@ -75,7 +105,7 @@ class Help extends Base
         }
 
         if (false == $one) {
-            $tmp   = array_flip(array_flip($helps));
+            $tmp = array_flip(array_flip($helps));
             $helps = array_merge(
                 array(
                     'Welcome to use ' . $bot_info['show_name'],
@@ -105,7 +135,7 @@ class Help extends Base
             //发送给个人
             $msg = Telegram::singleton()->send_message(array(
                 'chat_id' => $this->from_id,
-                'text'    => $res_str,
+                'text' => $res_str,
             ));
 
             //帮助信息太长的话，就私信给个人
@@ -114,8 +144,8 @@ class Help extends Base
 
         //发送到群组里
         Telegram::singleton()->send_message(array(
-            'chat_id'             => $this->chat_id,
-            'text'                => $res_str,
+            'chat_id' => $this->chat_id,
+            'text' => $res_str,
             'reply_to_message_id' => $this->msg_id,
         ));
     }
