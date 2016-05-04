@@ -16,7 +16,7 @@ class Weather extends Base
     public static function usage()
     {
         return array(
-            "/weather (city)"
+            "/weather (city)",
         );
     }
 
@@ -37,10 +37,11 @@ class Weather extends Base
 
         $data = array(
             'units' => 'metric',
-            'q'     => $this->text,
+            'APPID' => 'd6ef0178ef9d6d2c2fae60f4863c7e17',
+            'q' => $this->text,
         );
-        $url  = "http://api.openweathermap.org/data/2.5/weather?" . http_build_query($data);
-        $res  = Common::curl($url);
+        $url = "http://api.openweathermap.org/data/2.5/weather?" . http_build_query($data);
+        $res = Common::curl($url);
 
         if (!isset($res['name'])) {
             $res_str = 'Can\'t get weather from that city.';
@@ -51,8 +52,8 @@ class Weather extends Base
 
         //回复消息
         Telegram::singleton()->send_message(array(
-            'chat_id'             => $this->chat_id,
-            'text'                => $res_str,
+            'chat_id' => $this->chat_id,
+            'text' => $res_str,
             'reply_to_message_id' => $this->msg_id,
         ));
     }
