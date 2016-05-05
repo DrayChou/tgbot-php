@@ -39,7 +39,7 @@ class Google extends Base
     {
         //匹配的命令
         return array(
-            '/google',
+            // '/google',
         );
     }
 
