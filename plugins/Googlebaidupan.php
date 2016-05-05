@@ -64,19 +64,22 @@ class Googlebaidupan extends Base
         }
 
         $data = array(
-            'v' => '1.0',
-            'q' => $this->text . ' site:pan.baidu.com',
+            'key' => 'AIzaSyACNEu_BDGyBwZiQjZ5fw3ksHzo56FeoGA',
+            'cx' => '010607825858754423132:z7eh-8uygee',
+            'q' => $this->text,
         );
-        $url = "http://ajax.googleapis.com/ajax/services/search/web?" . http_build_query($data);
+        $url = "https://www.googleapis.com/customsearch/v1?" . http_build_query($data);
         $res = Common::curl($url);
 
         $res_str = '';
-        if (!isset($res['responseStatus']) || $res['responseStatus'] != 200) {
-            $res_str = $res['responseDetails'];
-        } else {
-            foreach ($res['responseData']['results'] as $v) {
-                $res_str = $res_str . $v['titleNoFormatting'] . ' - ' . ($v['unescapedUrl'] ? $v['unescapedUrl'] : $v['url']) . PHP_EOL;
+        if (!empty($res['items'])) {
+            foreach ($res['items'] as $v) {
+                $res_str = $res_str . $v['title'] . ' - ' . $v['link'] . PHP_EOL;
             }
+        }
+
+        if (empty($res_str)) {
+            $res_str = 'api error!';
         }
 
         //回复消息

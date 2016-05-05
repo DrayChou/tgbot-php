@@ -39,7 +39,7 @@ class Googleimg extends Base
     {
         //匹配的命令
         return array(
-            'googleimg',
+            // '/googleimg',
         );
     }
 
