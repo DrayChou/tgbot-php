@@ -12,11 +12,26 @@ class Stats extends Base
     const NUM_MSG_MAX = 5;
     const TIME_CHECK = 4;
 
+    /**
+     * 命令说明
+     * Command Description
+     * @return string
+     */
     public static function desc()
     {
-        return "/stats - Plugin to update user stats.  ";
+        return array(
+            "/stats - Returns a list of Username [telegram_id]: msg_num only top." . self::DEFAULT_SHOW_LIMIT,
+            "/统计 - 显示发言数统计结果，显示前." . self::DEFAULT_SHOW_LIMIT,
+            "/state - Returns this user All days stats.",
+            "/状态 - 显示具体用户发言数.",
+        );
     }
 
+    /**
+     * 命令操作详解
+     * Detailed command operation
+     * @return array
+     */
     public static function usage()
     {
         return array(
@@ -25,6 +40,22 @@ class Stats extends Base
             "/stats all: Returns All days stats.",
             "/stats 20150528 " . self::DEFAULT_SHOW_LIMIT . ": Returns a list only top " . self::DEFAULT_SHOW_LIMIT,
             "/state user_id: Returns this user All days stats",
+        );
+    }
+
+    /**
+     * 插件的路由配置
+     * plugin matching rules
+     * @return array
+     */
+    public static function router()
+    {
+        //匹配的命令
+        return array(
+            '/stats',
+            '/统计',
+            '/state',
+            '/状态',
         );
     }
 
@@ -159,10 +190,10 @@ class Stats extends Base
         $min_day = $redis->zRange($key2, 0, 1);
         Common::echo_log("Stats: {$key2}=%s", print_r($min_day, true));
 
-        $max_msgs = (int)$redis->zScore($bot . 'stats:chat_day_msgs:' . $this->chat_id, $max_day[0]);
-        $min_msgs = (int)$redis->zScore($bot . 'stats:chat_day_msgs:' . $this->chat_id, $min_day[0]);
+        $max_msgs = (int) $redis->zScore($bot . 'stats:chat_day_msgs:' . $this->chat_id, $max_day[0]);
+        $min_msgs = (int) $redis->zScore($bot . 'stats:chat_day_msgs:' . $this->chat_id, $min_day[0]);
 
-        return array('mxd' => $max_day[0], 'mxm' => $max_msgs, 'mid' => $min_day[0], 'mim' => $min_msgs,);
+        return array('mxd' => $max_day[0], 'mxm' => $max_msgs, 'mid' => $min_day[0], 'mim' => $min_msgs);
     }
 
     /**
@@ -279,7 +310,7 @@ class Stats extends Base
             $all_sum += $msgs;
 
             if ($id == $user_id) {
-                $user_sum = (int)$msgs;
+                $user_sum = (int) $msgs;
             }
         }
 
@@ -290,7 +321,7 @@ class Stats extends Base
             $day_all_sum += $msgs;
 
             if ($id == $user_id) {
-                $day_user_sum = (int)$msgs;
+                $day_user_sum = (int) $msgs;
             }
         }
 
@@ -343,7 +374,8 @@ class Stats extends Base
 
         //记录发言人的信息
         $redis->hSet($bot . 'users:ids', $this->from_id, $this->from_name);
-        $redis->hSet($bot . 'users:usernames', $this->from_username, $this->from_id);
+        $redis->hSet($bot . 'users:usernames', $this->from_name, $this->from_id);
+        $redis->hSet($bot . 'users:list', $this->from_id, json_encode($this->from));
 
         // 添加用户ID到群组中
         $redis->sadd($bot . 'chat:' . $this->chat_id . ':users', $this->from_id);
@@ -405,23 +437,23 @@ class Stats extends Base
     {
         Common::echo_log("执行 Stats run text=%s", $this->parms);
 
-        if ($this->parms[0] == 'state') {
-            $user_id = empty($this->parms[1]) ? $this->from_id : $this->parms[1];
+        if (in_array($this->common, array('/state', '/状态'))) {
+            $user_id = empty($this->parms[0]) ? $this->from_id : $this->parms[0];
             $res_str = $this->get_user_stats($this->chat_id, $user_id);
-        } elseif ($this->parms[1] == 'rebuild') {
+        } elseif (isset($this->parms[0]) && $this->parms[0] == 'rebuild') {
             $res_str = $this->rebuild_day_msgs();
-        } elseif ($this->parms[1] == 'd1') {
+        } elseif (isset($this->parms[0]) && $this->parms[0] == 'd1') {
             $res_str = $this->data_d1();
         } else {
             $day_id = date('Ymd');
             $limit = self::DEFAULT_SHOW_LIMIT;
 
-            if (!empty($this->parms[1])) {
-                $day_id = $this->parms[1];
+            if (!empty($this->parms[0])) {
+                $day_id = $this->parms[0];
             }
 
-            if (!empty($this->parms[2])) {
-                $limit = $this->parms[2];
+            if (!empty($this->parms[1])) {
+                $limit = $this->parms[1];
             } else {
                 if (in_array($day_id, array('all', '*'))) {
                     $limit = $limit / 2;

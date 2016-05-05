@@ -8,15 +8,40 @@
  */
 class Github extends Base
 {
+    /**
+     * 命令说明
+     * Command Description
+     * @return string
+     */
     public static function desc()
     {
-        return "/github - get github user info";
+        return array(
+            "/github - get github user info",
+        );
     }
 
+    /**
+     * 命令操作详解
+     * Detailed command operation
+     * @return array
+     */
     public static function usage()
     {
         return array(
-            "/github - get github user info"
+            "/github - get github user info",
+        );
+    }
+
+    /**
+     * 插件的路由配置
+     * plugin matching rules
+     * @return array
+     */
+    public static function router()
+    {
+        //匹配的命令
+        return array(
+            '/github',
         );
     }
 
@@ -56,8 +81,8 @@ class Github extends Base
 
         //回复消息
         Telegram::singleton()->send_message(array(
-            'chat_id'             => $this->chat_id,
-            'text'                => $res_str,
+            'chat_id' => $this->chat_id,
+            'text' => $res_str,
             'reply_to_message_id' => $this->msg_id,
         ));
     }

@@ -17,16 +17,47 @@ class Bot extends Base
         self::BOT_CLEVER => 'cleverbot',
     );
 
+    /**
+     * 命令说明
+     * Command Description
+     * @return string
+     */
     public static function desc()
     {
-        return "/bot - say to bot...";
+        return array(
+            "/bot - Dialogue with bot",
+            "/机器人 - 跟机器人说话...",
+        );
     }
 
+    /**
+     * 命令操作详解
+     * Detailed command operation
+     * @return array
+     */
     public static function usage()
     {
         return array(
-            "/bot set: set default bot.",
-            "/bot - say to bot...",
+            "/bot set - set default bot.",
+            "/bot - Dialogue with bot",
+            "/机器人 set - 设置默认机器人",
+            "/机器人 - 跟机器人说话",
+        );
+    }
+
+    /**
+     * 插件的路由配置
+     * plugin matching rules
+     * @return array
+     */
+    public static function router()
+    {
+        //匹配的命令
+        return array(
+            '/bot',
+            '/机器人',
+            '/智能',
+            '/罗伯特',
         );
     }
 
@@ -76,13 +107,14 @@ class Bot extends Base
      */
     public function pre_process()
     {
-        //如果有调用参数，那么跳过
-        if (isset($this->parms[0])) {
-            return;
-        }
-
         //如果是私聊，那么机器人接管
         if ($this->chat_id > 0) {
+            //如果有调用参数，那么跳过
+            if (!empty($this->common)) {
+                Common::echo_log("Bot pre_process 已经有命令要执行 跳过 common=%s", $this->common);
+                return;
+            }
+
             //如果之前有命令调用
             if ($this->is_has_reply()) {
                 return;
@@ -90,6 +122,8 @@ class Bot extends Base
 
             $bot = self::get_my_bot($this->from_id, $this->parm);
             if ($bot) {
+                $bot->chat_id = $this->chat_id;
+                $bot->msg_id = $this->msg_id;
                 $bot->text = $this->parm;
                 $bot->run();
             }
@@ -103,8 +137,16 @@ class Bot extends Base
     {
         //群组聊天的时候，开启这个模式，方式跟私聊的冲突
         if ($this->chat_id < 0) {
+            //如果有调用参数，那么跳过
+            if (!empty($this->common)) {
+                Common::echo_log("Bot pre_process 已经有命令要执行 跳过 common=%s", $this->common);
+                return;
+            }
+
             $bot = self::get_my_bot($this->from_id, $this->parm);
             if ($bot) {
+                $bot->chat_id = $this->chat_id;
+                $bot->msg_id = $this->msg_id;
                 $bot->text = $this->parm;
                 $bot->run();
             }
@@ -184,6 +226,8 @@ class Bot extends Base
         }
 
         //调用机器人
+        $bot->chat_id = $this->chat_id;
+        $bot->msg_id = $this->msg_id;
         $bot->text = $this->parm;
         $bot->run();
     }

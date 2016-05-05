@@ -1,15 +1,14 @@
 <?php
-
 /**
  * 发消息
- * User: dray
- * Date: 15/7/10
- * Time: 下午5:22
+ * Telegram
+ * @Author: dray
+ * @Date:   2015-07-10 17:43:59
+ * @Last Modified by:   dray
+ * @Last Modified time: 2016-05-04 15:41:48
  */
 
-require_once LIB_PATH . 'common.php';
-
-class telegram
+class Telegram
 {
 
     private static $instance = array();
@@ -103,7 +102,7 @@ class telegram
         $url = "https://api.telegram.org/bot{$this->token}/sendMessage";
         $res = Common::curl($url, $data);
 
-        if ($res['ok'] == true) {
+        if (isset($res['ok']) && $res['ok'] == true) {
             return $res['result'];
         }
 

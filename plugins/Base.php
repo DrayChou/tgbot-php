@@ -10,47 +10,49 @@ class Base
 {
     const WAIT_FOR_QUESTION = 60;
 
-    public $msg;//消息整体
+    public $msg; //消息整体
 
-    public $msg_id;//消息ID
+    public $msg_id; //消息ID
 
-    public $chat_id;//聊天对象信息
+    public $chat_id; //聊天对象信息
     public $chat_name;
 
-    public $from_id;//消息发送者
+    public $from;
+    public $from_id; //消息发送者
     public $from_name;
-    public $from_username;
 
-    public $new_id;//新的朋友
-    public $new_name;//新的朋友
-    public $new_username;
+    public $new;
+    public $new_id; //新的朋友
+    public $new_name; //新的朋友
 
-    public $level_id;//离开的朋友
-    public $level_name;//离开的朋友
-    public $level_username;
+    public $level;
+    public $level_id; //离开的朋友
+    public $level_name; //离开的朋友
 
-    public $text;//命令后面的内容
-    public $parms;//正则匹配到的内容
-    public $parm;//收到的文本内容
+    public $text; //命令后面的内容
+    public $parms; //空格分隔的命令
+    public $parm; //收到的文本内容
+    public $common; //命令
 
     /**
      * @param $msg
      * @throws Exception
      */
-    public function set_msg($msg, $text = null, $parms = null)
+    public function set_msg($msg, $text = null, $parms = null, $common = null)
     {
         if (empty($msg['message_id'])) {
             throw new Exception('error message');
         }
 
-        $this->msg    = $msg;
+        $this->msg = $msg;
         $this->msg_id = $msg['message_id'];
-        $this->text   = $text;
-        $this->parms  = $parms;
+        $this->text = $text;
+        $this->parms = $parms;
+        $this->common = $common;
 
-        $this->from_id       = $msg['from']['id'];
-        $this->from_username = $msg['from']['username'];
-        $this->from_name     = self::getUserName($msg['from']);
+        $this->from = $msg['from'];
+        $this->from_id = $msg['from']['id'];
+        $this->from_name = self::getUserName($msg['from']);
 
         if (isset($msg['text'])) {
             $this->parm = $msg['text'];
@@ -68,16 +70,16 @@ class Base
 
         // 有人进来了
         if (isset($msg['new_chat_participant'])) {
-            $this->new_id       = $msg['new_chat_participant']['id'];
-            $this->new_username = $msg['new_chat_participant']['username'];
-            $this->new_name     = self::getUserName($msg['new_chat_participant']);
+            $this->new = $msg['new_chat_participant'];
+            $this->new_id = $msg['new_chat_participant']['id'];
+            $this->new_name = self::getUserName($msg['new_chat_participant']);
         }
 
         // 有人走了
         if (isset($msg['left_chat_participant'])) {
-            $this->level_id       = $msg['left_chat_participant']['id'];
-            $this->level_username = $msg['left_chat_participant']['username'];
-            $this->level_name     = self::getUserName($msg['left_chat_participant']);
+            $this->level = $msg['left_chat_participant'];
+            $this->level_id = $msg['left_chat_participant']['id'];
+            $this->level_name = self::getUserName($msg['left_chat_participant']);
         }
     }
 
@@ -112,7 +114,7 @@ class Base
     {
         $class = get_called_class();
         if (false == $this->is_has_reply()) {
-            Common::echo_log($class . " pre_process 没有需要处理的 跳过");
+            // Common::echo_log($class . " pre_process 没有需要处理的 跳过");
 
             return;
         }
@@ -135,7 +137,8 @@ class Base
     }
 
     /**
-     * 返回命令说明，一般只有一行
+     * 命令说明
+     * Command Description
      * @return string
      */
     public static function desc()
@@ -144,12 +147,25 @@ class Base
     }
 
     /**
-     * 返回命令详细信息
-     * @return string
+     * 命令操作详解
+     * Detailed command operation
+     * @return array
      */
     public static function usage()
     {
         return "插件说明，数组，用在功能调用的说明上。";
+    }
+
+    /**
+     * 插件的路由配置
+     * plugin matching rules
+     * @return array
+     */
+    public static function router()
+    {
+        //匹配的命令
+        return array(
+        );
     }
 
     /**
@@ -173,8 +189,8 @@ class Base
 
         //回复消息
         $msg = Telegram::singleton()->send_message(array(
-            'chat_id'             => $this->chat_id,
-            'text'                => $res_str,
+            'chat_id' => $this->chat_id,
+            'text' => $res_str,
             'reply_to_message_id' => $this->msg_id,
         ));
 
@@ -190,9 +206,9 @@ class Base
     protected function is_has_reply()
     {
         $class = get_called_class();
-        $key   = 'need_reply:' . $class . ':' . $this->chat_id . ':' . $this->from_id;
+        $key = 'need_reply:' . $class . ':' . $this->chat_id . ':' . $this->from_id;
 
-        return (bool)Db::get($key);
+        return (bool) Db::get($key);
     }
 
     /**

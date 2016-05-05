@@ -4,21 +4,46 @@
  * 通过 pixabay 的接口搜索图片
  * @Author: dray
  * @Date:   2016-03-19 23:46:28
- * @Last Modified by:   zhouw
- * @Last Modified time: 2016-03-20 00:00:42
+ * @Last Modified by:   dray
+ * @Last Modified time: 2016-05-04 15:34:38
  */
 
 class Pixabay extends Base
 {
+    /**
+     * 命令说明
+     * Command Description
+     * @return string
+     */
     public static function desc()
     {
-        return '/img - Search image with Pixabay API and sends it. ';
+        return array(
+            '/pixabay - Random search an image with Pixabay API.',
+        );
     }
 
+    /**
+     * 命令操作详解
+     * Detailed command operation
+     * @return array
+     */
     public static function usage()
     {
         return array(
-            '/img info: Random search an image with Pixabay API.',
+            '/pixabay info - Random search an image with Pixabay API.',
+        );
+    }
+
+    /**
+     * 插件的路由配置
+     * plugin matching rules
+     * @return array
+     */
+    public static function router()
+    {
+        //匹配的命令
+        return array(
+            '/pixabay',
         );
     }
 

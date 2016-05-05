@@ -1,13 +1,14 @@
 <?php
-
 /**
  * redis 操作类库
  * Class Db
+ * @Author: dray
+ * @Date:   2015-07-10 18:43:59
+ * @Last Modified by:   dray
+ * @Last Modified time: 2016-05-04 11:18:21
  */
 
-require_once LIB_PATH . 'telegram.php';
-
-class db
+class Db
 {
     /**
      * 得到 redis 对象
@@ -116,24 +117,14 @@ class db
         $redis = self::get_redis();
         $router = $redis->get($key);
         if ($use_cache == false || empty($router)) {
-            $tmp = Common::get_router();
-            $bot_info = Db::get_bot_info();
-
-            foreach ($tmp as $reg => $class) {
-                //替换规则文件
-                $reg = str_ireplace(array(
-                    '%%bot_name%%',
-                ), array(
-                    $bot_info['username'],
-                ), $reg);
-
-                $router[$reg] = $class;
-            }
+            $router = Common::get_router();
 
             $redis->setex($key, 3600, json_encode($router));
         } else {
             $router = json_decode($router, true);
         }
+
+        Common::echo_log('router:%s', print_r($router, true));
 
         return $router;
     }
