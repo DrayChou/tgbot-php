@@ -1,13 +1,12 @@
 <?php
 
 /**
- * 萌娘回路
- * http://im.nekonazo.com/wiki/%E9%A6%96%E9%A1%B5
+ * 搜索图片接口
  * User: dray
- * Date: 15/7/27
- * Time: 下午7:01
+ * Date: 15/7/10
+ * Time: 下午3:43.
  */
-class Nekonazo extends Base
+class Img extends Base
 {
     /**
      * 命令说明
@@ -16,9 +15,8 @@ class Nekonazo extends Base
      */
     public static function desc()
     {
-        return array(
-            "/neko - talk with nekonazo. http://wiki.oekaki.so/",
-            "/萌娘 - 跟萌娘回路聊天.",
+        array(
+            '/img - Random search an image.',
         );
     }
 
@@ -30,8 +28,7 @@ class Nekonazo extends Base
     public static function usage()
     {
         return array(
-            "/neko - talk with nekonazo. http://wiki.oekaki.so/",
-            "/萌娘 - 跟萌娘回路聊天.",
+            '/img info - Random search an image.',
         );
     }
 
@@ -44,17 +41,23 @@ class Nekonazo extends Base
     {
         //匹配的命令
         return array(
-            // '/neko',
-            // '/萌娘',
+            '/img',
         );
     }
 
     /**
-     * 当命令满足的时候，执行的基础执行函数
+     * 当命令满足的时候，执行的基础执行函数.
      */
     public function run()
     {
-        Common::echo_log("执行 Nekonazo run");
+        Common::echo_log('执行 Img run');
 
+        $help = Process::get_class('Pixabay');
+
+        $help->text = $this->text;
+        $help->chat_id = $this->chat_id;
+        $help->from_id = $this->from_id;
+        $help->msg_id = $this->msg_id;
+        $help->run();
     }
 }

@@ -8,15 +8,45 @@
  */
 class Butts extends Base
 {
+    /**
+     * 命令说明
+     * Command Description
+     * @return string
+     */
     public static function desc()
     {
-        return "/butts - Get a butts NSFW image. ";
+        return array(
+            "/butts - Get a butts NSFW image. ",
+            '/美臀 - 来一张美臀图(前方高能，请注意体位！',
+        );
     }
 
+    /**
+     * 命令操作详解
+     * Detailed command operation
+     * @return array
+     */
     public static function usage()
     {
         return array(
             "/butts - Get a butts NSFW image. ",
+            "/butts num - Get a lot of butts NSFW image. ",
+            '/美臀 - 来一张美臀图(前方高能，请注意体位！',
+            '/美臀 num - 来N张美臀图(强撸伤身！',
+        );
+    }
+
+    /**
+     * 插件的路由配置
+     * plugin matching rules
+     * @return array
+     */
+    public static function router()
+    {
+        //匹配的命令
+        return array(
+            '/butts',
+            '/美臀',
         );
     }
 

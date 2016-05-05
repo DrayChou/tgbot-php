@@ -8,15 +8,38 @@
  */
 class Google extends Base
 {
+    /**
+     * 命令说明
+     * Command Description
+     * @return string
+     */
     public static function desc()
     {
         return "/google - Searches Google and send results.";
     }
 
+    /**
+     * 命令操作详解
+     * Detailed command operation
+     * @return array
+     */
     public static function usage()
     {
         return array(
-            "/google - Searches Google and send results."
+            "/google - Searches Google and send results.",
+        );
+    }
+
+    /**
+     * 插件的路由配置
+     * plugin matching rules
+     * @return array
+     */
+    public static function router()
+    {
+        //匹配的命令
+        return array(
+            '/google',
         );
     }
 
@@ -39,8 +62,8 @@ class Google extends Base
             'v' => '1.0',
             'q' => $this->text,
         );
-        $url  = "http://ajax.googleapis.com/ajax/services/search/web?" . http_build_query($data);
-        $res  = Common::curl($url);
+        $url = "http://ajax.googleapis.com/ajax/services/search/web?" . http_build_query($data);
+        $res = Common::curl($url);
 
         $res_str = '';
         if (!isset($res['responseStatus']) || $res['responseStatus'] != 200) {
@@ -53,8 +76,8 @@ class Google extends Base
 
         //回复消息
         Telegram::singleton()->send_message(array(
-            'chat_id'             => $this->chat_id,
-            'text'                => $res_str,
+            'chat_id' => $this->chat_id,
+            'text' => $res_str,
             'reply_to_message_id' => $this->msg_id,
         ));
     }

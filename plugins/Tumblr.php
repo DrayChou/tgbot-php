@@ -5,20 +5,45 @@
  * @Author: dray
  * @Date:   2016-04-20 20:06:13
  * @Last Modified by:   dray
- * @Last Modified time: 2016-04-20 23:13:36
+ * @Last Modified time: 2016-05-04 20:50:42
  */
 
 class Tumblr extends Base
 {
+    /**
+     * 命令说明
+     * Command Description
+     * @return string
+     */
     public static function desc()
     {
-        return "/tumblr - Get a image from tumblr. ";
+        return array(
+            "/tumblr - Get a image from tumblr. ",
+        );
     }
 
+    /**
+     * 命令操作详解
+     * Detailed command operation
+     * @return array
+     */
     public static function usage()
     {
         return array(
             "/tumblr [blog url] - Get a image from tumblr. ",
+        );
+    }
+
+    /**
+     * 插件的路由配置
+     * plugin matching rules
+     * @return array
+     */
+    public static function router()
+    {
+        //匹配的命令
+        return array(
+            '/tumblr',
         );
     }
 
@@ -58,6 +83,8 @@ class Tumblr extends Base
         }
 
         $send_image_num = 1;
+        //默认地址
+        $blog_url = $base_blog_arr[array_rand($base_blog_arr)];
 
         // 生成 Blog 地址
         if (count($this->parms) == 1) {

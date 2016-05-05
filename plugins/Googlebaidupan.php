@@ -8,15 +8,43 @@
  */
 class Googlebaidupan extends Base
 {
+    /**
+     * 命令说明
+     * Command Description
+     * @return string
+     */
     public static function desc()
     {
-        return "/bp - Searches in pan.baidu.com by Google and send results";
+        return array(
+            "/bp - Searches in pan of baidu by Google and send results.",
+            "/度盘 - 用 Google 搜索百度云盘暴露出来的文件。",
+        );
     }
 
+    /**
+     * 命令操作详解
+     * Detailed command operation
+     * @return array
+     */
     public static function usage()
     {
         return array(
-            "/bp [info]- Searches in pan.baidu.com by Google and send results."
+            "/bp [info]- Searches in pan of baidu by Google and send results.",
+            "/度盘 [info] - 用 Google 搜索百度云盘暴露出来的文件。",
+        );
+    }
+
+    /**
+     * 插件的路由配置
+     * plugin matching rules
+     * @return array
+     */
+    public static function router()
+    {
+        //匹配的命令
+        return array(
+            '/bp',
+            '/度盘',
         );
     }
 
@@ -39,8 +67,8 @@ class Googlebaidupan extends Base
             'v' => '1.0',
             'q' => $this->text . ' site:pan.baidu.com',
         );
-        $url  = "http://ajax.googleapis.com/ajax/services/search/web?" . http_build_query($data);
-        $res  = Common::curl($url);
+        $url = "http://ajax.googleapis.com/ajax/services/search/web?" . http_build_query($data);
+        $res = Common::curl($url);
 
         $res_str = '';
         if (!isset($res['responseStatus']) || $res['responseStatus'] != 200) {
@@ -53,8 +81,8 @@ class Googlebaidupan extends Base
 
         //回复消息
         Telegram::singleton()->send_message(array(
-            'chat_id'             => $this->chat_id,
-            'text'                => $res_str,
+            'chat_id' => $this->chat_id,
+            'text' => $res_str,
             'reply_to_message_id' => $this->msg_id,
         ));
     }

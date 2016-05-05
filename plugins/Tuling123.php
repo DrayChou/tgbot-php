@@ -11,11 +11,23 @@ class Tuling123 extends Base
 {
     const LIST_SHOW_MAX = 1;
 
+    /**
+     * 命令说明
+     * Command Description
+     * @return string
+     */
     public static function desc()
     {
-        return "/tuling123 - 询问图灵小机器人.  ";
+        return array(
+            "/tuling123 - Dialogue with tuling123 robot.  ",
+        );
     }
 
+    /**
+     * 命令操作详解
+     * Detailed command operation
+     * @return array
+     */
     public static function usage()
     {
         return array(
@@ -23,7 +35,20 @@ class Tuling123 extends Base
             "Request Turing robot, and return the results. Only support Chinese.",
             "升级链接|Upgrade link:http://www.tuling123.com/openapi/record.do?channel=98150",
             "图灵机器人注册邀请地址，每有一个用户通过此地址注册账号，增加本接口可调用次数 1000次/天。",
-            "Turing robot registration invitation address, each user has a registered account through this address, increase the number of calls this interface can be 1000 times / day. Translation from Google!"
+            "Turing robot registration invitation address, each user has a registered account through this address, increase the number of calls this interface can be 1000 times / day. Translation from Google!",
+        );
+    }
+
+    /**
+     * 插件的路由配置
+     * plugin matching rules
+     * @return array
+     */
+    public static function router()
+    {
+        //匹配的命令
+        return array(
+            '/tuling123',
         );
     }
 
@@ -48,22 +73,13 @@ class Tuling123 extends Base
             return;
         }
 
-        $tuling_config = Common::get_config('tuling');
-        if (!isset($tuling_config['key'])) {
-            $err = "tuling key error";
-            Common::echo_log($err);
-            Common::report_err($err);
-
-            return;
-        }
-
         $data = array(
-            'key'    => $tuling_config['key'],
+            'key' => '4d546ffb4cd27187ef2a20d3af54c5b6',
             'userid' => $this->from_id,
-            'info'   => $this->text,
+            'info' => $this->text,
         );
-        $url  = "http://www.tuling123.com/openapi/api?" . http_build_query($data);
-        $res  = Common::curl($url);
+        $url = "http://www.tuling123.com/openapi/api?" . http_build_query($data);
+        $res = Common::curl($url);
 
         $res_str = $res['text'];
 
@@ -99,7 +115,6 @@ class Tuling123 extends Base
                 $res_str = $res_str . "\n" . $v['icon'];
             }
         }
-
 
         //如果是列车
         if ($res['code'] == 305000) {
@@ -137,8 +152,8 @@ class Tuling123 extends Base
 
         //回复消息
         Telegram::singleton()->send_message(array(
-            'chat_id'             => $this->chat_id,
-            'text'                => $res_str,
+            'chat_id' => $this->chat_id,
+            'text' => $res_str,
             'reply_to_message_id' => $this->msg_id,
         ));
     }

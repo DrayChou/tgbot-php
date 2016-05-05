@@ -8,16 +8,40 @@
  */
 class Start extends Base
 {
-
+    /**
+     * 命令说明
+     * Command Description
+     * @return string
+     */
     public static function desc()
     {
-        return "/start - Start using robots.";
+        return array(
+            "/start - Start using robots.",
+        );
     }
 
+    /**
+     * 命令操作详解
+     * Detailed command operation
+     * @return array
+     */
     public static function usage()
     {
         return array(
             "/start - Start using robots.",
+        );
+    }
+
+    /**
+     * 插件的路由配置
+     * plugin matching rules
+     * @return array
+     */
+    public static function router()
+    {
+        //匹配的命令
+        return array(
+            '/start',
         );
     }
 
@@ -30,10 +54,10 @@ class Start extends Base
 
         $help = Process::get_class('Help');
 
-        $help->text    = $this->text;
+        $help->text = $this->text;
         $help->chat_id = $this->chat_id;
         $help->from_id = $this->from_id;
-        $help->msg_id  = $this->msg_id;
+        $help->msg_id = $this->msg_id;
         $help->run();
     }
 }

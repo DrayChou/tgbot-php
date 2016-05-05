@@ -1,13 +1,14 @@
 <?php
-
 /**
  * 通用函数库
  * Common Function Class
- * User: dray
- * Date: 15/7/10
- * Time: 下午6:43
+ * @Author: dray
+ * @Date:   2015-07-10 18:43:59
+ * @Last Modified by:   dray
+ * @Last Modified time: 2016-05-05 13:54:34
  */
-class common
+
+class Common
 {
 
     private static $router = array();
@@ -51,16 +52,48 @@ class common
     public static function get_router()
     {
         if (empty(self::$router)) {
-            self::$router = require BASE_PATH . 'config' . DIRECTORY_SEPARATOR . 'router.php';
-        }
-
-        if ($handle = opendir(BASE_PATH . 'plugins' . DIRECTORY_SEPARATOR)) {
-            while (false !== ($file = readdir($handle))) {
-                if ($file != "." && $file != "..") {
-                    $plugin = $file;
-                }
+            //加载基础文件
+            if (!class_exists('Base')) {
+                require_once PLUGIN_PATH . 'Base.php';
             }
-            closedir($handle);
+
+            self::$router = array();
+            if ($handle = opendir(PLUGIN_PATH)) {
+                while (false !== ($file = readdir($handle))) {
+                    if ($file == "." || $file == "..") {
+                        continue;
+                    }
+
+                    //插件名
+                    $plugin = basename($file, ".php");
+
+                    //跳过特殊的名称
+                    if (in_array($plugin, array('Base'))) {
+                        continue;
+                    }
+
+                    //跳过无效的路径
+                    if (!file_exists(PLUGIN_PATH . $file)) {
+                        continue;
+                    }
+
+                    // 如果没有定义路由函数，那么跳过
+                    if (!class_exists($plugin)) {
+                        require_once PLUGIN_PATH . $file;
+                    }
+
+                    if (!method_exists($plugin, 'router')) {
+                        continue;
+                    }
+
+                    $rt = $plugin::router();
+                    $rt = array_fill_keys($rt, $plugin);
+                    // print_r($rt);
+
+                    self::$router = array_merge(self::$router, $rt);
+                }
+                closedir($handle);
+            }
         }
 
         return self::$router;
@@ -134,13 +167,7 @@ class common
 
         //检查是否有设置代理
         $proxy = self::get_config('proxy');
-        if (
-            $proxy &&
-            (
-                strstr($url, 'api.telegram.org') ||
-                strstr($url, 'google')
-            )
-        ) {
+        if ($proxy) {
             $opts['http']['proxy'] = $proxy;
         }
 
@@ -203,6 +230,12 @@ class common
                 curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($post));
             }
 
+            //检查是否有设置代理
+            $proxy = self::get_config('proxy');
+            if ($proxy) {
+                curl_setopt($curl, CURLOPT_PROXY, $proxy);
+            }
+
             curl_setopt($curl, CURLOPT_TIMEOUT, 10);
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
             $res = curl_exec($curl);
@@ -211,10 +244,10 @@ class common
 
             Common::echo_log('Common: url=%s', $url);
             Common::echo_log('Common: data=%s', print_r($post, true));
-            Common::echo_log('Common: $info=%s', print_r($info, true));
+            // Common::echo_log('Common: $info=%s', print_r($info, true));
 
             if ($res === false || $info['http_code'] != 200) {
-                $err = "post token url={$url} contents=" . print_r($post, true) . ' res=' . print_r($res, true) . ' info=' . print_r($info, true);
+                $err = "post token url={$url} contents=" . print_r($post, true) . ' res=' . print_r($res, true);
                 Common::echo_log($err);
                 Common::report_err($err);
 
@@ -242,16 +275,18 @@ class common
      */
     public static function report_err($text)
     {
-        //        $admins = Common::get_config('admins');
-        //        foreach ($admins as $v) {
-        //            $msg = Telegram::singleton()->sendMessage(array(
-        //                'chat_id' => $v,
-        //                'text'    => $text,
-        //            ));
-        //
-        //            Common::echo_log("发送信息: msg=%s", $msg);
-        //            break;
-        //        }
+        if (self::get_config('report')) {
+            $admins = Common::get_config('admins');
+            foreach ($admins as $v) {
+                $msg = Telegram::singleton()->sendMessage(array(
+                    'chat_id' => $v,
+                    'text' => $text,
+                ));
+
+                Common::echo_log("发送信息: msg=%s", $msg);
+                break;
+            }
+        }
     }
 
     /**

@@ -1,20 +1,13 @@
 <?php
-
 /**
- * User: dray
- * Date: 15/7/10
- * Time: 上午11:53
+ * @Author: dray
+ * @Date:   2015-07-10 11:53:59
+ * @Last Modified by:   dray
+ * @Last Modified time: 2016-05-03 14:45:35
  */
 
-define('BOT', 'tgbot-php');
-define('BASE_PATH', dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR);
-define('LIB_PATH', BASE_PATH . 'lib' . DIRECTORY_SEPARATOR);
-
 //加载包文件
-require_once LIB_PATH . 'process.php';
-
-//设置时区
-date_default_timezone_set(Common::get_config('timezone', 'Asia/Shanghai'));
+require_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'init.php';
 
 //如果有 token 带过来，那么调用对应的机器人
 if (isset($_GET['token'])) {

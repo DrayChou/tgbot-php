@@ -8,15 +8,43 @@
  */
 class Baiduimg extends Base
 {
+    /**
+     * 命令说明
+     * Command Description
+     * @return string
+     */
     public static function desc()
     {
-        return '/img - Search image with Baidu API and sends it. ';
+        array(
+            '/baiduimg - Random search an image with Baidu API.',
+            '/百度搜图 - 使用百度搜索相关的图片.',
+        );
     }
 
+    /**
+     * 命令操作详解
+     * Detailed command operation
+     * @return array
+     */
     public static function usage()
     {
         return array(
-            '/img info: Random search an image with Baidu API.',
+            '/baiduimg info - Random search an image with Baidu API.',
+            '/百度搜图 关键词 - 使用百度搜索相关的图片.',
+        );
+    }
+
+    /**
+     * 插件的路由配置
+     * plugin matching rules
+     * @return array
+     */
+    public static function router()
+    {
+        //匹配的命令
+        return array(
+            '/baiduimg',
+            '/百度搜图'
         );
     }
 
@@ -44,7 +72,7 @@ class Baiduimg extends Base
             'istype' => '2',
             'word' => $this->text,
         );
-        $url = 'image.baidu.com/search/acjson?'.http_build_query($data);
+        $url = 'image.baidu.com/search/acjson?' . http_build_query($data);
         $res = Common::curl($url);
 
         if (!isset($res['data'])) {
@@ -52,7 +80,7 @@ class Baiduimg extends Base
         } else {
             $rand_key = array_rand($res['data']);
             $rand_arr = $res['data'][$rand_key];
-            $res_str = ($rand_arr['middleURL'] ? $rand_arr['middleURL'] : $rand_arr['thumbURL']).PHP_EOL;
+            $res_str = ($rand_arr['middleURL'] ? $rand_arr['middleURL'] : $rand_arr['thumbURL']) . PHP_EOL;
         }
 
         //回复消息

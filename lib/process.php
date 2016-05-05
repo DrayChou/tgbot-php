@@ -1,17 +1,15 @@
 <?php
-
 /**
  * 脚本调用执行类库
- * User: dray
- * Date: 15/7/10
- * Time: 下午3:22
+ * process
+ * @Author: dray
+ * @Date:   2015-07-10 15:22:59
+ * @Last Modified by:   dray
+ * @Last Modified time: 2016-05-05 14:34:18
  */
 
-require_once LIB_PATH . 'db.php';
-
-class process
+class Process
 {
-
     private static $instance = array();
 
     /**
@@ -23,8 +21,13 @@ class process
         if (!isset(self::$instance[$class_name])) {
             $class = ucfirst(strtolower($class_name));
 
-            require_once BASE_PATH . 'plugins' . DIRECTORY_SEPARATOR . 'Base.php';
-            require_once BASE_PATH . 'plugins' . DIRECTORY_SEPARATOR . $class . '.php';
+            if (!class_exists('Base')) {
+                require_once PLUGIN_PATH . 'Base.php';
+            }
+
+            if (!class_exists($class)) {
+                require_once PLUGIN_PATH . $class . '.php';
+            }
 
             self::$instance[$class_name] = new $class($class_name);
         }
@@ -107,6 +110,7 @@ class process
         Db::set_update_id($last_update_id);
 
         //保存解析到的数据
+        $common = null;
         $text = null;
         $parms = null;
         $plugins = null;
@@ -137,21 +141,20 @@ class process
         if (isset($msg['text'])) {
             //抓文字里的关键词，抓到是要请求什么插件
             foreach ($router as $reg => $class) {
-                $is_match = preg_match($reg, $msg['text'], $m);
+                $tmp = explode(' ', $msg['text']);
+                $tmp = array_filter($tmp);
 
-                if ($is_match) {
-                    Common::echo_log('正则匹配结果: $reg=%s $text=%s $m=%s', $reg, $msg['text'], $m);
-                    Common::echo_log('正则匹配到的插件: $class=%s', $class);
+                //如果命令调用名称一致
+                if (
+                    strtolower($reg . '@' . $bot_info['username']) == strtolower($tmp[0]) ||
+                    strtolower($reg) == strtolower($tmp[0])
+                ) {
+                    $common = array_shift($tmp);
 
-                    $text = trim(implode(' ', array_slice($m, 3)));
-                    $parms = array($m[1]);
+                    $parms = $tmp;
+                    $text = join(' ', $tmp);
 
-                    $tmp = explode(' ', $text);
-                    $tmp = array_filter($tmp);
-
-                    $parms = array_merge($parms, $tmp);
-
-                    Common::echo_log('分解出来的参数数组: $parms=%s', print_r($parms, true));
+                    Common::echo_log("命中 reg=%s common=%s class=%s text=%s parms=%s", $reg, $common, $class, $text, print_r($parms, true));
 
                     //加载消息类
                     $plugins = self::get_class($class);
@@ -168,11 +171,11 @@ class process
         }
 
         //执行需要调用的函数
-        self::loop_with($run_fun, $msg, $text, $parms);
+        self::loop_with($run_fun, $msg, $text, $parms, $common);
 
         //执行消息的运行命令
         if (!empty($plugins)) {
-            $plugins->set_msg($msg, $text, $parms);
+            $plugins->set_msg($msg, $text, $parms, $common);
             $plugins->run();
         }
     }
@@ -181,13 +184,13 @@ class process
      * 执行对应的命令
      * @param $comm
      */
-    public static function loop_with($fun_arr, $msg, $text = null, $parms = null)
+    public static function loop_with($fun_arr, $msg, $text = null, $parms = null, $common = null)
     {
         $router = Common::get_router();
         $plugins = array_flip($router);
         foreach ($plugins as $class_name => $tmp) {
             $class = self::get_class($class_name);
-            $class->set_msg($msg, $text, $parms);
+            $class->set_msg($msg, $text, $parms, $common);
 
             foreach ($fun_arr as $fun) {
                 $class->$fun();

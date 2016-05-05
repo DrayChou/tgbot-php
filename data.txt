@@ -1,0 +1,48 @@
+Array
+(
+    [ok] => 1
+    [result] => Array
+        (
+            [0] => Array
+                (
+                    [update_id] => 616105157
+                    [message] => Array
+                        (
+                            [message_id] => 2335
+                            [from] => Array
+                                (
+                                    [id] => 213800199
+                                    [first_name] => Dray
+                                    [last_name] => 🔆
+                                    [username] => drayc
+                                )
+
+                            [chat] => Array
+                                (
+                                    [id] => 213800199
+                                    [first_name] => Dray
+                                    [last_name] => 🔆
+                                    [username] => drayc
+                                    [type] => private
+                                )
+
+                            [date] => 1462357922
+                            [text] => /bot 你是谁
+                            [entities] => Array
+                                (
+                                    [0] => Array
+                                        (
+                                            [type] => bot_command
+                                            [offset] => 0
+                                            [length] => 4
+                                        )
+
+                                )
+
+                        )
+
+                )
+
+        )
+
+)

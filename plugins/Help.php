@@ -1,10 +1,13 @@
 <?php
-
 /**
- * User: dray
- * Date: 15/7/10
- * Time: 下午3:43
+ * 帮助
+ * Help
+ * @Author: dray
+ * @Date:   2015-07-10 15:43:59
+ * @Last Modified by:   dray
+ * @Last Modified time: 2016-05-04 21:01:42
  */
+
 class Help extends Base
 {
     /**
@@ -72,10 +75,7 @@ class Help extends Base
                 // 如果是单个拿取的话，直接跳出
                 if (strtolower($class) == strtolower($text)) {
                     $desc = $class::usage();
-                } elseif (preg_match($reg, ('/' . $text), $m)) {
-                    Common::echo_log('Help:get_helps 匹配结果: $reg=%s $text=%s $m=%s', $reg, $text, $m);
-                    Common::echo_log('Help:get_helps 匹配到的插件: $class=%s', $class);
-
+                } elseif ($reg == ('/' . $text)) {
                     $desc = $class::usage();
                 }
 
@@ -84,7 +84,7 @@ class Help extends Base
                         $desc = array($desc);
                     }
 
-                    $helps = $desc;
+                    $helps = array_merge($helps, $desc);
                     $one = true;
                     break;
                 }
@@ -105,7 +105,7 @@ class Help extends Base
         }
 
         if (false == $one) {
-            $tmp = array_flip(array_flip($helps));
+            $tmp = array_unique($helps);
             $helps = array_merge(
                 array(
                     'Welcome to use ' . $bot_info['show_name'],

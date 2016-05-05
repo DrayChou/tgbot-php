@@ -8,24 +8,49 @@
  */
 class Admin extends Base
 {
-    public static $ADMIN_MAP = array(
-        1 => 'reset_routing',
-        2 => 'sys_info',
-        3 => 'git_pull',
-        4 => 'redis_info',
-    );
-
+    /**
+     * 命令说明
+     * Command Description
+     * @return string
+     */
     public static function desc()
     {
-        return "/admin - admin";
+        return array(
+            "/admin - admin",
+        );
     }
 
+    /**
+     * 命令操作详解
+     * Detailed command operation
+     * @return array
+     */
     public static function usage()
     {
         return array(
             "/admin - admin",
         );
     }
+
+    /**
+     * 插件的路由配置
+     * plugin matching rules
+     * @return array
+     */
+    public static function router()
+    {
+        //匹配的命令
+        return array(
+            '/admin',
+        );
+    }
+
+    public static $ADMIN_MAP = array(
+        1 => 'reset_routing',
+        2 => 'sys_info',
+        3 => 'git_pull',
+        4 => 'redis_info',
+    );
 
     /**
      * 当命令满足的时候，执行的基础执行函数

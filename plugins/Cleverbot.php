@@ -10,16 +10,41 @@
  */
 class Cleverbot extends Base
 {
+    /**
+     * 命令说明
+     * Command Description
+     * @return string
+     */
     public static function desc()
     {
-        return "/cleverbot - say to cleverbot...";
+        return array(
+            "/cleverbot - Dialogue with cleverbot",
+        );
     }
 
+    /**
+     * 命令操作详解
+     * Detailed command operation
+     * @return array
+     */
     public static function usage()
     {
         return array(
-            "/cleverbot info: say to cleverbot...",
+            "/cleverbot info - Dialogue with cleverbot",
             "http://www.cleverbot.com/",
+        );
+    }
+
+    /**
+     * 插件的路由配置
+     * plugin matching rules
+     * @return array
+     */
+    public static function router()
+    {
+        //匹配的命令
+        return array(
+            '/cleverbot',
         );
     }
 
@@ -40,40 +65,39 @@ class Cleverbot extends Base
         $before_time = Common::microtime_float();
 
         //调用接口发送问题
-        $factory     = new ChatterBotFactory();
-        $bot1        = $factory->create(ChatterBotType::CLEVERBOT);
+        $factory = new ChatterBotFactory();
+        $bot1 = $factory->create(ChatterBotType::CLEVERBOT);
         $bot1session = $bot1->createSession();
-        $res_str     = $bot1session->think($this->text);
+        $res_str = $bot1session->think($this->text);
 
         Common::echo_log('Cleverbot think: time=%s', (Common::microtime_float() - $before_time));
 
         //回复消息
         Telegram::singleton()->send_message(array(
-            'chat_id'             => $this->chat_id,
-            'text'                => $res_str,
+            'chat_id' => $this->chat_id,
+            'text' => $res_str,
             'reply_to_message_id' => $this->msg_id,
         ));
     }
 }
 
-
 /*
- ChatterBotAPI
- Copyright (C) 2011 pierredavidbelanger@gmail.com
+ChatterBotAPI
+Copyright (C) 2011 pierredavidbelanger@gmail.com
 
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU Lesser General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU Lesser General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
 
- You should have received a copy of the GNU Lesser General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+You should have received a copy of the GNU Lesser General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #################################################
 # API
@@ -91,19 +115,19 @@ class ChatterBotFactory
     public function create($type, $arg = null)
     {
         switch ($type) {
-            case ChatterBotType::CLEVERBOT: {
-                return new _Cleverbot('http://www.cleverbot.com', 'http://www.cleverbot.com/webservicemin', 26);
-            }
-            case ChatterBotType::JABBERWACKY: {
-                return new _Cleverbot('http://jabberwacky.com', 'http://jabberwacky.com/webservicemin', 20);
-            }
-            case ChatterBotType::PANDORABOTS: {
-                if ($arg == null) {
-                    throw new Exception('PANDORABOTS needs a botid arg');
+            case ChatterBotType::CLEVERBOT:{
+                    return new _Cleverbot('http://www.cleverbot.com', 'http://www.cleverbot.com/webservicemin', 26);
                 }
+            case ChatterBotType::JABBERWACKY:{
+                    return new _Cleverbot('http://jabberwacky.com', 'http://jabberwacky.com/webservicemin', 20);
+                }
+            case ChatterBotType::PANDORABOTS:{
+                    if ($arg == null) {
+                        throw new Exception('PANDORABOTS needs a botid arg');
+                    }
 
-                return new _Pandorabots($arg);
-            }
+                    return new _Pandorabots($arg);
+                }
         }
     }
 }
@@ -159,9 +183,9 @@ class _Cleverbot extends ChatterBot
 
     public function __construct($baseUrl, $serviceUrl, $endIndex)
     {
-        $this->baseUrl    = $baseUrl;
+        $this->baseUrl = $baseUrl;
         $this->serviceUrl = $serviceUrl;
-        $this->endIndex   = $endIndex;
+        $this->endIndex = $endIndex;
     }
 
     public function getBaseUrl()
@@ -198,53 +222,53 @@ class _CleverbotSession extends ChatterBotSession
 
     public function __construct($bot)
     {
-        $this->bot                = $bot;
-        $this->vars               = array();
-        $this->vars['start']      = 'y';
-        $this->vars['icognoid']   = 'wsf';
-        $this->vars['fno']        = '0';
-        $this->vars['sub']        = 'Say';
+        $this->bot = $bot;
+        $this->vars = array();
+        $this->vars['start'] = 'y';
+        $this->vars['icognoid'] = 'wsf';
+        $this->vars['fno'] = '0';
+        $this->vars['sub'] = 'Say';
         $this->vars['islearning'] = '1';
         $this->vars['cleanslate'] = 'false';
-        $this->cookies            = array();
+        $this->cookies = array();
         _utils_request($this->bot->getBaseUrl(), $this->cookies, null);
     }
 
     public function thinkThought($thought)
     {
-        $this->vars['stimulus']    = $thought->getText();
-        $data                      = http_build_query($this->vars);
-        $dataToDigest              = substr($data, 9, $this->bot->getEndIndex());
-        $dataDigest                = md5($dataToDigest);
+        $this->vars['stimulus'] = $thought->getText();
+        $data = http_build_query($this->vars);
+        $dataToDigest = substr($data, 9, $this->bot->getEndIndex());
+        $dataDigest = md5($dataToDigest);
         $this->vars['icognocheck'] = $dataDigest;
-        $response                  = _utils_request($this->bot->getServiceUrl(), $this->cookies, $this->vars);
-        $responseValues            = explode("\r", $response);
+        $response = _utils_request($this->bot->getServiceUrl(), $this->cookies, $this->vars);
+        $responseValues = explode("\r", $response);
         //self.vars['??'] = _utils_string_at_index($responseValues, 0);
         $this->vars['sessionid'] = _utils_string_at_index($responseValues, 1);
-        $this->vars['logurl']    = _utils_string_at_index($responseValues, 2);
-        $this->vars['vText8']    = _utils_string_at_index($responseValues, 3);
-        $this->vars['vText7']    = _utils_string_at_index($responseValues, 4);
-        $this->vars['vText6']    = _utils_string_at_index($responseValues, 5);
-        $this->vars['vText5']    = _utils_string_at_index($responseValues, 6);
-        $this->vars['vText4']    = _utils_string_at_index($responseValues, 7);
-        $this->vars['vText3']    = _utils_string_at_index($responseValues, 8);
-        $this->vars['vText2']    = _utils_string_at_index($responseValues, 9);
-        $this->vars['prevref']   = _utils_string_at_index($responseValues, 10);
+        $this->vars['logurl'] = _utils_string_at_index($responseValues, 2);
+        $this->vars['vText8'] = _utils_string_at_index($responseValues, 3);
+        $this->vars['vText7'] = _utils_string_at_index($responseValues, 4);
+        $this->vars['vText6'] = _utils_string_at_index($responseValues, 5);
+        $this->vars['vText5'] = _utils_string_at_index($responseValues, 6);
+        $this->vars['vText4'] = _utils_string_at_index($responseValues, 7);
+        $this->vars['vText3'] = _utils_string_at_index($responseValues, 8);
+        $this->vars['vText2'] = _utils_string_at_index($responseValues, 9);
+        $this->vars['prevref'] = _utils_string_at_index($responseValues, 10);
         //$this->vars['??'] = _utils_string_at_index($responseValues, 11);
-        $this->vars['emotionalhistory']  = _utils_string_at_index($responseValues, 12);
-        $this->vars['ttsLocMP3']         = _utils_string_at_index($responseValues, 13);
-        $this->vars['ttsLocTXT']         = _utils_string_at_index($responseValues, 14);
-        $this->vars['ttsLocTXT3']        = _utils_string_at_index($responseValues, 15);
-        $this->vars['ttsText']           = _utils_string_at_index($responseValues, 16);
-        $this->vars['lineRef']           = _utils_string_at_index($responseValues, 17);
-        $this->vars['lineURL']           = _utils_string_at_index($responseValues, 18);
-        $this->vars['linePOST']          = _utils_string_at_index($responseValues, 19);
-        $this->vars['lineChoices']       = _utils_string_at_index($responseValues, 20);
+        $this->vars['emotionalhistory'] = _utils_string_at_index($responseValues, 12);
+        $this->vars['ttsLocMP3'] = _utils_string_at_index($responseValues, 13);
+        $this->vars['ttsLocTXT'] = _utils_string_at_index($responseValues, 14);
+        $this->vars['ttsLocTXT3'] = _utils_string_at_index($responseValues, 15);
+        $this->vars['ttsText'] = _utils_string_at_index($responseValues, 16);
+        $this->vars['lineRef'] = _utils_string_at_index($responseValues, 17);
+        $this->vars['lineURL'] = _utils_string_at_index($responseValues, 18);
+        $this->vars['linePOST'] = _utils_string_at_index($responseValues, 19);
+        $this->vars['lineChoices'] = _utils_string_at_index($responseValues, 20);
         $this->vars['lineChoicesAbbrev'] = _utils_string_at_index($responseValues, 21);
-        $this->vars['typingData']        = _utils_string_at_index($responseValues, 22);
-        $this->vars['divert']            = _utils_string_at_index($responseValues, 23);
-        $responseThought                 = new ChatterBotThought();
-        $text                            = _utils_string_at_index($responseValues, 16);
+        $this->vars['typingData'] = _utils_string_at_index($responseValues, 22);
+        $this->vars['divert'] = _utils_string_at_index($responseValues, 23);
+        $responseThought = new ChatterBotThought();
+        $text = _utils_string_at_index($responseValues, 16);
         if (!is_null($text)) {
             $text = preg_replace_callback(
                 '/\|([01234567890ABCDEF]{4})/',
@@ -296,19 +320,19 @@ class _PandorabotsSession extends ChatterBotSession
 
     public function __construct($bot)
     {
-        $this->vars           = array();
-        $this->vars['botid']  = $bot->getBotid();
+        $this->vars = array();
+        $this->vars['botid'] = $bot->getBotid();
         $this->vars['custid'] = uniqid();
     }
 
     public function thinkThought($thought)
     {
         $this->vars['input'] = $thought->getText();
-        $dummy               = null;
-        $response            = _utils_request('http://www.pandorabots.com/pandora/talk-xml', $dummy, $this->vars);
-        $element             = new SimpleXMLElement($response);
-        $result              = $element->xpath('//result/that/text()');
-        $responseThought     = new ChatterBotThought();
+        $dummy = null;
+        $response = _utils_request('http://www.pandorabots.com/pandora/talk-xml', $dummy, $this->vars);
+        $element = new SimpleXMLElement($response);
+        $result = $element->xpath('//result/that/text()');
+        $responseThought = new ChatterBotThought();
         if (isset($result[0][0])) {
             $responseThought->setText(trim($result[0][0]));
         } else {
@@ -325,12 +349,12 @@ class _PandorabotsSession extends ChatterBotSession
 
 function _utils_request($url, &$cookies, $params)
 {
-    $contextParams         = array();
+    $contextParams = array();
     $contextParams['http'] = array();
     if ($params) {
-        $contextParams['http']['method']  = 'POST';
+        $contextParams['http']['method'] = 'POST';
         $contextParams['http']['content'] = http_build_query($params);
-        $contextParams['http']['header']  = "Content-type: application/x-www-form-urlencoded\r\n";
+        $contextParams['http']['header'] = "Content-type: application/x-www-form-urlencoded\r\n";
     } else {
         $contextParams['http']['method'] = 'GET';
     }
@@ -346,8 +370,8 @@ function _utils_request($url, &$cookies, $params)
             $contextParams['http']['header'] = $cookieHeader;
         }
     }
-    $context  = stream_context_create($contextParams);
-    $fp       = fopen($url, 'rb', false, $context);
+    $context = stream_context_create($contextParams);
+    $fp = fopen($url, 'rb', false, $context);
     $response = stream_get_contents($fp);
     if (!is_null($cookies)) {
         foreach ($http_response_header as $header) {

@@ -8,15 +8,45 @@
  */
 class Boobs extends Base
 {
+    /**
+     * 命令说明
+     * Command Description
+     * @return string
+     */
     public static function desc()
     {
-        return "/boobs - Get a boobs NSFW image. ";
+        return array(
+            "/boobs - Get a boobs NSFW image. ",
+            '/巨乳 - 来一张巨乳图(前方高能，请注意体位！',
+        );
     }
 
+    /**
+     * 命令操作详解
+     * Detailed command operation
+     * @return array
+     */
     public static function usage()
     {
         return array(
             "/boobs - Get a boobs NSFW image. ",
+            "/boobs num - Get a lot of boobs NSFW image. ",
+            '/巨乳 - 来一张巨乳图(前方高能，请注意体位！',
+            '/巨乳 num - 来N张巨乳图(强撸伤身！',
+        );
+    }
+
+    /**
+     * 插件的路由配置
+     * plugin matching rules
+     * @return array
+     */
+    public static function router()
+    {
+        //匹配的命令
+        return array(
+            '/boobs',
+            '/巨乳',
         );
     }
 

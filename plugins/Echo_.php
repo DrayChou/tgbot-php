@@ -8,15 +8,43 @@
  */
 class Echo_ extends Base
 {
+    /**
+     * 命令说明
+     * Command Description
+     * @return string
+     */
     public static function desc()
     {
-        return "/echo - echoes the msg.  ";
+        return array(
+            "/echo - echoes the msg.",
+            "/说 - 说点啥.",
+        );
     }
 
+    /**
+     * 命令操作详解
+     * Detailed command operation
+     * @return array
+     */
     public static function usage()
     {
         return array(
             "/echo [whatever] - echoes the msg.",
+            "/说 [啥]- 说点啥.",
+        );
+    }
+
+    /**
+     * 插件的路由配置
+     * plugin matching rules
+     * @return array
+     */
+    public static function router()
+    {
+        //匹配的命令
+        return array(
+            '/echo',
+            '/说',
         );
     }
 
@@ -32,8 +60,8 @@ class Echo_ extends Base
         }
 
         Telegram::singleton()->send_message(array(
-            'chat_id'             => $this->chat_id,
-            'text'                => $this->text,
+            'chat_id' => $this->chat_id,
+            'text' => $this->text,
             'reply_to_message_id' => $this->msg_id,
         ));
     }
