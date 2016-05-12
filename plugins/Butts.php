@@ -96,7 +96,7 @@ class Butts extends Base
         //发送到群组里
         Telegram::singleton()->send_message(array(
             'chat_id' => $this->chat_id,
-            'text' => 'I send you a message about it.',
+            'text' => "Let's whisper, dear.",
             'reply_to_message_id' => $this->msg_id,
         ));
     }
