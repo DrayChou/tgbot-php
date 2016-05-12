@@ -4,7 +4,7 @@
  * @Author: dray
  * @Date:   2016-04-22 11:01:45
  * @Last Modified by:   dray
- * @Last Modified time: 2016-05-05 13:45:39
+ * @Last Modified time: 2016-05-12 16:41:36
  */
 
 include_once 'Bot.php';
@@ -44,8 +44,8 @@ class Yegoudaozhangisgay extends Base
     {
         //匹配的命令
         return array(
-            '/yegoudaozhangisgay',
-            '@yegoudaozhangisgay',
+            // '/yegoudaozhangisgay',
+            // '@yegoudaozhangisgay',
         );
     }
 
@@ -60,9 +60,7 @@ class Yegoudaozhangisgay extends Base
         $bot = Bot::get_my_bot($this->from_id, $text);
 
         //调用机器人
-        $bot->chat_id = $this->chat_id;
-        $bot->msg_id = $this->msg_id;
-        $bot->text = $text;
+        $bot->set_msg($this->msg, $this->text);
         $bot->run();
     }
 }

@@ -54,10 +54,7 @@ class Img extends Base
 
         $help = Process::get_class('Pixabay');
 
-        $help->text = $this->text;
-        $help->chat_id = $this->chat_id;
-        $help->from_id = $this->from_id;
-        $help->msg_id = $this->msg_id;
+        $help->set_msg($this->msg, $this->text);
         $help->run();
     }
 }

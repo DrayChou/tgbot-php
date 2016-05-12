@@ -113,18 +113,18 @@ class Base
     public function pre_process()
     {
         $class = get_called_class();
-        if (false == $this->is_has_reply()) {
+        if (!$this->is_has_reply($class)) {
             // Common::echo_log($class . " pre_process 没有需要处理的 跳过");
 
             return;
         }
 
-        Common::echo_log($class . " pre_process 抓到需要处理的回复 parm=%s", $this->parm);
+        Common::echo_log($class . " pre_process 抓到需要处理的回复 parms=%s", $this->msg['text']);
 
         $key = 'need_reply:' . $class . ':' . $this->chat_id . ':' . $this->from_id;
         Db::set($key, null, -1);
 
-        $this->text = $this->parm;
+        $this->set_msg($this->msg, $this->msg['text']);
         $this->run();
     }
 
@@ -143,7 +143,9 @@ class Base
      */
     public static function desc()
     {
-        return "插件说明，一行，用在 help 中";
+        return array(
+            "插件说明，一行，用在 help 中",
+        );
     }
 
     /**
@@ -153,7 +155,9 @@ class Base
      */
     public static function usage()
     {
-        return "插件说明，数组，用在功能调用的说明上。";
+        return array(
+            "插件说明，数组，用在功能调用的说明上。",
+        );
     }
 
     /**
@@ -184,7 +188,7 @@ class Base
             $res_str .= 'happy dog' . PHP_EOL;
             $res_str .= PHP_EOL;
             $res_str .= "You can also use this format to get results faster: " . PHP_EOL;
-            $res_str .= $class::desc();
+            $res_str .= join(PHP_EOL, $class::desc());
         }
 
         //回复消息
@@ -203,12 +207,14 @@ class Base
      * 检查是否有需要回掉的消息
      * @return bool
      */
-    protected function is_has_reply()
+    protected function is_has_reply($class = '*')
     {
-        $class = get_called_class();
         $key = 'need_reply:' . $class . ':' . $this->chat_id . ':' . $this->from_id;
+        $val = Db::get($key);
 
-        return (bool) Db::get($key);
+        Common::echo_log("Base: is_has_reply key=%s val=%s", $key, $val);
+
+        return $val;
     }
 
     /**

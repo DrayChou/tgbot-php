@@ -66,10 +66,9 @@ class Tuling123 extends Base
             $res_str .= '今天星期几？' . PHP_EOL;
             $res_str .= PHP_EOL;
             $res_str .= "你也可以下面的方式更快的进行提问: " . PHP_EOL;
-            $res_str .= self::desc();
+            $res_str .= join(PHP_EOL, self::desc());
 
             $this->set_reply($res_str);
-
             return;
         }
 

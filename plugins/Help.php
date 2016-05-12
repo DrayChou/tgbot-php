@@ -5,7 +5,7 @@
  * @Author: dray
  * @Date:   2015-07-10 15:43:59
  * @Last Modified by:   dray
- * @Last Modified time: 2016-05-04 21:01:42
+ * @Last Modified time: 2016-05-12 16:42:54
  */
 
 class Help extends Base
@@ -131,21 +131,19 @@ class Help extends Base
         Common::echo_log("执行 Help run");
 
         $res_str = $this->get_helps($this->text);
+        //帮助信息太长的话，就私信给个人
         if (empty($this->text) || strtolower($this->text) == 'all') {
             //发送给个人
             $msg = Telegram::singleton()->send_message(array(
                 'chat_id' => $this->from_id,
                 'text' => $res_str,
             ));
-
-            //帮助信息太长的话，就私信给个人
-            $res_str = 'I send you a message about it.';
         }
 
         //发送到群组里
         Telegram::singleton()->send_message(array(
             'chat_id' => $this->chat_id,
-            'text' => $res_str,
+            'text' => 'I send you a message about it.',
             'reply_to_message_id' => $this->msg_id,
         ));
     }

@@ -117,14 +117,13 @@ class Bot extends Base
 
             //如果之前有命令调用
             if ($this->is_has_reply()) {
+                Common::echo_log("Bot pre_process 有命令需要回复 跳过 common=%s", $this->common);
                 return;
             }
 
             $bot = self::get_my_bot($this->from_id, $this->parm);
             if ($bot) {
-                $bot->chat_id = $this->chat_id;
-                $bot->msg_id = $this->msg_id;
-                $bot->text = $this->parm;
+                $bot->set_msg($this->msg, $this->msg['text']);
                 $bot->run();
             }
         }
@@ -145,9 +144,7 @@ class Bot extends Base
 
             $bot = self::get_my_bot($this->from_id, $this->parm);
             if ($bot) {
-                $bot->chat_id = $this->chat_id;
-                $bot->msg_id = $this->msg_id;
-                $bot->text = $this->parm;
+                $bot->set_msg($this->msg, $this->text);
                 $bot->run();
             }
         }
@@ -226,9 +223,7 @@ class Bot extends Base
         }
 
         //调用机器人
-        $bot->chat_id = $this->chat_id;
-        $bot->msg_id = $this->msg_id;
-        $bot->text = $this->parm;
+        $bot->set_msg($this->msg, $this->text);
         $bot->run();
     }
 }
