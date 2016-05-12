@@ -59,10 +59,8 @@ class Boobs extends Base
 
         //图片数量
         $send_image_num = 1;
-        if (count($this->parms) == 2) {
-            if (is_numeric($this->parms[1])) {
-                $send_image_num = $this->parms[1];
-            }
+        if (is_numeric($this->parms[0])) {
+            $send_image_num = $this->parms[0];
         }
 
         $url = "http://api.oboobs.ru/noise/{$send_image_num}";

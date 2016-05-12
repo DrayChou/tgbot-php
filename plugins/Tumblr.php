@@ -5,7 +5,7 @@
  * @Author: dray
  * @Date:   2016-04-20 20:06:13
  * @Last Modified by:   dray
- * @Last Modified time: 2016-05-04 20:50:42
+ * @Last Modified time: 2016-05-12 20:48:44
  */
 
 class Tumblr extends Base
@@ -87,28 +87,28 @@ class Tumblr extends Base
         $blog_url = $base_blog_arr[array_rand($base_blog_arr)];
 
         // 生成 Blog 地址
-        if (count($this->parms) == 1) {
+        if (count($this->parms) == 0) {
             $blog_url = $redis->sRandMember($blog_arr_key);
-        } elseif (count($this->parms) == 2) {
-            if (is_numeric($this->parms[1])) {
-                $send_image_num = $this->parms[1];
+        } elseif (count($this->parms) == 1) {
+            if (is_numeric($this->parms[0])) {
+                $send_image_num = $this->parms[0];
                 $blog_url = $redis->sRandMember($blog_arr_key);
             } else {
-                $tmp = parse_url($this->parms[1], PHP_URL_HOST);
+                $tmp = parse_url($this->parms[0], PHP_URL_HOST);
                 if (empty($tmp)) {
-                    $blog_url = $this->parms[1];
+                    $blog_url = $this->parms[0];
                 } else {
                     $blog_url = $tmp;
                 }
             }
-        } elseif (count($this->parms) == 3) {
-            if (is_numeric($this->parms[2])) {
-                $send_image_num = $this->parms[2];
+        } elseif (count($this->parms) == 2) {
+            if (is_numeric($this->parms[1])) {
+                $send_image_num = $this->parms[1];
             }
 
-            $tmp = parse_url($this->parms[1], PHP_URL_HOST);
+            $tmp = parse_url($this->parms[0], PHP_URL_HOST);
             if (empty($tmp)) {
-                $blog_url = $this->parms[1];
+                $blog_url = $this->parms[0];
             } else {
                 $blog_url = $tmp;
             }
