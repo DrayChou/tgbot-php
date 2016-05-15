@@ -4,7 +4,7 @@
  * @Author: dray
  * @Date:   2016-05-15 11:43:42
  * @Last Modified by:   dray
- * @Last Modified time: 2016-05-15 16:59:54
+ * @Last Modified time: 2016-05-15 17:16:26
  */
 
 class Set extends Base
@@ -78,16 +78,16 @@ class Set extends Base
         $chat_admins = $redis->hGetAll($admins_key);
         $admins = array_merge($admins, array_keys($chat_admins));
         if (!in_array($this->from_id, $admins)) {
-            return;
-        }
+            $res_str = 'You are not an administrator, please contact @Dray or @YeGouDaoZhang  to set the administrator.';
+        } else {
+            $set = $tmp[0];
+            $value = $tmp[1];
+            $res_str = 'Setting failed!';
 
-        $set = $tmp[0];
-        $value = $tmp[1];
-        $res_str = 'Setting failed!';
-
-        //设置值
-        if (!(false === $redis->hSet($config_key, $set, $value))) {
-            $res_str = 'Setting success!';
+            //设置值
+            if (!(false === $redis->hSet($config_key, $set, $value))) {
+                $res_str = 'Setting success!';
+            }
         }
 
         Telegram::singleton()->send_message(array(

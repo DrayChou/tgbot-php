@@ -4,7 +4,7 @@
  * @Author: dray
  * @Date:   2016-05-15 11:43:42
  * @Last Modified by:   dray
- * @Last Modified time: 2016-05-15 13:57:40
+ * @Last Modified time: 2016-05-15 17:13:24
  */
 
 class Rule extends Base
@@ -74,11 +74,13 @@ class Rule extends Base
             $res_str = "【成员】：\n★:不得在工作时间发送色情内(07:00-18:00)。\n★:不得发表极端政治言论。\n★:请勿在群组内撕逼。\n★:不得通过更换头像和昵称伪装他人。\n\n【管理员】:\n★:避免过多的置顶消息，且附带全体通知的置顶消息每天总量不超过2条，避免在休息时间发送。\n";
 
             $yegou_chat_id = -1001002187939;
-            if (!$this->chat_id == $yegou_chat_id) {
+            if ($this->chat_id == $yegou_chat_id) {
                 $res_str += "\n群链接：\nhttps://telegram.me/joinchat/BQCpQju8LKOx3A-wlDckkw";
             }
 
             $redis->hSet($key, 'rules', $res_str);
+        } else {
+            $res_str = $rules;
         }
 
         Telegram::singleton()->send_message(array(
