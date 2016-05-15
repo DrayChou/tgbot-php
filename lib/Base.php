@@ -44,6 +44,8 @@ class Base
             throw new Exception('error message');
         }
 
+        Common::echo_log(get_called_class() . " set_msg msg=%s", print_r($msg, true));
+
         $this->msg = $msg;
         $this->msg_id = $msg['message_id'];
         $this->text = $text;

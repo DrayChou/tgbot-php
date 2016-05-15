@@ -5,7 +5,7 @@
  * @Author: dray
  * @Date:   2015-07-10 18:43:59
  * @Last Modified by:   dray
- * @Last Modified time: 2016-05-05 13:54:34
+ * @Last Modified time: 2016-05-15 11:36:24
  */
 
 class Common
@@ -54,7 +54,7 @@ class Common
         if (empty(self::$router)) {
             //加载基础文件
             if (!class_exists('Base')) {
-                require_once PLUGIN_PATH . 'Base.php';
+                require_once LIB_PATH . 'Base.php';
             }
 
             self::$router = array();

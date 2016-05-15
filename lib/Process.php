@@ -5,7 +5,7 @@
  * @Author: dray
  * @Date:   2015-07-10 15:22:59
  * @Last Modified by:   dray
- * @Last Modified time: 2016-05-05 17:16:09
+ * @Last Modified time: 2016-05-15 11:35:59
  */
 
 class Process
@@ -22,7 +22,7 @@ class Process
             $class = ucfirst(strtolower($class_name));
 
             if (!class_exists('Base')) {
-                require_once PLUGIN_PATH . 'Base.php';
+                require_once LIB_PATH . 'Base.php';
             }
 
             if (!class_exists($class)) {
