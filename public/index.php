@@ -49,16 +49,20 @@ if (isset($_GET['token'])) {
         unset($get_data["token"]); 
         unset($get_data["api"]); 
 
+        $data = array();
+        $url = "https://api.telegram.org/bot{$_GET['token']}/{$api}";
+        if (!empty($get_data)) {
+            $url .= ("?" . http_build_query($get_data));
+        }
+
         if (empty($post_data)) {
             $method = "GET";
         } else {
             $method = "POST";
+            $data = $post_data;
         }
 
-        $res = Common::post(
-            "https://api.telegram.org/bot{$_GET['token']}/{$api}?". http_build_query($get_data),
-            $post_data, $method = $method
-        ); 
+        $res = Common::post($url, $data, "json", $method); 
         echo $res;
         exit();
     }
