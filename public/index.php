@@ -43,13 +43,17 @@ if (isset($_GET['token'])) {
     //添加转发接口
     if (isset($_GET['api'])) {
         $api = $_GET['api']; 
-        $method = $_SERVER['REQUEST_METHOD']; 
+        $get_data = $_GET;
+        $post_data = $_POST;
 
-        $get_data = $_GET; 
         unset($get_data["token"]); 
         unset($get_data["api"]); 
 
-        $post_data = $_POST; 
+        if (empty($post_data)) {
+            $method = "GET"
+        } else {
+            $method = "POST"
+        }
 
         $res = Common::post(
             "https://api.telegram.org/bot{$_GET['token']}/{$api}?". http_build_query($get_data),
