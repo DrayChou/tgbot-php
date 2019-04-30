@@ -51,7 +51,7 @@ if (isset($_GET['token'])) {
 
         $post_data = $_POST; 
 
-        $res = Common:post(
+        $res = Common::post(
             "https://api.telegram.org/bot{$_GET['token']}/{$api}?". http_build_query($get_data),
             $post_data, $method = $method
         ); 
