@@ -50,9 +50,9 @@ if (isset($_GET['token'])) {
         unset($get_data["api"]); 
 
         if (empty($post_data)) {
-            $method = "GET"
+            $method = "GET";
         } else {
-            $method = "POST"
+            $method = "POST";
         }
 
         $res = Common::post(
