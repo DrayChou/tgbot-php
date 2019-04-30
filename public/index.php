@@ -62,9 +62,10 @@ if (isset($_GET['token'])) {
             $data = $post_data;
         }
 
-        $res = Common::post($url, $data, "json", $method); 
-        echo $res;
-        exit();
+        $res = Common::post($url, $data, "json", $method);
+
+        header('Content-type: application/json');
+        exit(json_encode($res));
     }
 
     Common::G('run_start');
