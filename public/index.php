@@ -44,7 +44,10 @@ if (isset($_GET['token'])) {
     if (isset($_GET['api'])) {
         $api = $_GET['api']; 
         $get_data = $_GET;
-        $post_data = $_POST;
+        $post_data = file_get_contents('php://input');
+        if (is_string($post_data)) {
+            $post_data = @json_decode($post_data);
+        }
 
         unset($get_data["token"]); 
         unset($get_data["api"]); 
